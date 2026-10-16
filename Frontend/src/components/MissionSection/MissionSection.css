@@ -1,0 +1,216 @@
+.mission-section {
+  display: flex;
+  position: relative;
+  min-height: 80vh;
+  width: 100%;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #020B2D;
+  z-index: 5;
+}
+
+/* Fluid Wave Transitions */
+.wave-divider {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  line-height: 0;
+  z-index: 10;
+}
+
+.wave-divider svg {
+  width: calc(100% + 1.3px);
+  height: 100%;
+}
+
+.wave-top {
+  top: -119px;
+}
+
+/* Left Side */
+.mission-left {
+  flex: 1;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 80px 80px 80px 5%;
+}
+
+.mission-left-content {
+  max-width: 500px;
+  color: #ffffff;
+}
+
+.mission-label {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.mission-heading {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 0 0 32px 0;
+  color: #ffffff;
+}
+
+.mission-heading .text-accent {
+  color: #00cbf0; /* Or #9acd32 based on the image, but let's stick to theme */
+}
+
+.mission-description {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 24px;
+}
+
+/* Right Side */
+.mission-right {
+  flex: 1;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 80px 5% 80px 100px; /* More padding on left to accommodate protruding card */
+}
+
+.mission-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 550px;
+  width: 100%;
+}
+
+.mission-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.mission-card-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #020B2D;
+}
+
+.mission-card-text h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.mission-card-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Highlighted Card */
+.highlighted-card {
+  background-color: #cddc39; /* Using a greenish-yellow from the design image */
+  transform: translateX(-60px);
+  z-index: 2;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.highlighted-card .mission-card-text h4 {
+  color: #0b1021;
+}
+
+.highlighted-card .mission-card-text p {
+  color: rgba(11, 16, 33, 0.8);
+}
+
+.highlighted-card .mission-card-icon {
+  color: #0b1021;
+}
+
+
+/* Center Target Graphic */
+.mission-target-graphic {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.target-outer-circle {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+}
+
+.target-inner-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #cddc39; /* Match the highlighted card */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #ffffff;
+}
+
+.target-inner-circle svg {
+  transform: translate(-5px, 5px); /* Visual balance for arrow */
+}
+
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .mission-section {
+    flex-direction: column;
+  }
+  
+  .mission-left, .mission-right {
+    padding: 60px 5%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .mission-target-graphic {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin: -100px auto -100px auto;
+  }
+  
+  .highlighted-card {
+    transform: translateX(0);
+  }
+  
+  .mission-left-content {
+    margin-bottom: 60px;
+  }
+}

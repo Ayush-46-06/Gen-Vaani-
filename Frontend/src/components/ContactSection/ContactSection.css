@@ -1,0 +1,422 @@
+.contact-section {
+  background-color: #f8fbff; /* Light background */
+  color: #1a202c;
+  padding: 100px 0 0 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+@media (min-width: 992px) {
+  .contact-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Left Side: Info */
+.contact-info-wrapper {
+  flex: 1;
+  max-width: 500px;
+}
+
+.contact-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #00278a;
+}
+
+.contact-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4a5568;
+  margin-bottom: 50px;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.contact-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.contact-icon {
+  background: linear-gradient(135deg, #00278a, #00cbf0);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 10px 20px rgba(0, 203, 240, 0.2);
+}
+
+.contact-text h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #00278a;
+}
+
+.contact-text p {
+  font-size: 0.95rem;
+  color: #4a5568;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Right Side: Form Card */
+.contact-form-wrapper {
+  flex: 1;
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 40px;
+  padding: 50px;
+  border: 1px solid rgba(0, 39, 138, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  margin-top: 0;
+  color: #00278a;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+@media (min-width: 600px) {
+  .form-row {
+    flex-direction: row;
+  }
+  .form-row .form-group {
+    flex: 1;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-left: 10px;
+}
+
+.form-group label span {
+  color: #00cbf0;
+}
+
+/* Smoothness like Navbar for Inputs */
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 39, 138, 0.2);
+  border-radius: 30px;
+  color: #00278a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03), inset 0 2px 4px rgba(0, 39, 138, 0.05);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  border-radius: 24px;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #00cbf0;
+  box-shadow: 0 5px 20px rgba(0, 203, 240, 0.15), inset 0 2px 4px rgba(0, 39, 138, 0.05);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #a0aec0;
+}
+
+.contact-submit-btn {
+  background: linear-gradient(90deg, #00278a 0%, #00cbf0 100%);
+  color: #ffffff;
+  border: 1px solid rgba(0, 203, 240, 0.4);
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 10px;
+  align-self: flex-start;
+  box-shadow: 0 6px 20px rgba(0, 39, 138, 0.25);
+}
+
+.contact-submit-btn:hover {
+  transform: translateY(-2px);
+  background: #00cbf0;
+  color: #001b63;
+  border-color: #00cbf0;
+  box-shadow: 0 10px 28px rgba(0, 203, 240, 0.55);
+}
+
+/* Map & Newsletter Section */
+.contact-map-wrapper {
+  margin-top: 80px;
+  position: relative;
+  height: 500px;
+  width: 100%;
+}
+
+.contact-map-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  filter: grayscale(20%) contrast(1.1); /* Subtle effect to make it fit better */
+}
+
+.newsletter-overlay-wrapper {
+  position: absolute;
+  bottom: 0; /* Align perfectly to the bottom (upper of footer) */
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 20; /* Increased to sit above the footer wave which is z-index 10 */
+}
+
+.newsletter-overlay {
+  background: linear-gradient(135deg, #00278a, #00cbf0);
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 30px 30px 0 0; /* Flat bottom to sit flush on footer */
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-shadow: 0 -10px 30px rgba(0, 39, 138, 0.15);
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .newsletter-overlay {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.newsletter-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.newsletter-form {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 50px;
+  flex: 1;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.newsletter-form input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  color: #00278a;
+  outline: none;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+.newsletter-form input::placeholder {
+  color: #a0aec0;
+}
+
+.newsletter-form button {
+  background: #00278a;
+  color: #ffffff;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.newsletter-form button:hover {
+  background: #001a5e;
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .contact-form-wrapper {
+    padding: 30px 20px;
+    border-radius: 28px;
+  }
+
+  .contact-submit-btn {
+    width: 100%;
+    align-self: stretch;
+    text-align: center;
+    padding: 15px 24px;
+  }
+
+  .newsletter-overlay {
+    width: calc(100% - 32px);
+    padding: 30px 22px;
+    border-radius: 24px 24px 0 0;
+    gap: 20px;
+  }
+
+  .newsletter-title {
+    font-size: 1.4rem;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .newsletter-form {
+    padding: 5px;
+    max-width: 100%;
+  }
+
+  .newsletter-form input {
+    padding: 9px 14px;
+    font-size: 0.9rem;
+  }
+
+  .newsletter-form button {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .newsletter-overlay {
+    width: calc(100% - 20px);
+    padding: 24px 14px;
+    gap: 16px;
+  }
+
+  .newsletter-title {
+    font-size: 1.25rem;
+  }
+
+  .newsletter-form {
+    padding: 4px;
+  }
+
+  .newsletter-form input {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .newsletter-form button {
+    padding: 9px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Submission feedback banners */
+.contact-feedback-banner {
+  padding: 14px 20px;
+  border-radius: 20px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: feedbackSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-feedback-banner.success {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.1);
+}
+
+.contact-feedback-banner.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.1);
+}
+
+.contact-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+@keyframes feedbackSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

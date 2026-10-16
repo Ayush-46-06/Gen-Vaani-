@@ -1,0 +1,427 @@
+/* =========================================================
+   SERVICE WORKFLOW SECTION (FOOTER THEME: #020B2D & CYAN)
+   ========================================================= */
+
+.service-workflow-section {
+  position: relative;
+  background-color: #020B2D; /* Exact deep navy blue matching footer theme */
+  color: #e2e8f0;
+  padding: 140px 5% 175px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  z-index: 15;
+}
+
+/* Ambient Radial Lighting Aura matching Footer & Capabilities theme */
+.service-workflow-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse 70% 55% at 50% 10%, rgba(0, 203, 240, 0.15) 0%, rgba(0, 39, 138, 0.25) 45%, transparent 75%),
+    radial-gradient(circle at 10% 85%, rgba(0, 203, 240, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 39, 138, 0.15) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Subtle Technical Dot Matrix */
+.service-workflow-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0, 203, 240, 0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========================================================
+   TOP & BOTTOM CURVE BORDER (WAVE DIVIDERS)
+   ========================================================= */
+
+.service-workflow-section .wave-divider {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  line-height: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.service-workflow-section .wave-divider svg {
+  width: calc(100% + 1.3px);
+  height: 100%;
+}
+
+.service-workflow-section .wave-top {
+  top: -119px;
+}
+
+.service-workflow-section .wave-bottom {
+  bottom: -119px;
+  transform: rotate(180deg);
+}
+
+.workflow-container {
+  max-width: 1340px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 5;
+}
+
+/* =========================================================
+   HEADER STYLING
+   ========================================================= */
+
+.workflow-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 65px;
+}
+
+.workflow-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  background: rgba(0, 203, 240, 0.08);
+  border: 1px solid rgba(0, 203, 240, 0.28);
+  border-radius: 40px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.workflow-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #00cbf0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00cbf0;
+  animation: pulseCyan 2s infinite ease-in-out;
+}
+
+@keyframes pulseCyan {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
+}
+
+.workflow-badge-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #00cbf0;
+  text-transform: uppercase;
+}
+
+.workflow-title {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.18;
+  color: #ffffff;
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
+}
+
+.workflow-title-highlight {
+  background: linear-gradient(135deg, #00cbf0 0%, #38bdf8 50%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 0 20px rgba(0, 203, 240, 0.35));
+}
+
+.workflow-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #94a3b8;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   TIMELINE FLOW & STEPPER
+   ========================================================= */
+
+.workflow-timeline-wrapper {
+  position: relative;
+  margin-top: 30px;
+  padding-top: 10px;
+}
+
+/* Continuous Horizontal Connecting Line behind nodes */
+.workflow-line-track {
+  position: absolute;
+  top: 42px; /* Centers with 84px node */
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: rgba(0, 203, 240, 0.22);
+  z-index: 1;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.workflow-line-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #00cbf0, transparent);
+  box-shadow: 0 0 12px #00cbf0;
+  animation: lineScan 4s infinite ease-in-out;
+}
+
+@keyframes lineScan {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+/* 5-Step Grid */
+.workflow-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Step Card */
+.workflow-step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.35s ease;
+  padding: 0 6px;
+}
+
+.workflow-step-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Node Container */
+.workflow-step-node-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.workflow-step-node {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #08216b 0%, #020B2D 85%);
+  border: 2px solid rgba(0, 203, 240, 0.38);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(0, 203, 240, 0.14),
+    inset 0 0 14px rgba(0, 203, 240, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workflow-step-card:hover .workflow-step-node {
+  border-color: #00cbf0;
+  box-shadow: 
+    0 14px 32px rgba(0, 0, 0, 0.55),
+    0 0 35px rgba(0, 203, 240, 0.5),
+    inset 0 0 22px rgba(0, 203, 240, 0.28);
+  transform: scale(1.08);
+}
+
+.workflow-step-node svg {
+  transition: transform 0.3s ease, stroke 0.3s ease;
+}
+
+.workflow-step-card:hover .workflow-step-node svg {
+  transform: scale(1.12);
+  stroke: #ffffff;
+  filter: drop-shadow(0 0 10px #00cbf0);
+}
+
+/* Number Badge on Node top-right */
+.workflow-step-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #00cbf0;
+  color: #020B2D;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid #020B2D;
+  box-shadow: 0 2px 10px rgba(0, 203, 240, 0.5);
+  transition: all 0.3s ease;
+}
+
+.workflow-step-card:hover .workflow-step-badge {
+  background: #ffffff;
+  color: #020B2D;
+  box-shadow: 0 0 15px #ffffff;
+  transform: scale(1.1);
+}
+
+/* Step Content */
+.workflow-step-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.workflow-step-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  transition: color 0.3s ease;
+  letter-spacing: -0.01em;
+}
+
+.workflow-step-card:hover .workflow-step-title {
+  color: #00cbf0;
+}
+
+.workflow-step-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #94a3b8;
+  margin: 0;
+  max-width: 220px;
+  transition: color 0.3s ease;
+}
+
+.workflow-step-card:hover .workflow-step-desc {
+  color: #cbd5e1;
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUTS
+   ========================================================= */
+
+@media (max-width: 1140px) {
+  .workflow-steps-grid {
+    gap: 14px;
+  }
+  .workflow-step-node {
+    width: 74px;
+    height: 74px;
+  }
+  .workflow-line-track {
+    top: 37px;
+  }
+  .workflow-step-title {
+    font-size: 1.05rem;
+  }
+  .workflow-step-desc {
+    font-size: 0.84rem;
+    max-width: 185px;
+  }
+}
+
+@media (max-width: 860px) {
+  .service-workflow-section {
+    padding: 100px 5% 100px;
+  }
+
+  .workflow-line-track {
+    display: none;
+  }
+
+  .workflow-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto;
+    padding-left: 20px;
+  }
+
+  /* Vertical timeline spine for mobile */
+  .workflow-steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    bottom: 36px;
+    left: 56px;
+    width: 2px;
+    background: linear-gradient(180deg, 
+      rgba(0, 203, 240, 0.4) 0%, 
+      rgba(0, 203, 240, 0.8) 50%, 
+      rgba(0, 203, 240, 0.2) 100%
+    );
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(0, 203, 240, 0.4);
+  }
+
+  .workflow-step-card {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 22px;
+    position: relative;
+    z-index: 2;
+    padding: 0;
+  }
+
+  .workflow-step-node-wrapper {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .workflow-step-node {
+    width: 72px;
+    height: 72px;
+  }
+
+  .workflow-step-content {
+    align-items: flex-start;
+    padding-top: 10px;
+  }
+
+  .workflow-step-desc {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-workflow-section {
+    padding: 90px 5% 90px;
+  }
+
+  .workflow-header {
+    margin-bottom: 45px;
+  }
+
+  .workflow-step-node {
+    width: 64px;
+    height: 64px;
+  }
+
+  .workflow-steps-grid::before {
+    left: 52px;
+  }
+}

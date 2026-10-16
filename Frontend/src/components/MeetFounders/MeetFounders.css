@@ -1,0 +1,573 @@
+/* =========================================================
+   MEET FOUNDERS SECTION - WHITE THEME & ID BADGE DESIGN
+   ========================================================= */
+
+.meet-founders-section {
+  position: relative;
+  z-index: 10;
+  background-color: #ffffff;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(104, 66, 194, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(104, 66, 194, 0.04) 0%, transparent 45%);
+  padding: 100px 5% 120px;
+  overflow: visible;
+  overflow-x: clip;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+}
+
+/* Fluid Wave Transitions */
+.meet-founders-section .wave-divider {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  line-height: 0;
+  z-index: 10;
+}
+
+.meet-founders-section .wave-divider svg {
+  width: calc(100% + 1.3px);
+  height: 100%;
+}
+
+.meet-founders-section .wave-top {
+  top: -119px;
+}
+
+/* =========================================================
+   DECORATIVE DOODLES & SKETCHES
+   ========================================================= */
+
+.doodle-crosshatch {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 1;
+}
+
+.doodle-top-right {
+  top: 30px;
+  right: 4%;
+  width: 90px;
+  height: 90px;
+  transform: rotate(8deg);
+}
+
+.doodle-bottom-left {
+  bottom: 25px;
+  left: 3%;
+  width: 110px;
+  height: 110px;
+  transform: rotate(-12deg);
+}
+
+.doodle-earphones {
+  position: absolute;
+  top: 10px;
+  left: 2%;
+  width: 140px;
+  pointer-events: none;
+  opacity: 0.85;
+  z-index: 2;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.08));
+}
+
+.earphones-svg {
+  width: 100%;
+  height: auto;
+}
+
+.doodle-camera {
+  position: absolute;
+  bottom: 20px;
+  right: 3%;
+  width: 150px;
+  pointer-events: none;
+  opacity: 0.85;
+  z-index: 2;
+  transform: rotate(-6deg);
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.12));
+}
+
+.camera-svg {
+  width: 100%;
+  height: auto;
+}
+
+/* =========================================================
+   CONTAINER & TWO-COLUMN GRID
+   ========================================================= */
+
+.meet-founders-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: center;
+  gap: 70px;
+  position: relative;
+  z-index: 5;
+}
+
+/* =========================================================
+   LEFT: TWO FOUNDER ID BADGES (LANYARD HOLDER)
+   ========================================================= */
+
+.founders-badges-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 40px 10px 30px;
+  min-height: 520px;
+}
+
+/* Individual Badge Unit */
+.lanyard-badge-unit {
+  position: relative;
+  width: 250px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+/* Positioning & Natural Angles for 2 Founders */
+.badge-card-one {
+  transform: rotate(-4deg) translateY(-10px);
+  z-index: 4;
+}
+
+.badge-card-two {
+  transform: rotate(3.5deg) translateY(45px);
+  z-index: 3;
+}
+
+/* Interactive Hover Effect */
+.lanyard-badge-unit:hover {
+  transform: rotate(0deg) translateY(-8px) scale(1.03);
+  z-index: 10;
+}
+
+/* Lanyard Top Strap & Clip */
+.badge-lanyard-strap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: -6px;
+  position: relative;
+  z-index: 2;
+}
+
+.lanyard-ribbon {
+  width: 16px;
+  height: 48px;
+  background: repeating-linear-gradient(
+    45deg,
+    #1e293b,
+    #1e293b 4px,
+    #334155 4px,
+    #334155 8px
+  );
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lanyard-black-clip {
+  width: 28px;
+  height: 22px;
+  background: #111827;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid #374151;
+  position: relative;
+}
+
+.lanyard-black-clip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  width: 14px;
+  height: 8px;
+  border: 2px solid #94a3b8;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+
+.clip-slot {
+  width: 12px;
+  height: 3px;
+  background: #4b5563;
+  border-radius: 2px;
+}
+
+/* Plastic ID Badge Holder (Realistic Transparent Sleeve) */
+.id-badge-holder {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(226, 232, 240, 0.85);
+  border-radius: 20px;
+  padding: 14px 14px 16px;
+  box-shadow: 
+    0 20px 35px -10px rgba(88, 56, 178, 0.16),
+    0 8px 18px -4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  position: relative;
+  overflow: visible;
+}
+
+/* Punched holes in plastic holder */
+.badge-punches {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+.punch-hole {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: #f1f5f9;
+}
+
+.punch-oval-slot {
+  width: 24px;
+  height: 8px;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+  background: #f1f5f9;
+}
+
+/* Inner ID Card Body */
+.badge-inner-card {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+/* Founder Photo */
+.badge-photo-wrapper {
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f1f5f9;
+}
+
+.badge-founder-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.lanyard-badge-unit:hover .badge-founder-photo {
+  transform: scale(1.05);
+}
+
+/* Name Tag (Purple Ribbon Banner) */
+.badge-name-banner {
+  background: #5e44ba;
+  padding: 9px 12px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.badge-founder-name {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: block;
+  text-transform: capitalize;
+}
+
+/* Role Strip (Clean white bar with purple text) */
+.badge-role-strip {
+  background: #ffffff;
+  padding: 8px 12px;
+  text-align: center;
+  border-top: 1px solid rgba(94, 68, 186, 0.1);
+}
+
+.badge-founder-role {
+  color: #5e44ba;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: block;
+}
+
+/* Hand-Drawn Smiley Doodle */
+.doodle-smiley-wrapper {
+  position: absolute;
+  bottom: 0px;
+  left: 45%;
+  transform: translateX(-50%);
+  width: 65px;
+  height: 65px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.smiley-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(94, 68, 186, 0.15));
+}
+
+/* =========================================================
+   RIGHT: CONTENT & CONTACT INFO
+   ========================================================= */
+
+.founders-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 10px;
+}
+
+/* Pill Badge */
+.leadership-pill {
+  display: inline-block;
+  padding: 7px 22px;
+  border: 1.8px solid #5e44ba;
+  border-radius: 50px;
+  margin-bottom: 24px;
+  background: rgba(94, 68, 186, 0.04);
+}
+
+.leadership-pill span {
+  color: #5e44ba;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+}
+
+/* Bold Rounded Main Heading */
+.founders-title {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(3rem, 5.2vw, 4.8rem);
+  font-weight: 900;
+  line-height: 1.02;
+  color: #5e44ba;
+  letter-spacing: -0.03em;
+  margin: 0 0 28px 0;
+  font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.founders-title .title-line {
+  display: block;
+}
+
+.founders-title .highlight-text {
+  color: #5e44ba;
+  position: relative;
+  display: inline-block;
+}
+
+/* Narrative description */
+.founders-description {
+  font-size: 1.08rem;
+  line-height: 1.68;
+  color: #475569;
+  max-width: 490px;
+  margin: 0 0 32px 0;
+  font-weight: 400;
+}
+
+/* CTA Button */
+.founders-cta-wrapper {
+  margin-bottom: 34px;
+}
+
+.founders-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #5e44ba;
+  color: #ffffff;
+  padding: 14px 34px;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  box-shadow: 0 10px 24px -4px rgba(94, 68, 186, 0.38);
+  transition: all 0.3s ease;
+}
+
+.founders-contact-btn .btn-icon {
+  font-size: 1.15rem;
+  transition: transform 0.3s ease;
+}
+
+.founders-contact-btn:hover {
+  background: #4d33a6;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -4px rgba(94, 68, 186, 0.48);
+}
+
+.founders-contact-btn:hover .btn-icon {
+  transform: translate(3px, -3px);
+}
+
+/* Contact Info Card */
+.founders-contact-box {
+  width: 100%;
+  max-width: 390px;
+  border: 1.8px solid #5e44ba;
+  border-radius: 22px;
+  padding: 20px 24px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 8px 20px -6px rgba(94, 68, 186, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.founders-contact-box:hover {
+  box-shadow: 0 14px 28px -6px rgba(94, 68, 186, 0.16);
+  transform: translateY(-2px);
+}
+
+.contact-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #334155;
+  transition: color 0.2s ease;
+}
+
+.contact-line:hover {
+  color: #5e44ba;
+}
+
+.contact-icon-bubble {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #5e44ba;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5e44ba;
+  font-size: 0.95rem;
+  background: rgba(94, 68, 186, 0.05);
+  flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.contact-line:hover .contact-icon-bubble {
+  background: #5e44ba;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.contact-text {
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* =========================================================
+   RESPONSIVE ADAPTATIONS
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .meet-founders-container {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .founders-badges-wrapper {
+    min-height: auto;
+    padding: 20px 0;
+  }
+
+  .founders-content-wrapper {
+    align-items: center;
+    text-align: center;
+    padding-left: 0;
+  }
+
+  .founders-title {
+    align-items: center;
+  }
+
+  .founders-description {
+    max-width: 600px;
+  }
+
+  .founders-contact-box {
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .meet-founders-section {
+    padding: 70px 5% 90px;
+  }
+
+  .founders-badges-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .lanyard-badge-unit {
+    width: 230px;
+  }
+
+  .badge-card-one {
+    transform: rotate(-2deg);
+  }
+
+  .badge-card-two {
+    transform: rotate(2deg);
+  }
+
+  .doodle-smiley-wrapper {
+    display: none;
+  }
+
+  .doodle-camera {
+    width: 100px;
+    bottom: 10px;
+    right: 1%;
+    opacity: 0.6;
+  }
+
+  .doodle-earphones {
+    width: 90px;
+    top: 5px;
+    left: 1%;
+    opacity: 0.6;
+  }
+
+  .founders-title {
+    font-size: 2.8rem;
+  }
+
+  .founders-contact-box {
+    width: 100%;
+    padding: 16px 18px;
+  }
+}

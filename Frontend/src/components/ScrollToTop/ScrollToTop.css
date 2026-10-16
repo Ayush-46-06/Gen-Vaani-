@@ -1,0 +1,125 @@
+/* ==========================================================================
+   SCROLL TO TOP COMPONENT - GEN-VAANI SIGNATURE STYLING
+   ========================================================================== */
+
+.scroll-to-top-wrapper {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.85);
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.scroll-to-top-wrapper.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.scroll-to-top-btn {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 203, 240, 0.38);
+  background: rgba(2, 11, 45, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #00cbf0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow:
+    0 10px 25px rgba(0, 27, 99, 0.32),
+    0 0 18px rgba(0, 203, 240, 0.22),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  transition:
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.28s ease,
+    background 0.28s ease,
+    border-color 0.28s ease,
+    color 0.28s ease;
+  outline: none;
+}
+
+/* Progress ring overlay */
+.scroll-progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.progress-ring-track {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+
+.progress-ring-fill {
+  stroke: #00cbf0;
+  transition: stroke-dashoffset 0.15s ease-out;
+}
+
+/* Arrow icon */
+.scroll-arrow-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+}
+
+/* Hover & Active States */
+.scroll-to-top-btn:hover {
+  transform: translateY(-4px) scale(1.06);
+  background: linear-gradient(135deg, #00278a 0%, #020B2D 100%);
+  border-color: #00cbf0;
+  color: #ffffff;
+  box-shadow:
+    0 14px 32px rgba(0, 203, 240, 0.45),
+    0 0 24px rgba(0, 203, 240, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.scroll-to-top-btn:hover .scroll-arrow-icon {
+  transform: translateY(-2px);
+}
+
+.scroll-to-top-btn:hover .progress-ring-fill {
+  stroke: #ffffff;
+}
+
+.scroll-to-top-btn:active {
+  transform: translateY(-1px) scale(0.96);
+}
+
+/* Responsive adjust for mobile */
+@media (max-width: 768px) {
+  .scroll-to-top-wrapper {
+    bottom: 24px;
+    right: 20px;
+  }
+
+  .scroll-to-top-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .scroll-progress-ring {
+    width: 44px;
+    height: 44px;
+  }
+}
