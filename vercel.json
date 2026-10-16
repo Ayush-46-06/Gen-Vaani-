@@ -18,28 +18,28 @@
       }
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": {
         "service": "backend"
       }
     },
     {
-      "source": "/assets/(.*)",
+      "source": "/assets/:path*",
       "destination": {
         "service": "frontend"
       }
     },
     {
-      "source": "/((?!api|assets|.*\\..*).*)",
+      "source": "/(.*\\.[a-zA-Z0-9]+)",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/:path*",
       "destination": {
         "service": "frontend",
         "path": "/index.html"
-      }
-    },
-    {
-      "source": "/(.*)",
-      "destination": {
-        "service": "frontend"
       }
     }
   ]
