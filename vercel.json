@@ -18,28 +18,15 @@
       }
     },
     {
-      "source": "/api/:path*",
+      "source": "/api/(.*)",
       "destination": {
         "service": "backend"
       }
     },
     {
-      "source": "/assets/:path*",
+      "source": "/(.*)",
       "destination": {
         "service": "frontend"
-      }
-    },
-    {
-      "source": "/(.*\\.[a-zA-Z0-9]+)",
-      "destination": {
-        "service": "frontend"
-      }
-    },
-    {
-      "source": "/:path*",
-      "destination": {
-        "service": "frontend",
-        "path": "/index.html"
       }
     }
   ]
