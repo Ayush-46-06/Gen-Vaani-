@@ -77,7 +77,7 @@ export const servicesData = {
         {
           id: 'advanced',
           name: 'Advanced Package',
-          badge: 'Essential',
+          badge: 'Most Popular',
           price: '$2,499',
           period: 'one-time',
           desc: 'High-performance interactive website with custom micro-animations and CMS integration.',
@@ -87,7 +87,7 @@ export const servicesData = {
         {
           id: 'custom',
           name: 'Custom Package',
-          badge: 'Most Popular',
+          badge: null,
           price: 'Custom',
           period: 'tailored scope',
           desc: 'Full-scale enterprise digital platform with custom database architectures and API integrations.',
@@ -250,7 +250,7 @@ export const servicesData = {
         {
           id: 'advanced',
           name: 'Advanced Package',
-          badge: 'Essential',
+          badge: 'Most Popular',
           price: '$5,999',
           period: 'one-time',
           desc: 'Full-stack cross-platform app (iOS & Android) with real-time notifications and payment processing.',
@@ -260,7 +260,7 @@ export const servicesData = {
         {
           id: 'custom',
           name: 'Custom Package',
-          badge: 'Most Popular',
+          badge: null,
           price: 'Custom',
           period: 'tailored scope',
           desc: 'Enterprise distributed cloud system with custom microservices, AI integrations, and offline sync.',
@@ -422,7 +422,7 @@ export const servicesData = {
         {
           id: 'advanced',
           name: 'Advanced Package',
-          badge: 'Essential',
+          badge: 'Most Popular',
           price: '$1,499',
           period: '/month',
           desc: 'Omnichannel scaling across Google & Meta with conversion API and weekly creative refreshes.',
@@ -432,7 +432,7 @@ export const servicesData = {
         {
           id: 'custom',
           name: 'Custom Package',
-          badge: 'Most Popular',
+          badge: null,
           price: 'Custom',
           period: 'tailored scope',
           desc: 'High-growth enterprise ad spend ($50k+/mo) with dedicated media buyers and custom video production.',
@@ -593,7 +593,7 @@ export const servicesData = {
         {
           id: 'advanced',
           name: 'Advanced Package',
-          badge: 'Essential',
+          badge: 'Most Popular',
           price: '$1,999',
           period: 'one-time',
           desc: 'Comprehensive end-to-end product design with clickable prototypes and design token systems.',
@@ -603,7 +603,7 @@ export const servicesData = {
         {
           id: 'custom',
           name: 'Custom Package',
-          badge: 'Most Popular',
+          badge: null,
           price: 'Custom',
           period: 'tailored scope',
           desc: 'Full enterprise design transformation with user research sessions and multi-platform component libraries.',
@@ -764,7 +764,7 @@ export const servicesData = {
         {
           id: 'advanced',
           name: 'Advanced Package',
-          badge: 'Essential',
+          badge: 'Most Popular',
           price: '$899',
           period: '/month',
           desc: 'Aggressive ranking engine with continuous citation building, review funnel, and geo-grid tracking.',
@@ -774,7 +774,7 @@ export const servicesData = {
         {
           id: 'custom',
           name: 'Custom Package',
-          badge: 'Most Popular',
+          badge: null,
           price: 'Custom',
           period: 'tailored scope',
           desc: 'Multi-location franchise dominance covering regional markets and automated reputation management.',
@@ -935,7 +935,7 @@ export const servicesData = {
         {
           id: 'advanced',
           name: 'Advanced Package',
-          badge: 'Essential',
+          badge: 'Most Popular',
           price: '$1,799',
           period: '/month',
           desc: 'Full omnichannel execution across content, search engine optimization, and email funnels.',
@@ -945,7 +945,7 @@ export const servicesData = {
         {
           id: 'custom',
           name: 'Custom Package',
-          badge: 'Most Popular',
+          badge: null,
           price: 'Custom',
           period: 'tailored scope',
           desc: 'Dedicated outsourced marketing department with executive CMO guidance and PR campaigns.',

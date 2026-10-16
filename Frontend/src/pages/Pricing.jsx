@@ -90,12 +90,12 @@ const Pricing = () => {
       {/* Top Hero Section */}
       <section className="pricing-hero-header">
         <div className="pricing-hero-content">
-          <span className="pricing-tag">— TRANSPARENT INVESTMENT</span>
+          <span className="pricing-tag">PRICING</span>
           <h1 className="pricing-main-title">
-            Simple, Value-Driven <span className="text-highlight">Pricing</span>
+            Choose the Package That Fits <span className="text-highlight">Your Ambition</span>
           </h1>
           <p className="pricing-main-desc">
-            Explore dedicated packages for every digital capability. Select a service below to view detailed deliverables, features, and timelines.
+            From high-converting landing sites to bespoke enterprise platforms, we build solutions that drive real business results.
           </p>
 
           {/* Interactive Service Filter Tabs */}
