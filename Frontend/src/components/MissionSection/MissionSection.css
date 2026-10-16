@@ -34,7 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 80px 80px 80px 5%;
+  padding: 80px 110px 80px 5%;
 }
 
 .mission-left-content {
@@ -189,28 +189,131 @@
 @media (max-width: 1024px) {
   .mission-section {
     flex-direction: column;
+    padding-top: 40px;
   }
   
-  .mission-left, .mission-right {
-    padding: 60px 5%;
+  .mission-left {
+    padding: 60px 6% 20px 6%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .mission-left-content {
+    text-align: left;
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .mission-label,
+  .mission-heading,
+  .mission-description {
+    text-align: left;
+  }
+
+  .mission-right {
+    padding: 20px 6% 120px 6%;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    width: 100%;
+  }
+
+  .mission-cards-container {
+    max-width: 100%;
   }
   
   .mission-target-graphic {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    margin: -100px auto -100px auto;
+    display: none;
   }
   
   .highlighted-card {
-    transform: translateX(0);
+    transform: none;
   }
-  
-  .mission-left-content {
-    margin-bottom: 60px;
+}
+
+@media (max-width: 768px) {
+  .mission-section .wave-divider {
+    height: 60px;
+  }
+  .mission-section .wave-top {
+    top: -59px;
+  }
+
+  .mission-left {
+    padding: 50px 20px 20px 20px;
+  }
+
+  .mission-heading {
+    font-size: 2.8rem;
+    margin-bottom: 22px;
+  }
+
+  .mission-description {
+    font-size: 0.98rem;
+    line-height: 1.65;
+    margin-bottom: 18px;
+  }
+
+  .mission-right {
+    padding: 10px 20px 110px 20px;
+  }
+
+  .mission-cards-container {
+    gap: 18px;
+  }
+
+  .mission-card {
+    padding: 24px 20px;
+    border-radius: 14px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mission-section .wave-divider {
+    height: 45px;
+  }
+  .mission-section .wave-top {
+    top: -44px;
+  }
+
+  .mission-left {
+    padding: 40px 18px 15px 18px;
+  }
+
+  .mission-heading {
+    font-size: 2.2rem;
+    margin-bottom: 18px;
+  }
+
+  .mission-description {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .mission-right {
+    padding: 10px 18px 100px 18px;
+  }
+
+  .mission-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+    gap: 14px;
+  }
+
+  .mission-card-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mission-card-text h4 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  .mission-card-text p {
+    font-size: 0.86rem;
+    line-height: 1.5;
   }
 }

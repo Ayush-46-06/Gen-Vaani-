@@ -161,7 +161,10 @@
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
-  .about-hero-heading { font-size: 3.5rem; }
+  .about-hero-heading {
+    font-size: 3.5rem;
+  }
+
   .about-hero-features {
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
@@ -171,10 +174,13 @@
 @media (max-width: 992px) {
   .about-hero-container {
     flex-direction: column;
+    padding-top: 40px;
   }
+
   .about-hero-content {
     max-width: 100%;
   }
+
   .about-hero-image-wrapper {
     margin-top: 40px;
     justify-content: center;
@@ -185,15 +191,18 @@
   .about-hero-heading {
     font-size: 2.8rem;
   }
+
   .about-hero-features {
     grid-template-columns: 1fr 1fr;
   }
 }
+
 @media (max-width: 480px) {
   .about-hero-image {
     display: none;
   }
-  .mission-target-graphic{
+
+  .mission-target-graphic {
     display: none;
   }
 }

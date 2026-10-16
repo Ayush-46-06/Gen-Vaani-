@@ -179,6 +179,27 @@ const HeroSection = () => {
         <span className="hero-scroll-line" />
         <span>SCROLL TO EXPLORE</span>
       </div>
+
+      {/* Bottom Curly Wave Transition into About Section */}
+      <div className="hero-wave-bottom" aria-hidden="true">
+        <svg
+          viewBox="0 0 1440 100"
+          fill="none"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Subtle cyan accent glow wave */}
+          <path
+            d="M0,45 C280,0 520,80 720,35 C940,0 1180,80 1440,35 L1440,100 L0,100 Z"
+            fill="rgba(0, 203, 240, 0.22)"
+          />
+          {/* Main seamless pure white wave flowing into About section */}
+          <path
+            d="M0,55 C280,10 520,90 720,45 C940,10 1180,90 1440,45 L1440,100 L0,100 Z"
+            fill="#ffffff"
+          />
+        </svg>
+      </div>
     </section>
   );
 };

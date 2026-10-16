@@ -30,10 +30,24 @@ const techStack = [
 const TechStackSection = () => {
   return (
     <section className="tech-stack-section">
-      {/* Wave transition from About Us (white) to Tech Stack (dark) */}
-      <div className="wave-divider wave-top">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#020B2D" d="M0,60 C320,120 420,0 720,60 C1020,120 1120,0 1440,60 L1440,120 L0,120 Z"></path>
+      {/* Curly Wave transition from About Us (white) to Tech Stack (dark) */}
+      <div className="tech-stack-wave-top" aria-hidden="true">
+        <svg
+          viewBox="0 0 1440 100"
+          fill="none"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Subtle cyan accent glow wave */}
+          <path
+            d="M0,0 L1440,0 L1440,65 C1160,105 940,25 720,70 C500,105 260,25 0,65 Z"
+            fill="rgba(0, 203, 240, 0.22)"
+          />
+          {/* Main seamless white wave flowing from About Section */}
+          <path
+            d="M0,0 L1440,0 L1440,45 C1140,90 960,15 720,55 C460,92 280,18 0,48 Z"
+            fill="#ffffff"
+          />
         </svg>
       </div>
 

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import aboutHeroImage from '../../assets/image copy.png';
@@ -5,62 +6,161 @@ import './AboutSection.css';
 
 const AboutSection = () => {
   return (
-    <section className="about-section-grid">
-      {/* Top Wave Divider */}
-      <div className="wave-divider wave-top">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#ffffff" d="M0,60 C320,120 420,0 720,60 C1020,120 1120,0 1440,60 L1440,120 L0,120 Z"></path>
-        </svg>
-      </div>
+    <section className="about-section-grid" id="about">
+      <div className="about-container">
+        {/* Main About Layout */}
+        <div className="about-main-grid">
 
-      <div className="about-top-row">
-        <div className="about-title-col">
-          <h2 className="massive-title">
-            <span className="title-about">ABOUT</span>
-            <span className="title-us">
-              <span className="title-u">U</span>
-              <span className="title-s">s</span>
-            </span>
-          </h2>
-        </div>
+          {/* Left Content */}
+          <div className="about-content">
 
-        <div className="about-text-col">
-          <p>
-            GenVaani is a trailblazer in the technology industry, founded with a vision to redefine how businesses operate. We are a dedicated talent of adventurers, approaching each new project with optimism and a can-do swagger, pushing boundaries and championing a clear vision for the establishment.
-          </p>
-          <p>
-            We started this journey as adventurers, and we still rise to any challenge, recognizing that the one constant in business is change. Equipped for the challenges ahead, we continue to push ourselves and our clients forward, ready to embrace new opportunities and never afraid to ask what's over the horizon.
-          </p>
-          <p>
-            We have grown to deliver an integrated and agile complete product development solution, working with both local and international clients, from large multinational organizations through to next-generation start-ups looking to commercialize novel ideas and discoveries.
-          </p>
-          <Link to="/about" className="read-more-btn" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-            READ MORE
-          </Link>
-        </div>
+            <div className="about-eyebrow">
+              {/* <span className="about-eyebrow-line" /> */}
+              <span>WHO WE ARE</span>
+              <span className="about-eyebrow-number">01 / ABOUT</span>
+            </div>
 
-        <div className="about-image-col">
-          <div className="about-image-wrapper">
-            <img 
-              src={aboutHeroImage} 
-              alt="Gen-Vaani Global Innovation" 
-              className="about-image-img"
-              loading="lazy" 
-            />
+            <h2 className="about-heading">
+              We turn bold ideas
+              <br />
+              into <span>digital impact.</span>
+            </h2>
+
+            <p className="about-intro">
+              Technology should do more than work. It should move
+              businesses forward, create meaningful experiences, and
+              open doors to new possibilities.
+            </p>
+
+            <p className="about-description">
+              GenVaani brings together technology, creativity, and
+              strategic thinking to build digital products that solve
+              real problems. From websites and applications to
+              intelligent digital solutions, we help businesses
+              transform ideas into experiences people value.
+            </p>
+
+            <p className="about-description">
+              We work alongside ambitious startups and established
+              businesses, combining thoughtful design with reliable
+              engineering to create solutions built for today and
+              ready for tomorrow.
+            </p>
+
+            <div className="about-actions">
+              <Link to="/about" className="about-primary-btn">
+                Discover our story
+                <span className="about-btn-arrow">↗</span>
+              </Link>
+
+              <span className="about-actions-note">
+                Built around your vision.
+              </span>
+            </div>
+
+            {/* Mini highlights */}
+            <div className="about-highlights">
+              <div className="about-highlight">
+                <span className="about-highlight-dot" />
+                <span>Strategy-led thinking</span>
+              </div>
+
+              <div className="about-highlight">
+                <span className="about-highlight-dot" />
+                <span>Design meets technology</span>
+              </div>
+
+              <div className="about-highlight">
+                <span className="about-highlight-dot" />
+                <span>Built for growth</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Visual */}
+          <div className="about-visual">
+
+            <div className="about-visual-glow" />
+
+            <div className="about-image-frame">
+              <img
+                src={aboutHeroImage}
+                alt="GenVaani bringing technology, creativity and innovation together"
+                className="about-image-img"
+                loading="lazy"
+              />
+
+              <div className="about-image-shade" />
+
+              <div className="about-image-top-label">
+                <span className="about-live-dot" />
+                INNOVATION IN MOTION
+              </div>
+
+              <div className="about-image-caption">
+                <span className="about-caption-label">
+                  OUR APPROACH
+                </span>
+
+                <h3>
+                  Think beyond.
+                  <br />
+                  Build what matters.
+                </h3>
+
+                <p>
+                  Purposeful ideas. Thoughtful design. Real-world impact.
+                </p>
+              </div>
+            </div>
+
+            {/* Floating decorative element */}
+            <div className="about-floating-card">
+              <div className="about-floating-icon">✳</div>
+
+              <div>
+                <span className="about-floating-title">
+                  Ideas into reality
+                </span>
+                <span className="about-floating-subtitle">
+                  Powered by innovation
+                </span>
+              </div>
+
+              <span className="about-floating-arrow">↗</span>
+            </div>
+
+            <div className="about-visual-index">
+              {/* <span>GV.</span> */}
+              <span>CREATING WHAT'S NEXT</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="about-bottom-row">
-        <div className="bottom-empty-col">
-          <div className="number-box">
-            <span className="section-number">01</span>
+        {/* Bottom Statement */}
+        <div className="about-bottom">
+          <div className="about-bottom-index">
+            <span className="about-bottom-index-line" />
+            <span>OUR PHILOSOPHY</span>
           </div>
-        </div>
-        <div className="bottom-text-col">
-          <h3 className="bottom-statement">
-            We bring together the perfect blend of deep technical <span className="text-accent">expertise</span>, beautiful <span className="text-accent">design</span> and optimised <span className="text-accent">usability</span>
-          </h3>
+
+          <div className="about-bottom-content">
+            <h3>
+              The right blend of{' '}
+              <span>engineering</span>,{' '}
+              <span>creativity</span> and{' '}
+              <span>purpose.</span>
+            </h3>
+
+            <p>
+              Because the best digital experiences don't just look
+              different. They make a difference.
+            </p>
+          </div>
+
+          <div className="about-bottom-symbol" aria-hidden="true">
+            ↗
+          </div>
         </div>
       </div>
     </section>
