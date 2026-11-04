@@ -1,272 +1,853 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getServicesApi } from '../services/serviceApi';
+import {
+  getCategoriesApi,
+  DEFAULT_CATEGORIES,
+} from '../services/categoryApi';
+
 import './Navbar.css';
 import logo from '../assets/PNG/6.icon + Name Logo Transparent.png';
 
-const DEFAULT_NAV_SERVICES = [
-  { slug: 'website-development', title: 'Website Development', description: 'Custom, responsive websites to drive conversions' },
-  { slug: 'application-development', title: 'Application Development', description: 'Robust mobile and web applications' },
-  { slug: 'google-ads-meta-ads', title: 'Google Ads & Meta Ads', description: 'Data-driven advertising campaigns' },
-  { slug: 'ui-ux-design', title: 'UI and UX Design', description: 'Intuitive and beautiful user experiences' },
-  { slug: 'local-seo', title: 'Local SEO', description: 'Dominate local search rankings' },
-  { slug: 'digital-marketing', title: 'Digital Marketing', description: 'Comprehensive growth strategies' },
+const DEFAULT_SERVICES = [
+  {
+    slug: 'ui-ux-design',
+    title: 'UI and UX Design',
+    category: 'Design & Creative',
+    description: 'Beautiful and engaging interfaces that solve real user problems.',
+  },
+  {
+    slug: 'branding-identity',
+    title: 'Branding & Identity',
+    category: 'Design & Creative',
+    description: 'Logo systems, brand books, typography and visual identity.',
+  },
+  {
+    slug: 'creative-design',
+    title: 'Creative Design & Media',
+    category: 'Design & Creative',
+    description: 'Creative graphics, illustrations and marketing visuals.',
+  },
+  {
+    slug: 'website-development',
+    title: 'Website Development',
+    category: 'Development & Products',
+    description: 'High-performance websites built to grow your business.',
+  },
+  {
+    slug: 'application-development',
+    title: 'Application Development',
+    category: 'Development & Products',
+    description: 'Modern web and mobile applications for your customers.',
+  },
+  {
+    slug: 'custom-software',
+    title: 'Custom Software & APIs',
+    category: 'Development & Products',
+    description: 'Scalable software, APIs and intelligent integrations.',
+  },
+  {
+    slug: 'google-ads-meta-ads',
+    title: 'Google Ads & Meta Ads',
+    category: 'Marketing & Growth',
+    description: 'Performance campaigns designed to maximize your ROI.',
+  },
+  {
+    slug: 'local-seo',
+    title: 'Local SEO & Business Profile',
+    category: 'Marketing & Growth',
+    description: 'Improve your search rankings and local visibility.',
+  },
+  {
+    slug: 'digital-marketing',
+    title: 'Digital Marketing',
+    category: 'Marketing & Growth',
+    description: 'Content, social media and growth strategies for your brand.',
+  },
 ];
 
-// Responsive floating navbar component with mobile hamburger drawer
+const ArrowIcon = ({ className = '' }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path d="M5 12H19M12 5L19 12L12 19" />
+  </svg>
+);
+
+const ChevronIcon = ({ className = '' }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path d="M6 9L12 15L18 9" />
+  </svg>
+);
+
+const getCategoryMeta = (column) => {
+  const name = String(column?.name || '').toLowerCase();
+
+  if (
+    name.includes('design') ||
+    name.includes('creative') ||
+    name.includes('brand')
+  ) {
+    return {
+      tagline: column.tagline || 'Build memorable brand experiences',
+      badgeClass: 'badge-purple',
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+        </svg>
+      ),
+    };
+  }
+
+  if (
+    name.includes('dev') ||
+    name.includes('product') ||
+    name.includes('software') ||
+    name.includes('web') ||
+    name.includes('app')
+  ) {
+    return {
+      tagline: column.tagline || 'Build scalable and reliable products',
+      badgeClass: 'badge-blue',
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+      ),
+    };
+  }
+
+  if (
+    name.includes('marketing') ||
+    name.includes('growth') ||
+    name.includes('ads') ||
+    name.includes('seo')
+  ) {
+    return {
+      tagline: column.tagline || 'Drive visibility, traffic and business growth',
+      badgeClass: 'badge-green',
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+          <polyline points="17 6 23 6 23 12" />
+        </svg>
+      ),
+    };
+  }
+
+  return {
+    tagline: column.tagline || 'Custom solutions and expertise',
+    badgeClass: 'badge-violet',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <polygon points="12 2 2 7 12 12 22 7 12 2" />
+        <polyline points="2 17 12 22 22 17" />
+        <polyline points="2 12 12 17 22 12" />
+      </svg>
+    ),
+  };
+};
+
 const Navbar = () => {
   const location = useLocation();
-  const [scrolled, setScrolled] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-  const [navServices, setNavServices] = useState(DEFAULT_NAV_SERVICES);
 
+  const [scrolled, setScrolled] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+
+  const servicesButtonRef = useRef(null);
+  const megaMenuRef = useRef(null);
+  const [notchLeft, setNotchLeft] = useState(null);
+
+  const [categories, setCategories] = useState(
+    DEFAULT_CATEGORIES || []
+  );
+
+  const [services, setServices] = useState(DEFAULT_SERVICES);
+
+  // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 25);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-    getServicesApi().then((res) => {
-      if (isMounted && res && res.success && Array.isArray(res.services) && res.services.length > 0) {
-        setNavServices(res.services);
-      }
-    }).catch((err) => console.warn('Navbar services fetch error:', err));
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, {
+      passive: true,
+    });
 
     return () => {
-      isMounted = false;
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  // Automatically close mobile menu on route changes
+  // Dynamically align pointer notch under Services button
   useEffect(() => {
-    setMobileMenuOpen(false);
+    const updateNotch = () => {
+      if (servicesButtonRef.current && megaMenuRef.current) {
+        const btnRect = servicesButtonRef.current.getBoundingClientRect();
+        const menuRect = megaMenuRef.current.getBoundingClientRect();
+        const btnCenter = btnRect.left + btnRect.width / 2;
+        const calculatedNotch = btnCenter - menuRect.left;
+        if (calculatedNotch > 20 && calculatedNotch < menuRect.width - 20) {
+          setNotchLeft(calculatedNotch);
+        }
+      }
+    };
+
+    if (servicesOpen) {
+      updateNotch();
+      const timer = setTimeout(updateNotch, 50);
+      window.addEventListener('resize', updateNotch);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', updateNotch);
+      };
+    }
+  }, [servicesOpen]);
+
+  // Fetch categories and services
+  useEffect(() => {
+    let mounted = true;
+
+    Promise.all([
+      getCategoriesApi(),
+      getServicesApi(),
+    ])
+      .then(([categoryRes, serviceRes]) => {
+        if (!mounted) return;
+
+        if (
+          categoryRes?.success &&
+          Array.isArray(categoryRes.categories) &&
+          categoryRes.categories.length
+        ) {
+          setCategories(
+            categoryRes.categories.filter(
+              (category) => category.isActive !== false
+            )
+          );
+        }
+
+        if (
+          serviceRes?.success &&
+          Array.isArray(serviceRes.services) &&
+          serviceRes.services.length
+        ) {
+          setServices(serviceRes.services);
+        }
+      })
+      .catch((error) => {
+        console.warn('Navbar data loading error:', error);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Close menus on navigation
+  useEffect(() => {
+    setServicesOpen(false);
+    setMobileOpen(false);
     setMobileServicesOpen(false);
-    setDropdownOpen(false);
   }, [location.pathname]);
 
-  // Lock body scroll when mobile menu is open
+  // Prevent background scrolling on mobile
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+
     return () => {
       document.body.style.overflow = '';
     };
-  }, [mobileMenuOpen]);
+  }, [mobileOpen]);
 
-  // Close on Escape key press
+  // Escape key
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setMobileMenuOpen(false);
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setServicesOpen(false);
+        setMobileOpen(false);
+        setMobileServicesOpen(false);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
   }, []);
 
-  const isServicesActive = location.pathname.startsWith('/service');
+  // Organize services into categories
+  const serviceColumns = useMemo(() => {
+    const activeCategories = (categories || []).filter(
+      (category) => category?.isActive !== false
+    );
+
+    const columns = activeCategories.map((category) => {
+      const categoryName = (category.name || '')
+        .trim()
+        .toLowerCase();
+
+      return {
+        id:
+          category._id ||
+          category.id ||
+          category.slug ||
+          category.name,
+
+        name: category.name,
+        tagline: category.tagline,
+        icon: category.icon || category.name,
+
+        services: services.filter(
+          (service) =>
+            service.isActive !== false &&
+            (service.category || '').trim().toLowerCase() ===
+              categoryName
+        ),
+      };
+    });
+
+    // Put unmatched services into a suitable category
+    const assignedSlugs = new Set(
+      columns.flatMap((column) =>
+        column.services.map((service) => service.slug)
+      )
+    );
+
+    const unmatched = services.filter(
+      (service) =>
+        service.isActive !== false &&
+        !assignedSlugs.has(service.slug)
+    );
+
+    unmatched.forEach((service) => {
+      const value = `${service.slug || ''} ${
+        service.title || ''
+      }`.toLowerCase();
+
+      const target =
+        columns.find((column) => {
+          const categoryName = column.name.toLowerCase();
+
+          if (
+            (value.includes('design') ||
+              value.includes('brand') ||
+              value.includes('creative')) &&
+            categoryName.includes('design')
+          ) {
+            return true;
+          }
+
+          if (
+            (value.includes('web') ||
+              value.includes('app') ||
+              value.includes('software')) &&
+            categoryName.includes('development')
+          ) {
+            return true;
+          }
+
+          if (
+            (value.includes('seo') ||
+              value.includes('market') ||
+              value.includes('ads')) &&
+            categoryName.includes('marketing')
+          ) {
+            return true;
+          }
+
+          return false;
+        }) || columns[0];
+
+      if (target) {
+        target.services.push(service);
+      }
+    });
+
+    return columns;
+  }, [categories, services]);
 
   const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
+    setMobileOpen(false);
     setMobileServicesOpen(false);
   };
 
+  const isActive = (path) => location.pathname === path;
+
+  const isServicesActive =
+    location.pathname.startsWith('/services');
+
   return (
     <>
-      <nav className={`navbar-container ${scrolled ? 'navbar-scrolled' : ''}`}>
-        <div className="navbar-logo-wrapper">
-          <Link to="/" onClick={closeMobileMenu} aria-label="GenVaani Home">
-            <img src={logo} alt="GenVaani Logo" className="navbar-logo" />
+      {/* =====================================
+          MAIN NAVBAR
+      ===================================== */}
+
+      <nav
+        className={`gvn-navbar ${
+          scrolled ? 'gvn-navbar-scrolled' : ''
+        }`}
+        aria-label="Main navigation"
+      >
+        {/* LOGO */}
+
+        <div className="gvn-logo">
+          <Link to="/" onClick={closeMobileMenu}>
+            <img src={logo} alt="GenVaani" />
           </Link>
         </div>
 
-        {/* Desktop Navigation List */}
-        <ul className="navbar-list">
-          <li className={`navbar-item ${location.pathname === '/' ? 'active' : ''}`}>
-            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Home</Link>
+        {/* DESKTOP NAVIGATION */}
+
+        <ul className="gvn-nav-links">
+
+          <li>
+            <Link
+              to="/"
+              className={`gvn-nav-link ${
+                isActive('/') ? 'active' : ''
+              }`}
+            >
+              Home
+            </Link>
           </li>
+
+          {/* SERVICES */}
+
           <li
-            className={`navbar-item has-dropdown ${isServicesActive ? 'active' : ''}`}
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
+            className={`gvn-services-wrapper ${
+              servicesOpen ? 'open' : ''
+            }`}
+            onMouseEnter={() => setServicesOpen(true)}
+            onMouseLeave={() => setServicesOpen(false)}
           >
-            <span>Services</span>
-            <svg className={`dropdown-arrow ${dropdownOpen ? 'rotated' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <button
+              ref={servicesButtonRef}
+              type="button"
+              className={`gvn-nav-link gvn-services-button ${
+                isServicesActive ? 'active' : ''
+              } ${servicesOpen ? 'menu-open' : ''}`}
+              aria-expanded={servicesOpen}
+              onClick={() =>
+                setServicesOpen((previous) => !previous)
+              }
+            >
+              Services
 
-            {/* Mega Menu Dropdown */}
-            <div className="mega-menu">
-              <div className="mega-menu-grid">
-                {navServices.map((svc) => (
-                  <Link
-                    key={svc.slug || svc._id || svc.id}
-                    to={`/services/${svc.slug}`}
-                    className="mega-item"
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                    onClick={() => setDropdownOpen(false)}
+              <ChevronIcon
+                className={`gvn-chevron ${
+                  servicesOpen ? 'rotated' : ''
+                }`}
+              />
+            </button>
+
+            {/* MEGA MENU */}
+            <div
+              ref={megaMenuRef}
+              className="gvn-mega-menu"
+              style={{
+                width:
+                  serviceColumns.length >= 4
+                    ? 'min(1240px, calc(100vw - 32px))'
+                    : 'min(1080px, calc(100vw - 32px))',
+              }}
+            >
+              {/* TOP ARROW NOTCH: Points directly up to Services link */}
+              <div
+                className="gvn-mega-menu-notch"
+                style={notchLeft ? { left: `${notchLeft}px` } : undefined}
+                aria-hidden="true"
+              />
+
+              {/* LEFT FEATURE BANNER CARD */}
+              <div className="gvn-mega-banner">
+                <div className="gvn-banner-content">
+                  <div className="gvn-banner-eyebrow">
+                    <span>OUR SERVICES</span>
+                    <span className="gvn-eyebrow-dash">—</span>
+                  </div>
+                  <h3 className="gvn-banner-title">
+                    End-to-End Digital Solutions
+                  </h3>
+                  <p className="gvn-banner-desc">
+                    From design to development and growth — everything your business needs to scale.
+                  </p>
+                </div>
+
+                {/* Bottom decorative wave / aura graphic */}
+                <div className="gvn-banner-art" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 280 120"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="gvn-banner-wave-svg"
+                    preserveAspectRatio="none"
                   >
-                    <h4>{svc.title}</h4>
-                    <p>{svc.description}</p>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </li>
-          <li className={`navbar-item ${location.pathname === '/portfolio' ? 'active' : ''}`}>
-            <Link to="/portfolio" style={{ textDecoration: 'none', color: 'inherit' }}>Portfolio</Link>
-          </li>
-          <li className={`navbar-item ${location.pathname === '/pricing' ? 'active' : ''}`}>
-            <Link to="/pricing" style={{ textDecoration: 'none', color: 'inherit' }}>Pricing</Link>
-          </li>
-          <li className={`navbar-item ${location.pathname === '/about' ? 'active' : ''}`}>
-            <Link to="/about" style={{ textDecoration: 'none', color: 'inherit' }}>About Us</Link>
-          </li>
-        </ul>
-
-        {/* Desktop CTA */}
-        <div className="navbar-cta-wrapper">
-          <Link to="/contact" className="navbar-cta" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-            Book a Call
-          </Link>
-        </div>
-
-        {/* Mobile Hamburger Toggle Button */}
-        <button
-          type="button"
-          className={`navbar-hamburger-btn ${mobileMenuOpen ? 'open' : ''}`}
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileMenuOpen}
-        >
-          <span className="hamburger-bar bar-1"></span>
-          <span className="hamburger-bar bar-2"></span>
-          <span className="hamburger-bar bar-3"></span>
-        </button>
-      </nav>
-
-      {/* Mobile Menu Backdrop */}
-      <div
-        className={`navbar-mobile-backdrop ${mobileMenuOpen ? 'active' : ''}`}
-        onClick={closeMobileMenu}
-        aria-hidden="true"
-      />
-
-      {/* Mobile Menu Dropdown Panel */}
-      <div className={`navbar-mobile-panel ${mobileMenuOpen ? 'open' : ''}`} aria-hidden={!mobileMenuOpen}>
-        <div className="navbar-mobile-inner">
-          <ul className="navbar-mobile-list">
-            <li className="navbar-mobile-item">
-              <Link
-                to="/"
-                className={`navbar-mobile-link ${location.pathname === '/' ? 'active' : ''}`}
-                onClick={closeMobileMenu}
-              >
-                <span>Home</span>
-              </Link>
-            </li>
-
-            {/* Mobile Services Accordion */}
-            <li className="navbar-mobile-item mobile-services-item">
-              <button
-                type="button"
-                className={`navbar-mobile-link services-toggle-btn ${isServicesActive ? 'active' : ''}`}
-                onClick={() => setMobileServicesOpen((prev) => !prev)}
-                aria-expanded={mobileServicesOpen}
-              >
-                <span>Services</span>
-                <svg
-                  className={`mobile-chevron ${mobileServicesOpen ? 'rotated' : ''}`}
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-
-              <div className={`mobile-services-accordion ${mobileServicesOpen ? 'expanded' : ''}`}>
-                <div className="mobile-services-list">
-                  {navServices.map((svc) => (
-                    <Link
-                      key={svc.slug || svc._id || svc.id}
-                      to={`/services/${svc.slug}`}
-                      className="mobile-service-subitem"
-                      onClick={closeMobileMenu}
-                    >
-                      <div className="mobile-service-dot"></div>
-                      <div className="mobile-service-info">
-                        <span className="mobile-service-title">{svc.title}</span>
-                        {svc.description && (
-                          <span className="mobile-service-desc">{svc.description}</span>
-                        )}
-                      </div>
-                    </Link>
-                  ))}
+                    <path
+                      d="M0 60C45 20 95 90 155 55C215 20 245 80 280 40V120H0V60Z"
+                      fill="url(#gvnWaveGrad1)"
+                      opacity="0.65"
+                    />
+                    <path
+                      d="M0 78C55 45 105 105 165 68C225 32 255 92 280 62V120H0V78Z"
+                      fill="url(#gvnWaveGrad2)"
+                      opacity="0.88"
+                    />
+                    <defs>
+                      <linearGradient id="gvnWaveGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#c4b5fd" stopOpacity="0.45" />
+                        <stop offset="50%" stopColor="#818cf8" stopOpacity="0.65" />
+                        <stop offset="100%" stopColor="#c084fc" stopOpacity="0.35" />
+                      </linearGradient>
+                      <linearGradient id="gvnWaveGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.75" />
+                        <stop offset="60%" stopColor="#818cf8" stopOpacity="0.95" />
+                        <stop offset="100%" stopColor="#e879f9" stopOpacity="0.55" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                 </div>
               </div>
-            </li>
 
-            <li className="navbar-mobile-item">
-              <Link
-                to="/portfolio"
-                className={`navbar-mobile-link ${location.pathname === '/portfolio' ? 'active' : ''}`}
-                onClick={closeMobileMenu}
-              >
-                <span>Portfolio</span>
-              </Link>
-            </li>
+              {/* RIGHT CATEGORY COLUMNS */}
+              <div className="gvn-mega-categories">
+                {serviceColumns.map((column) => {
+                  const meta = getCategoryMeta(column);
+                  return (
+                    <div
+                      className="gvn-category-col"
+                      key={column.id}
+                    >
+                      {/* CATEGORY HEADER WITH ICON BADGE, TITLE & TAGLINE */}
+                      <div className="gvn-col-header">
+                        <div className={`gvn-col-badge ${meta.badgeClass}`}>
+                          {meta.icon}
+                        </div>
+                        <h4 className="gvn-col-title">
+                          {column.name}
+                        </h4>
+                        <p className="gvn-col-tagline">
+                          {meta.tagline}
+                        </p>
+                      </div>
 
-            <li className="navbar-mobile-item">
-              <Link
-                to="/pricing"
-                className={`navbar-mobile-link ${location.pathname === '/pricing' ? 'active' : ''}`}
-                onClick={closeMobileMenu}
-              >
-                <span>Pricing</span>
-              </Link>
-            </li>
-
-            <li className="navbar-mobile-item">
-              <Link
-                to="/about"
-                className={`navbar-mobile-link ${location.pathname === '/about' ? 'active' : ''}`}
-                onClick={closeMobileMenu}
-              >
-                <span>About Us</span>
-              </Link>
-            </li>
-          </ul>
-
-          {/* Mobile Bottom CTA Section */}
-          <div className="navbar-mobile-cta-section">
-            <Link to="/contact" className="navbar-mobile-cta-btn" onClick={closeMobileMenu}>
-              <span>Book a Call</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </Link>
-
-            <div className="navbar-mobile-footer-tag">
-              <p>Ready to build something extraordinary?</p>
+                      {/* SERVICES LIST WITH CHEVRON ON EACH ROW */}
+                      <div className="gvn-service-items">
+                        {column.services.length > 0 ? (
+                          column.services.map((service, serviceIndex) => (
+                            <Link
+                              key={
+                                service.slug ||
+                                service._id ||
+                                serviceIndex
+                              }
+                              to={`/services/${service.slug}`}
+                              className="gvn-service-row"
+                              onClick={() =>
+                                setServicesOpen(false)
+                              }
+                            >
+                              <span className="gvn-service-name">
+                                {service.title}
+                              </span>
+                              <span className="gvn-service-arrow" aria-hidden="true">
+                                ›
+                              </span>
+                            </Link>
+                          ))
+                        ) : (
+                          <span className="gvn-empty-service">
+                            Coming soon
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </li>
+
+          <li>
+            <Link
+              to="/portfolio"
+              className={`gvn-nav-link ${
+                isActive('/portfolio') ? 'active' : ''
+              }`}
+            >
+              Portfolio
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/pricing"
+              className={`gvn-nav-link ${
+                isActive('/pricing') ? 'active' : ''
+              }`}
+            >
+              Pricing
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/about"
+              className={`gvn-nav-link ${
+                isActive('/about') ? 'active' : ''
+              }`}
+            >
+              About Us
+            </Link>
+          </li>
+
+        </ul>
+
+        {/* DESKTOP CTA */}
+
+        <div className="gvn-desktop-cta">
+
+          <Link to="/contact" className="gvn-book-button">
+            <span>Book a Call</span>
+            <ArrowIcon />
+          </Link>
+
         </div>
+
+        {/* MOBILE HAMBURGER */}
+
+        <button
+          type="button"
+          className={`gvn-hamburger ${
+            mobileOpen ? 'active' : ''
+          }`}
+          onClick={() => setMobileOpen((previous) => !previous)}
+          aria-label="Toggle navigation"
+          aria-expanded={mobileOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+      </nav>
+
+      {/* =====================================
+          MOBILE MENU BACKDROP
+      ===================================== */}
+
+      <button
+        type="button"
+        className={`gvn-mobile-backdrop ${
+          mobileOpen ? 'visible' : ''
+        }`}
+        onClick={closeMobileMenu}
+        aria-label="Close menu"
+        tabIndex={mobileOpen ? 0 : -1}
+      />
+
+      {/* =====================================
+          MOBILE MENU
+      ===================================== */}
+
+      <div
+        className={`gvn-mobile-menu ${
+          mobileOpen ? 'visible' : ''
+        }`}
+        aria-hidden={!mobileOpen}
+      >
+
+        <div className="gvn-mobile-header">
+          <span>EXPLORE GENV AANI</span>
+          <span className="gvn-mobile-status" />
+        </div>
+
+        <div className="gvn-mobile-links">
+
+          <Link
+            to="/"
+            className={`gvn-mobile-link ${
+              isActive('/') ? 'active' : ''
+            }`}
+            onClick={closeMobileMenu}
+          >
+            Home
+          </Link>
+
+          {/* MOBILE SERVICES */}
+
+          <div className="gvn-mobile-services">
+
+            <button
+              type="button"
+              className={`gvn-mobile-link ${
+                isServicesActive ? 'active' : ''
+              }`}
+              onClick={() =>
+                setMobileServicesOpen((previous) => !previous)
+              }
+              aria-expanded={mobileServicesOpen}
+            >
+              <span>Services</span>
+
+              <ChevronIcon
+                className={`gvn-chevron ${
+                  mobileServicesOpen ? 'rotated' : ''
+                }`}
+              />
+            </button>
+
+            <div
+              className={`gvn-mobile-service-content ${
+                mobileServicesOpen ? 'expanded' : ''
+              }`}
+            >
+
+              <div className="gvn-mobile-service-inner">
+
+                {serviceColumns.map((column) => {
+                  const meta = getCategoryMeta(column);
+                  return (
+                    <div
+                      className="gvn-mobile-category"
+                      key={column.id}
+                    >
+
+                      <div className="gvn-mobile-category-title">
+                        <div className={`gvn-category-icon ${meta.badgeClass}`}>
+                          {meta.icon}
+                        </div>
+
+                        <span>{column.name}</span>
+                      </div>
+
+                      {column.services.map((service, index) => (
+                        <Link
+                          key={service.slug || index}
+                          to={`/services/${service.slug}`}
+                          className="gvn-mobile-service-link"
+                          onClick={closeMobileMenu}
+                        >
+                          <span>{service.title}</span>
+                          <span className="gvn-mobile-arrow" aria-hidden="true">›</span>
+                        </Link>
+                      ))}
+
+                    </div>
+                  );
+                })}
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <Link
+            to="/portfolio"
+            className={`gvn-mobile-link ${
+              isActive('/portfolio') ? 'active' : ''
+            }`}
+            onClick={closeMobileMenu}
+          >
+            Portfolio
+          </Link>
+
+          <Link
+            to="/pricing"
+            className={`gvn-mobile-link ${
+              isActive('/pricing') ? 'active' : ''
+            }`}
+            onClick={closeMobileMenu}
+          >
+            Pricing
+          </Link>
+
+          <Link
+            to="/about"
+            className={`gvn-mobile-link ${
+              isActive('/about') ? 'active' : ''
+            }`}
+            onClick={closeMobileMenu}
+          >
+            About Us
+          </Link>
+
+        </div>
+
+        {/* MOBILE CTA */}
+
+        <div className="gvn-mobile-cta">
+
+          <Link
+            to="/contact"
+            className="gvn-book-button"
+            onClick={closeMobileMenu}
+          >
+            <span>Book a Call</span>
+            <ArrowIcon />
+          </Link>
+
+          <p>
+            Ready to build something extraordinary?
+          </p>
+
+        </div>
+
       </div>
     </>
   );

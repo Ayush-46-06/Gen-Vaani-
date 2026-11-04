@@ -194,21 +194,70 @@
 }
 
 .consult-btn {
-  display: inline-block;
-  background: linear-gradient(135deg, #00278a 0%, #00cbf0 100%);
-  color: #ffffff;
-  padding: 12px 28px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 48px;
+  padding: 12px 30px;
+  border: 1px solid rgba(0, 203, 240, 0.4);
   border-radius: 50px;
+
+  background: linear-gradient(
+    110deg,
+    #0645b5 0%,
+    #087bd0 48%,
+    #05c5e9 100%
+  );
+  background-size: 200% 200%;
+
+  color: #ffffff;
   text-decoration: none;
-  font-weight: 700;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 750;
   font-size: 0.95rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 24px rgba(0, 203, 240, 0.35);
+  white-space: nowrap;
+
+  box-shadow: 0 7px 20px rgba(0, 113, 205, 0.25);
+
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    background-position 0.6s ease;
+}
+
+/* Shining light beam effect */
+.consult-btn::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -70%;
+  left: -50%;
+  width: 35%;
+  height: 240%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: rotate(25deg) translateX(-300%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
 }
 
 .consult-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(0, 203, 240, 0.5);
+  transform: translateY(-3px);
+  background-position: 100% 50%;
+  border-color: rgba(0, 203, 240, 0.6);
+  box-shadow: 0 12px 28px rgba(0, 166, 225, 0.38);
+}
+
+.consult-btn:hover::before {
+  transform: rotate(25deg) translateX(650%);
+}
+
+.consult-btn:active {
+  transform: translateY(-1px) scale(0.98);
 }
 
 /* FAQ Accordion */

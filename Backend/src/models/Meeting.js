@@ -47,7 +47,7 @@ const meetingSchema = new mongoose.Schema(
     },
     timezone: {
       type: String,
-      default: 'Asia/Kolkata',
+      default: 'Australia/Sydney',
     },
     notes: {
       type: String,

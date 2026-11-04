@@ -99,6 +99,11 @@ const ServiceSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category: {
+      type: String,
+      default: 'Development & Digital Products',
+      trim: true,
+    },
     icon: {
       type: String,
       default: '⚡',

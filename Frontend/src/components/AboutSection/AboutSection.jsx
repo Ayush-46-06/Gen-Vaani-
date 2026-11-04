@@ -15,9 +15,8 @@ const AboutSection = () => {
           <div className="about-content">
 
             <div className="about-eyebrow">
-              {/* <span className="about-eyebrow-line" /> */}
+              <span className="about-eyebrow-line" />
               <span>WHO WE ARE</span>
-              <span className="about-eyebrow-number">01 / ABOUT</span>
             </div>
 
             <h2 className="about-heading">

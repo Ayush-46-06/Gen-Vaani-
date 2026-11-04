@@ -44,9 +44,11 @@ import { getAdminStatsApi, changeAdminPasswordApi } from '../../services/adminAp
 import { getLeadsApi, updateLeadStatusApi } from '../../services/leadApi';
 import { getMeetingsApi, updateMeetingStatusApi, GENVAANI_MEET_URL } from '../../services/meetingApi';
 import { getServicesApi, deleteServiceApi, seedServicesApi } from '../../services/serviceApi';
+import { getCategoriesApi } from '../../services/categoryApi';
 import { getPortfolioWebsitesApi, deletePortfolioWebsiteApi } from '../../services/portfolioApi';
 import { exportLeadsToExcel, exportMeetingsToExcel, exportMasterReportToExcel } from '../../utils/excelExport';
 import ServiceEditorModal from './ServiceEditorModal';
+import CategoryManagerModal from './CategoryManagerModal';
 import WebsiteEditorModal from './WebsiteEditorModal';
 import GmailReplyModal from './GmailReplyModal';
 import './AdminAuth.css';
@@ -266,12 +268,15 @@ export default function AdminDashboard() {
     securityProtocol: '256-Bit JWT + Bcrypt Salt 10'
   });
 
-  // Services State for dynamic management
+  // Services & Categories State for dynamic management
   const [services, setServices] = useState([]);
   const [servicesLoading, setServicesLoading] = useState(false);
   const [editingService, setEditingService] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [servicesSearch, setServicesSearch] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
   const [toastMessage, setToastMessage] = useState(null);
   const [leadsExportOpen, setLeadsExportOpen] = useState(false);
   const [meetsExportOpen, setMeetsExportOpen] = useState(false);
@@ -326,6 +331,14 @@ export default function AdminDashboard() {
     .finally(() => setWebsitesLoading(false));
   };
 
+  const loadCategories = () => {
+    getCategoriesApi(true).then((res) => {
+      if (res && res.success && Array.isArray(res.categories)) {
+        setCategories(res.categories);
+      }
+    }).catch((e) => console.warn('Categories fetch error', e));
+  };
+
   useEffect(() => {
     let raw = localStorage.getItem('genvaani_active_admin');
     let token = localStorage.getItem('genvaani_admin_token');
@@ -368,6 +381,7 @@ export default function AdminDashboard() {
     loadLeads();
     loadMeetings();
     loadServices();
+    loadCategories();
     loadWebsites();
 
     if (token) {
@@ -399,6 +413,7 @@ export default function AdminDashboard() {
 
     if (activeTab === 'services' || activeTab === 'dashboard') {
       loadServices();
+      loadCategories();
     }
 
     if (activeTab === 'websites' || activeTab === 'dashboard') {
@@ -1372,7 +1387,7 @@ export default function AdminDashboard() {
                     <div className="meeting-room-box">
                       <div>
                         <span style={{ fontSize: '0.74rem', color: '#64748b', display: 'block' }}>Session Window</span>
-                        <strong style={{ fontSize: '0.88rem', color: '#00278a' }}>{meet.time} ({meet.timezone || 'IST'})</strong>
+                        <strong style={{ fontSize: '0.88rem', color: '#00278a' }}>{meet.time} ({meet.timezone === 'Australia/Sydney' ? 'AEST' : (meet.timezone || 'AEST')})</strong>
                       </div>
                       <a 
                         href={meetLink}
@@ -1422,7 +1437,16 @@ export default function AdminDashboard() {
                 <h2>Agency Services & Dynamic Pricing</h2>
                 <p>Create, customize, and manage agency services, pricing packages, capabilities, and deliverables in real-time.</p>
               </div>
-              <div className="viewport-actions-group" style={{ display: 'flex', gap: '10px' }}>
+              <div className="viewport-actions-group" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryModalOpen(true)}
+                  className="table-btn"
+                  title="Create or edit navbar category columns"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0faff', borderColor: '#00cbf0', color: '#00278a', fontWeight: 700 }}
+                >
+                  <FiLayers /> Manage Navbar Columns ({categories.length})
+                </button>
                 <button
                   type="button"
                   onClick={handleSeedDefaults}
@@ -1478,6 +1502,35 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* Category Quick-Filter Bar */}
+            {categories.length > 0 && (
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategoryFilter('all')}
+                  className={`table-btn ${selectedCategoryFilter === 'all' ? 'table-btn-primary' : ''}`}
+                  style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '20px' }}
+                >
+                  All Columns ({services.length})
+                </button>
+                {categories.map((c) => {
+                  const count = services.filter((s) => s.category === c.name).length;
+                  const isSel = selectedCategoryFilter === c.name;
+                  return (
+                    <button
+                      key={c._id || c.name}
+                      type="button"
+                      onClick={() => setSelectedCategoryFilter(c.name)}
+                      className={`table-btn ${isSel ? 'table-btn-primary' : ''}`}
+                      style={{ padding: '6px 14px', fontSize: '0.8rem', borderRadius: '20px' }}
+                    >
+                      {c.name} ({count})
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
             {servicesLoading && services.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '50px 20px', color: '#64748b' }}>
                 <div className="admin-btn-spinner" style={{ margin: '0 auto 14px', borderColor: '#00278a', borderTopColor: '#00cbf0' }} />
@@ -1510,11 +1563,15 @@ export default function AdminDashboard() {
               <div className="services-admin-grid">
                 {services
                   .filter((s) => {
+                    if (selectedCategoryFilter !== 'all' && s.category !== selectedCategoryFilter) {
+                      return false;
+                    }
                     if (!servicesSearch.trim()) return true;
                     const term = servicesSearch.toLowerCase();
                     return (
                       (s.title || '').toLowerCase().includes(term) ||
                       (s.slug || '').toLowerCase().includes(term) ||
+                      (s.category || '').toLowerCase().includes(term) ||
                       (s.description || '').toLowerCase().includes(term)
                     );
                   })
@@ -1540,9 +1597,32 @@ export default function AdminDashboard() {
                         </div>
 
                         <h4>{srv.title}</h4>
-                        <span className="service-slug-badge">
-                          /services/{srv.slug}
-                        </span>
+
+                        {/* Category & Slug row */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '4px 0 10px', flexWrap: 'wrap' }}>
+                          <span
+                            style={{
+                              fontSize: '0.72rem',
+                              padding: '2px 8px',
+                              borderRadius: '12px',
+                              background: '#e0faff',
+                              color: '#00278a',
+                              fontWeight: 700,
+                              border: '1px solid rgba(0, 203, 240, 0.4)',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}
+                            title="Navbar Column"
+                          >
+                            <FiLayers style={{ fontSize: '0.68rem' }} />
+                            {srv.category || 'Development & Digital Products'}
+                          </span>
+                          <span className="service-slug-badge" style={{ margin: 0 }}>
+                            /services/{srv.slug}
+                          </span>
+                        </div>
+
                         <p>{srv.description}</p>
 
                         {/* Pricing Highlight Pill */}
@@ -2045,6 +2125,20 @@ export default function AdminDashboard() {
         onClose={() => setIsEditorOpen(false)}
         service={editingService}
         onSaved={handleServiceSaved}
+        token={getAdminToken()}
+        categories={categories}
+      />
+
+      {/* Category Manager Modal for Navbar Columns */}
+      <CategoryManagerModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        categories={categories}
+        services={services}
+        onCategoriesChanged={() => {
+          loadCategories();
+          loadServices();
+        }}
         token={getAdminToken()}
       />
 

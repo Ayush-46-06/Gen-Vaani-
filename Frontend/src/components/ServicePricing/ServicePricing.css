@@ -409,16 +409,50 @@
 }
 
 .btn-gradient-blue {
-  border: none;
-  background: linear-gradient(90deg, #0047cc 0%, #0099ff 100%);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(0, 203, 240, 0.4);
+  border-radius: 50px;
+  background: linear-gradient(
+    110deg,
+    #0645b5 0%,
+    #087bd0 48%,
+    #05c5e9 100%
+  );
+  background-size: 200% 200%;
   color: #ffffff;
-  font-weight: 700;
-  box-shadow: 0 5px 16px rgba(0, 102, 255, 0.35);
+  font-weight: 750;
+  box-shadow: 0 6px 18px rgba(0, 113, 205, 0.25);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    background-position 0.6s ease;
+}
+
+.btn-gradient-blue::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -70%;
+  left: -50%;
+  width: 35%;
+  height: 240%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: rotate(25deg) translateX(-300%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
 }
 
 .btn-gradient-blue:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 153, 255, 0.45);
+  background-position: 100% 50%;
+  border-color: rgba(0, 203, 240, 0.6);
+  box-shadow: 0 10px 24px rgba(0, 166, 225, 0.38);
+}
+
+.btn-gradient-blue:hover::before {
+  transform: rotate(25deg) translateX(650%);
 }
 
 /* =========================================================
@@ -661,21 +695,63 @@
 }
 
 .mobile-pkg-cta-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   width: 100%;
   padding: 13px 20px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #0047cc 0%, #0099ff 100%);
+  border-radius: 50px;
+  border: 1px solid rgba(0, 203, 240, 0.4);
+  background: linear-gradient(
+    110deg,
+    #0645b5 0%,
+    #087bd0 48%,
+    #05c5e9 100%
+  );
+  background-size: 200% 200%;
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 750;
   font-size: 0.95rem;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(0, 71, 204, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 113, 205, 0.25);
   box-sizing: border-box;
-  transition: all 0.25s ease;
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    background-position 0.6s ease;
+}
+
+.mobile-pkg-cta-btn::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -70%;
+  left: -50%;
+  width: 35%;
+  height: 240%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: rotate(25deg) translateX(-300%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
+.mobile-pkg-cta-btn:hover {
+  transform: translateY(-2px);
+  background-position: 100% 50%;
+  border-color: rgba(0, 203, 240, 0.6);
+  box-shadow: 0 10px 24px rgba(0, 166, 225, 0.38);
+}
+
+.mobile-pkg-cta-btn:hover::before {
+  transform: rotate(25deg) translateX(650%);
+}
+
+.mobile-pkg-cta-btn:active {
+  transform: scale(0.98);
 }
 
 .mobile-pkg-cta-btn .btn-arrow {

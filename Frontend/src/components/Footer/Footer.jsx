@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMapPin, FiMail, FiPhone, FiArrowRight } from 'react-icons/fi';
+import { FaFacebookF, FaXTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa6';
 import { getServicesApi } from '../../services/serviceApi';
 import './Footer.css';
 import logo from '../../assets/PNG/6.icon + Name Logo Transparent.png';
@@ -9,8 +10,11 @@ const DEFAULT_FOOTER_SERVICES = [
   { slug: 'website-development', title: 'Website Development' },
   { slug: 'application-development', title: 'Application Development' },
   { slug: 'google-ads-meta-ads', title: 'Google Ads & Meta Ads' },
+  { slug: 'custom-software', title: 'Custom Software & APIs' },
   { slug: 'ui-ux-design', title: 'UI and UX Design' },
-  { slug: 'local-seo', title: 'Local SEO' },
+  { slug: 'branding-identity', title: 'Branding & Identity' },
+  { slug: 'local-seo', title: 'Local SEO & Business Profile' },
+  { slug: 'creative-design', title: 'Creative Design & Media' },
   { slug: 'digital-marketing', title: 'Digital Marketing' },
 ];
 
@@ -19,7 +23,7 @@ const QUICK_LINKS = [
   { name: 'About Us', path: '/about' },
   { name: 'Portfolio', path: '/portfolio' },
   { name: 'Pricing Packages', path: '/pricing' },
-  { name: 'Contact Us', path: '/contact' },
+  // { name: 'Contact Us', path: '/contact' },
   { name: 'Book a Call', path: '/contact?tab=calendar' },
   // { name: 'Admin Console', path: '/admin/login' },
 ];
@@ -40,6 +44,17 @@ const Footer = () => {
     };
   }, []);
 
+  // Split services into columns of at most 5 items each
+  const serviceChunks = useMemo(() => {
+    const list = services && services.length > 0 ? services : DEFAULT_FOOTER_SERVICES;
+    const chunkSize = 5;
+    const chunks = [];
+    for (let i = 0; i < list.length; i += chunkSize) {
+      chunks.push(list.slice(i, i + chunkSize));
+    }
+    return chunks.length > 0 ? chunks : [[]];
+  }, [services]);
+
   return (
     <footer className="footer-wrapper">
       {/* Top Wave Divider */}
@@ -57,13 +72,21 @@ const Footer = () => {
               <img src={logo} alt="GenVaani Logo" className="footer-logo" />
             </Link>
             <p className="footer-description">
-              Transforming businesses with innovative solutions since 2010. We help companies scale efficiently and sustainably with high-performance digital products.
+              Transforming businesses with innovative solutions since 2026. We help companies scale efficiently and sustainably with high-performance digital products.
             </p>
             <div className="social-icons">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="Facebook">f</a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="Twitter / X">x</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="LinkedIn">in</a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="Instagram">ig</a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="Facebook" aria-label="Facebook">
+                <FaFacebookF />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="Twitter / X" aria-label="Twitter / X">
+                <FaXTwitter />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="LinkedIn" aria-label="LinkedIn">
+                <FaLinkedinIn />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" title="Instagram" aria-label="Instagram">
+                <FaInstagram />
+              </a>
             </div>
           </div>
 
@@ -82,19 +105,23 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Admin Services Dynamic List */}
-          <div className="footer-col links-col">
+          {/* Admin Services Dynamic List: Chunked into columns of at most 5 items each */}
+          <div className={`footer-col services-col ${serviceChunks.length > 1 ? 'services-col-multi' : ''}`}>
             <h4 className="footer-heading">Our Services</h4>
-            <ul className="footer-links-list">
-              {services.map((svc) => (
-                <li key={svc._id || svc.id || svc.slug}>
-                  <Link to={`/services/${svc.slug}`} className="footer-link">
-                    <FiArrowRight className="link-bullet-arrow" />
-                    <span>{svc.title}</span>
-                  </Link>
-                </li>
+            <div className="footer-services-grid">
+              {serviceChunks.map((chunk, chunkIdx) => (
+                <ul key={chunkIdx} className="footer-links-list">
+                  {chunk.map((svc) => (
+                    <li key={svc._id || svc.id || svc.slug}>
+                      <Link to={`/services/${svc.slug}`} className="footer-link">
+                        <FiArrowRight className="link-bullet-arrow" />
+                        <span>{svc.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Contact Information */}

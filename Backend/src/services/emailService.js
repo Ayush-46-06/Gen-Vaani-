@@ -308,7 +308,7 @@ export async function sendAppointmentConfirmationToClient(meeting) {
     <div class="detail-box">
       <div class="detail-date">${meeting.date}</div>
       <div class="detail-time">${meeting.time}</div>
-      <div class="detail-tz">Timezone: ${meeting.timezone || 'Asia/Kolkata'}</div>
+      <div class="detail-tz">Timezone: ${meeting.timezone || 'Australia/Sydney (AEST)'}</div>
     </div>
 
     <table class="data-table">
@@ -362,7 +362,7 @@ Your strategy and technical scoping consultation with Gen-Vaani has been confirm
 
 Session Details:
 - Date: ${meeting.date}
-- Time: ${meeting.time} (${meeting.timezone || 'Asia/Kolkata'})
+- Time: ${meeting.time} (${meeting.timezone || 'Australia/Sydney (AEST)'})
 - Service: ${meeting.service}
 - Video Platform: Google Meet
 - Direct Meeting Link: ${meetUrl}
@@ -417,7 +417,7 @@ New Consultation Booked:
 - Phone: ${meeting.phone || 'N/A'}
 - Company: ${meeting.company || 'Direct Client'}
 - Service: ${meeting.service}
-- Date & Time: ${meeting.date} at ${meeting.time} (${meeting.timezone || 'Asia/Kolkata'})
+- Date & Time: ${meeting.date} at ${meeting.time} (${meeting.timezone || 'Australia/Sydney (AEST)'})
 - Meeting Link: ${meetUrl}
 - Notes: ${meeting.notes || 'None'}
   `.trim();
@@ -426,7 +426,7 @@ New Consultation Booked:
     <div class="detail-box">
       <div class="detail-date">${meeting.date}</div>
       <div class="detail-time">${meeting.time}</div>
-      <div class="detail-tz">Timezone: ${meeting.timezone || 'Asia/Kolkata'}</div>
+      <div class="detail-tz">Timezone: ${meeting.timezone || 'Australia/Sydney (AEST)'}</div>
     </div>
 
     <table class="data-table">

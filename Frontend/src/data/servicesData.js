@@ -2,6 +2,7 @@ export const servicesData = {
   'website-development': {
     id: 1,
     slug: 'website-development',
+    category: 'Development & Digital Products',
     titleLine1: 'Website &',
     titleLine2: 'Development',
     subtitle: 'A perfect guide to your high-performance, conversion-optimized web presence and digital platforms.',
@@ -175,6 +176,7 @@ export const servicesData = {
   'application-development': {
     id: 2,
     slug: 'application-development',
+    category: 'Development & Digital Products',
     titleLine1: 'Mobile & App',
     titleLine2: 'Development',
     subtitle: 'A perfect guide to scalable mobile apps and enterprise software engineered for millions of users.',
@@ -347,6 +349,7 @@ export const servicesData = {
   'google-ads-meta-ads': {
     id: 3,
     slug: 'google-ads-meta-ads',
+    category: 'Marketing & Growth',
     titleLine1: 'Google &',
     titleLine2: 'Meta Ads',
     subtitle: 'A perfect guide to hyper-targeted advertising that maximizes ROI and scales customer acquisition.',
@@ -518,6 +521,7 @@ export const servicesData = {
   'ui-ux-design': {
     id: 4,
     slug: 'ui-ux-design',
+    category: 'Design & Creative',
     titleLine1: 'UI & UX',
     titleLine2: 'Design',
     subtitle: 'A perfect guide to intuitive, human-centered interfaces that captivate users and elevate brand perception.',
@@ -689,6 +693,7 @@ export const servicesData = {
   'local-seo': {
     id: 5,
     slug: 'local-seo',
+    category: 'Marketing & Growth',
     titleLine1: 'Local SEO &',
     titleLine2: 'Optimization',
     subtitle: 'A perfect guide to dominating local search rankings, Google Maps, and driving high-intent local foot traffic.',
@@ -860,6 +865,7 @@ export const servicesData = {
   'digital-marketing': {
     id: 6,
     slug: 'digital-marketing',
+    category: 'Marketing & Growth',
     titleLine1: 'Digital &',
     titleLine2: 'Marketing',
     subtitle: 'A perfect guide to full-funnel digital marketing strategies that compound authority, traffic, and revenue.',
@@ -1026,5 +1032,219 @@ export const servicesData = {
         a: 'You receive weekly KPI snapshot updates, monthly deep-dive review calls, and 24/7 access to live reporting dashboards.'
       }
     ]
+  },
+
+  'branding-identity': {
+    id: 7,
+    slug: 'branding-identity',
+    category: 'Design & Creative',
+    titleLine1: 'Branding &',
+    titleLine2: 'Visual Identity',
+    subtitle: 'A strategic, memorable brand identity system engineered to command market authority.',
+    ctaText: 'BOOK NOW',
+    badgeTitle: 'Brand Authority',
+    badgeValue: 'Top 5% Visuals',
+    badgeAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+    statCount: '180+',
+    statLabel: 'Brands built',
+    avatars: [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
+      'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&q=80',
+    ],
+    heroImage: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1400&auto=format&fit=crop',
+    pins: [
+      { x: 30, y: 350, label: 'Visual Positioning' },
+      { x: 260, y: 220, label: 'Identity Matrix' },
+      { x: 500, y: 110, label: 'Brand Guidelines' },
+    ],
+    workflow: {
+      tag: 'WORKFLOW',
+      titlePrefix: 'From Core Values to',
+      titleHighlight: 'Visual Iconography',
+      subtitle: 'A structured brand strategy transforming market insights into iconic visual identities.',
+      steps: [
+        { step: 1, title: 'Brand Discovery', desc: 'Market positioning, competitor mapping, and brand archetypes.', icon: 'search' },
+        { step: 2, title: 'Concept Directions', desc: 'Exploring 3 distinct moodboards, typography, and logo directions.', icon: 'design' },
+        { step: 3, title: 'Identity Refinement', desc: 'Vector logo craft, color harmony, and accessibility testing.', icon: 'layers' },
+        { step: 4, title: 'Brand Book', desc: 'Complete brand guidelines, usage rules, and typography hierarchy.', icon: 'testing' },
+        { step: 5, title: 'Asset Package', desc: 'Vector exports, social media templates, and marketing collateral.', icon: 'rocket' },
+      ],
+    },
+    pricing: {
+      headline: 'Branding & Identity Pricing',
+      subheadline: 'Transparent investment tiers to build an unmistakable market presence from seed to enterprise.',
+      packages: [
+        { id: 'basic', name: 'Starter Identity', badge: null, price: '$799', period: 'one-time', desc: 'Primary logo, color palette, and essential typography rules.', btnText: 'Choose Starter', btnStyle: 'outline' },
+        { id: 'advanced', name: 'Complete Brand System', badge: 'Most Popular', price: '$1,899', period: 'one-time', desc: 'Full logo suite, comprehensive 40-page brand guide, and social design kit.', btnText: 'Choose Complete', btnStyle: 'gradient' },
+        { id: 'custom', name: 'Enterprise Rebrand', badge: null, price: 'Custom', period: 'tailored', desc: 'End-to-end organizational rebranding with patent-ready vector identity systems.', btnText: 'Go Custom', btnStyle: 'solid' },
+      ],
+      featureCategories: [
+        {
+          category: 'Brand Deliverables',
+          features: [
+            { name: 'Logo Variations (Primary, Secondary, Monogram)', basic: true, advanced: true, custom: true },
+            { name: 'Color Palette & Typography Specs', basic: true, advanced: true, custom: true },
+            { name: 'Comprehensive Brand Style Guide', basic: false, advanced: true, custom: true },
+            { name: 'Social Media Kit & Stationery Assets', basic: false, advanced: true, custom: true },
+          ],
+        },
+      ],
+    },
+    features: [
+      { icon: '🎯', title: 'Distinct Market Positioning', desc: 'Visual identity rooted in deep competitor analysis so your business stands out effortlessly.' },
+      { icon: '📐', title: 'Mathematical Precision', desc: 'Logos engineered on geometric grids with vector precision across all print and screen sizes.' },
+      { icon: '🎨', title: 'Holistic Design System', desc: 'Accessible color palettes, scalable typography scales, and cohesive iconography rules.' },
+      { icon: '📦', title: 'Production-Ready Handoff', desc: 'Fully organized vector exports (SVG, EPS, AI, PNG) ready for billboards, merch, and screens.' },
+    ],
+    techStack: ['Figma', 'Adobe Illustrator', 'Photoshop', 'Brandpad', 'FontBase'],
+    faqs: [
+      { q: 'Who owns the final brand copyrights?', a: 'You own 100% full intellectual property and commercial copyright to all deliverables.' },
+      { q: 'How many logo concepts do you present?', a: 'We develop and present 3 distinctly curated creative directions with real-world mockups.' },
+      { q: 'What is the turnaround time for a complete rebrand?', a: 'Starter packages take 1-2 weeks; full brand systems take 2-4 weeks.' },
+    ],
+  },
+
+  'creative-design': {
+    id: 8,
+    slug: 'creative-design',
+    category: 'Design & Creative',
+    titleLine1: 'Creative Design &',
+    titleLine2: 'Media Assets',
+    subtitle: 'High-impact 3D visual assets, marketing graphics, animations and creative collateral.',
+    ctaText: 'BOOK NOW',
+    badgeTitle: 'Visual Impact',
+    badgeValue: '4x Click-Through',
+    badgeAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+    statCount: '1,200+',
+    statLabel: 'Assets produced',
+    avatars: [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
+      'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&q=80',
+    ],
+    heroImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1400&auto=format&fit=crop',
+    pins: [
+      { x: 30, y: 350, label: '3D Modeling' },
+      { x: 260, y: 220, label: 'Motion Graphics' },
+      { x: 500, y: 110, label: 'Marketing Collateral' },
+    ],
+    workflow: {
+      tag: 'WORKFLOW',
+      titlePrefix: 'From Raw Ideas to',
+      titleHighlight: 'Captivating Media',
+      subtitle: 'Creative production workflow delivering world-class visual assets at sprint velocity.',
+      steps: [
+        { step: 1, title: 'Creative Brief', desc: 'Asset requirements, visual aesthetic targets, and distribution channels.', icon: 'search' },
+        { step: 2, title: 'Concept Sketches', desc: 'Storyboards, 3D clay renders, and composition drafts.', icon: 'design' },
+        { step: 3, title: 'Production Sprint', desc: 'High-resolution rendering, texturing, lighting, and vector illustration.', icon: 'layers' },
+        { step: 4, title: 'Cross-Device Polish', desc: 'Compression audits, color grading, and responsive formats.', icon: 'testing' },
+        { step: 5, title: 'Final Delivery', desc: 'Packaged 4K renders, WebP/SVG web assets, and source files.', icon: 'rocket' },
+      ],
+    },
+    pricing: {
+      headline: 'Creative Design & Media Pricing',
+      subheadline: 'Select the creative package suited to your campaign milestones and monthly collateral needs.',
+      packages: [
+        { id: 'basic', name: 'Campaign Starter', badge: null, price: '$599', period: 'one-time', desc: 'Up to 5 custom campaign creatives, ad banners, and social posts.', btnText: 'Choose Starter', btnStyle: 'outline' },
+        { id: 'advanced', name: 'Creative Powerhouse', badge: 'Most Popular', price: '$1,499', period: 'one-time', desc: 'Full campaign suite: 15 creatives, 3D asset renders, and motion graphics.', btnText: 'Choose Powerhouse', btnStyle: 'gradient' },
+        { id: 'custom', name: 'Dedicated Studio', badge: null, price: 'Custom', period: 'retainer', desc: 'Full-time senior art director and dedicated creative team on monthly retainer.', btnText: 'Hire Studio', btnStyle: 'solid' },
+      ],
+      featureCategories: [
+        {
+          category: 'Creative Production',
+          features: [
+            { name: 'Social Media & Ad Creative Suites', basic: '5 Assets', advanced: '15 Assets', custom: 'Unlimited' },
+            { name: '3D Product Modeling & Lighting', basic: false, advanced: true, custom: true },
+            { name: 'Lottie Micro-Animations & Motion Renders', basic: false, advanced: true, custom: true },
+            { name: 'Print Collateral & Pitch Deck Design', basic: false, advanced: true, custom: true },
+          ],
+        },
+      ],
+    },
+    features: [
+      { icon: '✨', title: 'Scroll-Stopping Visuals', desc: 'Custom 3D renders and bespoke illustrations crafted to maximize dwell time.' },
+      { icon: '🎬', title: 'Motion & Micro-Interactions', desc: 'Lightweight Lottie and MP4 motion graphics that breathe life into interfaces.' },
+      { icon: '⚡', title: 'Rapid Creative Delivery', desc: 'Structured feedback loops and sprint-based deliveries to meet marketing deadlines.' },
+      { icon: '📐', title: 'Multi-Format Adaptability', desc: 'Assets generated for 16:9, 1:1, 9:16 and 4:5 ratios across all social and ad networks.' },
+    ],
+    techStack: ['Blender', 'Cinema 4D', 'After Effects', 'Figma', 'Photoshop'],
+    faqs: [
+      { q: 'Can you match our existing brand visual style?', a: 'Yes! We rigorously audit your brand book and deliver assets matching your exact aesthetic.' },
+      { q: 'What file formats are provided?', a: 'We export high-res PNG, WebP, vector SVG, Lottie JSON, and complete native source files.' },
+      { q: 'Do you offer monthly creative retainers?', a: 'Yes, our Creative Studio retainer provides continuous on-demand design support.' },
+    ],
+  },
+
+  'custom-software': {
+    id: 9,
+    slug: 'custom-software',
+    category: 'Development & Digital Products',
+    titleLine1: 'Custom Software &',
+    titleLine2: 'Cloud Architecture',
+    subtitle: 'Bespoke enterprise software, scalable APIs, microservices and automated digital infrastructure.',
+    ctaText: 'BOOK NOW',
+    badgeTitle: 'System Uptime',
+    badgeValue: '99.99% SLA',
+    badgeAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+    statCount: '12M+',
+    statLabel: 'API requests/day',
+    avatars: [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
+      'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&q=80',
+    ],
+    heroImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1400&auto=format&fit=crop',
+    pins: [
+      { x: 30, y: 350, label: 'Cloud Architecture' },
+      { x: 260, y: 220, label: 'API Microservices' },
+      { x: 500, y: 110, label: 'Database Sharding' },
+    ],
+    workflow: {
+      tag: 'WORKFLOW',
+      titlePrefix: 'From Technical Blueprint to',
+      titleHighlight: 'Fault-Tolerant Engine',
+      subtitle: 'Rigorous engineering lifecycle ensuring bank-grade security, scalability, and clean modular code.',
+      steps: [
+        { step: 1, title: 'Architecture Scoping', desc: 'System requirements, data modeling, throughput targets, and security protocols.', icon: 'search' },
+        { step: 2, title: 'Schema & API Specs', desc: 'OpenAPI documentation, database normalization, and auth token architecture.', icon: 'design' },
+        { step: 3, title: 'Core Development', desc: 'Scalable backend microservices, async queue workers, and third-party integrations.', icon: 'code' },
+        { step: 4, title: 'Security & Penetration', desc: 'Load testing to 50k req/sec, vulnerability scans, and automated unit test suites.', icon: 'testing' },
+        { step: 5, title: 'CI/CD Cloud Deploy', desc: 'Automated Kubernetes / Docker deployment on AWS/GCP with auto-scaling & 24/7 alerts.', icon: 'rocket' },
+      ],
+    },
+    pricing: {
+      headline: 'Custom Software Pricing',
+      subheadline: 'Predictable milestones and sprint-based pricing for mission-critical enterprise systems.',
+      packages: [
+        { id: 'basic', name: 'API Microservice', badge: null, price: '$1,999', period: 'one-time', desc: 'Custom REST API service with database integration, auth, and documentation.', btnText: 'Start Microservice', btnStyle: 'outline' },
+        { id: 'advanced', name: 'Full-Stack Software MVP', badge: 'Most Popular', price: '$4,999', period: 'one-time', desc: 'Complete web software system with admin portal, payment billing, and automated worker queues.', btnText: 'Build Software', btnStyle: 'gradient' },
+        { id: 'custom', name: 'Enterprise Cloud System', badge: null, price: 'Custom', period: 'dedicated team', desc: 'High-concurrency distributed software platform with custom microservices and 99.99% uptime.', btnText: 'Architect Enterprise', btnStyle: 'solid' },
+      ],
+      featureCategories: [
+        {
+          category: 'Architecture & Scalability',
+          features: [
+            { name: 'REST & GraphQL API Endpoints', basic: 'Up to 10', advanced: 'Up to 35', custom: 'Unlimited' },
+            { name: 'Database Architecture (PostgreSQL/MongoDB)', basic: true, advanced: true, custom: true },
+            { name: 'Role-Based Access Control (RBAC) & OAuth2', basic: true, advanced: true, custom: true },
+            { name: 'Background Workers & Redis Queues', basic: false, advanced: true, custom: true },
+            { name: 'Automated CI/CD Pipeline & Dockerization', basic: false, advanced: true, custom: true },
+          ],
+        },
+      ],
+    },
+    features: [
+      { icon: '⚡', title: 'Sub-50ms API Latency', desc: 'Optimized database queries, Redis caching, and connection pooling for blazing performance.' },
+      { icon: '🔒', title: 'Zero-Trust Security', desc: 'JWT/OAuth2 auth, bcrypt hashing, rate limiting, and automated OWASP top-10 defenses.' },
+      { icon: '☁️', title: 'Auto-Scaling Infrastructure', desc: 'Containerized Docker/Kubernetes architecture ready to handle 10x traffic surges.' },
+      { icon: '📊', title: 'Real-Time Observability', desc: 'Integrated logging, distributed tracing, and automated health alert webhooks.' },
+    ],
+    techStack: ['Node.js', 'Python', 'Go', 'PostgreSQL', 'Redis', 'Docker', 'AWS'],
+    faqs: [
+      { q: 'How do you handle data migration from legacy software?', a: 'We build automated migration scripts with checksum validation to ensure zero data loss.' },
+      { q: 'Do you provide API documentation for third-party developers?', a: 'Yes, every project includes interactive Swagger / OpenAPI interactive documentation.' },
+      { q: 'Who owns the infrastructure and code repositories?', a: 'You maintain 100% full ownership of all source code, git repositories, and cloud accounts.' },
+    ],
   }
 };

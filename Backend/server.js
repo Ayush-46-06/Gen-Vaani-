@@ -7,6 +7,7 @@ import leadRoutes from './src/routes/leadRoutes.js';
 import meetingRoutes from './src/routes/meetingRoutes.js';
 import serviceRoutes from './src/routes/serviceRoutes.js';
 import portfolioRoutes from './src/routes/portfolioRoutes.js';
+import categoryRoutes from './src/routes/categoryRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -77,6 +78,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/meetings', meetingRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 
 // 404 Handler

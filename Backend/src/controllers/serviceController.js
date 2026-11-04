@@ -34,6 +34,34 @@ export const getAllServices = async (req, res) => {
       });
     }
 
+    // Auto-seed missing default services to ensure balanced category columns
+    const existingSlugs = new Set(services.map((s) => s.slug));
+    const missingDefaults = defaultServices.filter((ds) => !existingSlugs.has(ds.slug));
+    if (missingDefaults.length > 0) {
+      console.log(`Found ${missingDefaults.length} missing default services. Auto-inserting...`);
+      try {
+        const inserted = await Service.insertMany(missingDefaults);
+        services.push(...inserted);
+      } catch (insertErr) {
+        console.warn('Auto-insert missing defaults error:', insertErr.message);
+      }
+    }
+
+    // Auto-backfill category if any existing service has none
+    for (const s of services) {
+      if (!s.category) {
+        let cat = 'Development & Digital Products';
+        const text = `${s.slug || ''} ${s.title || ''}`.toLowerCase();
+        if (text.includes('design') || text.includes('ui') || text.includes('ux') || text.includes('brand') || text.includes('creative')) {
+          cat = 'Design & Creative';
+        } else if (text.includes('ad') || text.includes('seo') || text.includes('market') || text.includes('growth')) {
+          cat = 'Marketing & Growth';
+        }
+        s.category = cat;
+        Service.findByIdAndUpdate(s._id, { category: cat }).catch((err) => console.warn('Category backfill error:', err));
+      }
+    }
+
     return res.status(200).json({
       success: true,
       count: services.length,
@@ -121,6 +149,7 @@ export const createService = async (req, res) => {
       titleLine1: body.titleLine1 || body.title.split(' ')[0] || '',
       titleLine2: body.titleLine2 || body.title.split(' ').slice(1).join(' ') || '',
       description: body.description.trim(),
+      category: body.category ? body.category.trim() : 'Development & Digital Products',
       subtitle: body.subtitle || `High-impact ${body.title} solutions engineered for maximum performance and growth.`,
       icon: body.icon || '⚡',
       ctaText: body.ctaText || 'BOOK NOW',

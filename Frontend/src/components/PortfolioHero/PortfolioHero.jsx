@@ -115,63 +115,20 @@ const mockupsData = [
 const PortfolioHero = ({ searchQuery = '', setSearchQuery, selectedTag = 'All', setSelectedTag }) => {
   const navigate = useNavigate();
   const heroRef = useRef(null);
-  const mockupStageRef = useRef(null);
-  const [activeHoverCard, setActiveHoverCard] = useState(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isHoveringStage, setIsHoveringStage] = useState(false);
   const [selectedPreview, setSelectedPreview] = useState(null);
 
-  // Smooth mouse parallax effect on the floating mockup stage
+  // Auto-cycle through the carousel projects when user is not hovering the stage
   useEffect(() => {
-    const stage = mockupStageRef.current;
-    if (!stage) return;
+    if (isHoveringStage) return;
 
-    let rafId;
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
+    const interval = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % mockupsData.length);
+    }, 4200);
 
-    const handleMouseMove = (e) => {
-      const rect = stage.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      targetX = x * 22; // max degrees/pixels
-      targetY = y * 22;
-    };
-
-    const handleMouseLeave = () => {
-      targetX = 0;
-      targetY = 0;
-    };
-
-    const animate = () => {
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
-
-      if (stage) {
-        stage.style.setProperty('--mouse-tilt-x', `${(-currentY * 0.4).toFixed(2)}deg`);
-        stage.style.setProperty('--mouse-tilt-y', `${(currentX * 0.4).toFixed(2)}deg`);
-        stage.style.setProperty('--mouse-shift-x', `${(currentX * 0.6).toFixed(2)}px`);
-        stage.style.setProperty('--mouse-shift-y', `${(currentY * 0.6).toFixed(2)}px`);
-      }
-
-      rafId = requestAnimationFrame(animate);
-    };
-
-    const heroElem = heroRef.current;
-    if (heroElem) {
-      heroElem.addEventListener('mousemove', handleMouseMove);
-      heroElem.addEventListener('mouseleave', handleMouseLeave);
-      rafId = requestAnimationFrame(animate);
-    }
-
-    return () => {
-      if (heroElem) {
-        heroElem.removeEventListener('mousemove', handleMouseMove);
-        heroElem.removeEventListener('mouseleave', handleMouseLeave);
-      }
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
+    return () => clearInterval(interval);
+  }, [isHoveringStage]);
 
   const scrollToGrid = () => {
     const gridElem = document.getElementById('portfolio-grid');
@@ -181,15 +138,26 @@ const PortfolioHero = ({ searchQuery = '', setSearchQuery, selectedTag = 'All', 
   };
 
   const handleIndustryClick = (item) => {
+    const targetIdx = mockupsData.findIndex(m => m.key === item.cardKey);
+    if (targetIdx !== -1) setCarouselIndex(targetIdx);
     if (setSelectedTag) {
       setSelectedTag(item.tag);
     }
-    scrollToGrid();
   };
+
+  const nextSlide = () => {
+    setCarouselIndex((prev) => (prev + 1) % mockupsData.length);
+  };
+
+  const prevSlide = () => {
+    setCarouselIndex((prev) => (prev - 1 + mockupsData.length) % mockupsData.length);
+  };
+
+  const currentProject = mockupsData[carouselIndex];
 
   return (
     <section className="portfolio-hero-refined" ref={heroRef}>
-      {/* Background Ambient Glow Meshes matching reference */}
+      {/* Background Ambient Glow Meshes */}
       <div className="portfolio-hero-aura aura-peach" aria-hidden="true"></div>
       <div className="portfolio-hero-aura aura-lavender" aria-hidden="true"></div>
       <div className="portfolio-hero-aura aura-apricot" aria-hidden="true"></div>
@@ -243,16 +211,21 @@ const PortfolioHero = ({ searchQuery = '', setSearchQuery, selectedTag = 'All', 
 
             <div className="industry-pills-row">
               {industries.map((ind, index) => {
-                const isActive = selectedTag === ind.tag;
+                const isSpotlight = currentProject?.key === ind.cardKey;
+                const isFilterActive = selectedTag === ind.tag;
                 return (
                   <React.Fragment key={ind.id}>
                     <button
                       type="button"
-                      className={`industry-pill-btn ${isActive ? 'active' : ''} ${activeHoverCard === ind.cardKey ? 'hover-linked' : ''}`}
+                      className={`industry-pill-btn ${isSpotlight ? 'active-spotlight' : ''} ${isFilterActive ? 'active' : ''}`}
                       onClick={() => handleIndustryClick(ind)}
-                      onMouseEnter={() => setActiveHoverCard(ind.cardKey)}
-                      onMouseLeave={() => setActiveHoverCard(null)}
-                      title={`Filter by ${ind.label}`}
+                      onMouseEnter={() => {
+                        setIsHoveringStage(true);
+                        const idx = mockupsData.findIndex(m => m.key === ind.cardKey);
+                        if (idx !== -1) setCarouselIndex(idx);
+                      }}
+                      onMouseLeave={() => setIsHoveringStage(false)}
+                      title={`Focus ${ind.label}`}
                     >
                       <span className="pill-icon">{ind.icon}</span>
                       <span className="pill-text">{ind.label}</span>
@@ -267,166 +240,86 @@ const PortfolioHero = ({ searchQuery = '', setSearchQuery, selectedTag = 'All', 
           </div>
         </div>
 
-        {/* RIGHT COLUMN: 3D Layered Floating Mockups Stage */}
-        <div className="portfolio-hero-right">
-          <div className="mockups-stage-wrapper" ref={mockupStageRef}>
-            {/* Background ambient container glow */}
-            <div className="stage-glow-ambient" aria-hidden="true"></div>
+        {/* RIGHT COLUMN: 3D Perspective Carousel */}
+        <div 
+          className="portfolio-hero-right"
+          onMouseEnter={() => setIsHoveringStage(true)}
+          onMouseLeave={() => setIsHoveringStage(false)}
+        >
+          <div className="carousel-stage-wrapper">
+            <div className="carousel-3d-track">
+              {mockupsData.map((item, idx) => {
+                let offset = idx - carouselIndex;
+                const total = mockupsData.length;
+                if (offset < -Math.floor(total / 2)) offset += total;
+                if (offset > Math.floor(total / 2)) offset -= total;
 
-            {/* CARD 1: Ecommerce (Everyday Essentials, Elevated) */}
-            <div 
-              className={`mockup-floating-card card-ecommerce ${activeHoverCard === 'ecommerce' ? 'highlighted' : ''}`}
-              onMouseEnter={() => setActiveHoverCard('ecommerce')}
-              onMouseLeave={() => setActiveHoverCard(null)}
-              onClick={() => setSelectedPreview(mockupsData[0])}
-            >
-              {/* Handwritten Note + Vector Arrow */}
-              <div className="annotation-badge annotation-ecommerce" aria-hidden="true">
-                <span className="handwritten-text">Ecommerce</span>
-                <svg className="handwritten-arrow arrow-ecommerce" viewBox="0 0 65 45" fill="none">
-                  <path d="M 12 34 C 20 12 40 8 54 26" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" />
-                  <path d="M 45 28 L 54 26 L 52 16" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
+                const isCurrent = offset === 0;
+                const isPrev = offset === -1;
+                const isNext = offset === 1;
+                const isVisible = Math.abs(offset) <= 2;
 
-              <div className="mockup-frame browser-frame">
-                <div className="browser-header">
-                  <span className="traffic-dot dot-red"></span>
-                  <span className="traffic-dot dot-yellow"></span>
-                  <span className="traffic-dot dot-green"></span>
-                  <div className="browser-address">soja-essentials.com</div>
-                </div>
-                <img
-                  src="/mockup-ecommerce.png"
-                  alt="Ecommerce Everyday Essentials, Elevated"
-                  className="mockup-img"
-                  loading="eager"
-                />
-              </div>
+                if (!isVisible) return null;
+
+                return (
+                  <div
+                    key={item.key}
+                    className={`carousel-card-item ${isCurrent ? 'current' : ''} ${isPrev ? 'prev' : ''} ${isNext ? 'next' : ''}`}
+                    onClick={() => {
+                      if (isCurrent) {
+                        setSelectedPreview(item);
+                      } else {
+                        setCarouselIndex(idx);
+                      }
+                    }}
+                  >
+                    <div className="carousel-card-inner">
+                      <div className="carousel-card-header">
+                        <span className="carousel-tag">{item.category}</span>
+                        <span className="carousel-expand-hint">Preview ↗</span>
+                      </div>
+                      <div className="carousel-img-wrap">
+                        <img src={item.img} alt={item.title} />
+                      </div>
+                      <div className="carousel-card-footer">
+                        <h4 className="carousel-project-title">{item.title}</h4>
+                        <p className="carousel-project-desc">{item.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* CARD 2: SaaS Product (Good morning! Analytics Dashboard) */}
-            <div 
-              className={`mockup-floating-card card-saas ${activeHoverCard === 'saas' ? 'highlighted' : ''}`}
-              onMouseEnter={() => setActiveHoverCard('saas')}
-              onMouseLeave={() => setActiveHoverCard(null)}
-              onClick={() => setSelectedPreview(mockupsData[1])}
-            >
-              {/* Handwritten Note + Vector Arrow */}
-              <div className="annotation-badge annotation-saas" aria-hidden="true">
-                <span className="handwritten-text">SaaS Product</span>
-                <svg className="handwritten-arrow arrow-saas" viewBox="0 0 45 55" fill="none">
-                  <path d="M 28 8 C 15 22 14 36 20 44" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" />
-                  <path d="M 12 37 L 20 44 L 23 34" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+            {/* Navigation Arrows & Indicators */}
+            <div className="carousel-controls-bar">
+              <button
+                type="button"
+                className="carousel-nav-btn prev"
+                onClick={prevSlide}
+                aria-label="Previous project"
+              >
+                ←
+              </button>
+              <div className="carousel-indicators">
+                {mockupsData.map((m, idx) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    className={`carousel-dot ${idx === carouselIndex ? 'active' : ''}`}
+                    onClick={() => setCarouselIndex(idx)}
+                    aria-label={`Go to project ${idx + 1}`}
+                  />
+                ))}
               </div>
-
-              <div className="mockup-frame dashboard-frame">
-                <img
-                  src="/mockup-saas.png"
-                  alt="SaaS Product Analytics Console"
-                  className="mockup-img"
-                  loading="eager"
-                />
-              </div>
-            </div>
-
-            {/* CARD 3: Healthcare App (Good Morning, Take care of your health) */}
-            <div 
-              className={`mockup-floating-card card-healthcare ${activeHoverCard === 'healthcare' ? 'highlighted' : ''}`}
-              onMouseEnter={() => setActiveHoverCard('healthcare')}
-              onMouseLeave={() => setActiveHoverCard(null)}
-              onClick={() => setSelectedPreview(mockupsData[2])}
-            >
-              {/* Handwritten Note + Vector Arrow */}
-              <div className="annotation-badge annotation-healthcare" aria-hidden="true">
-                <span className="handwritten-text">Healthcare<br />App</span>
-                <svg className="handwritten-arrow arrow-healthcare" viewBox="0 0 55 45" fill="none">
-                  <path d="M 8 18 C 22 36 38 32 46 16" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" />
-                  <path d="M 37 17 L 46 16 L 45 25" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              <div className="mockup-frame mobile-frame">
-                <div className="phone-notch">
-                  <span className="speaker-pill"></span>
-                </div>
-                <img
-                  src="/mockup-healthcare.png"
-                  alt="Healthcare Mobile App"
-                  className="mockup-img"
-                  loading="eager"
-                />
-              </div>
-            </div>
-
-            {/* CARD 4: Brand Identity (AURIA Skincare Packaging) */}
-            <div 
-              className={`mockup-floating-card card-brand ${activeHoverCard === 'brand' ? 'highlighted' : ''}`}
-              onMouseEnter={() => setActiveHoverCard('brand')}
-              onMouseLeave={() => setActiveHoverCard(null)}
-              onClick={() => setSelectedPreview(mockupsData[3])}
-            >
-              {/* Handwritten Note + Vector Arrow */}
-              <div className="annotation-badge annotation-brand" aria-hidden="true">
-                <span className="handwritten-text">Brand<br />Identity</span>
-                <svg className="handwritten-arrow arrow-brand" viewBox="0 0 50 55" fill="none">
-                  <path d="M 38 12 C 22 28 16 38 12 46" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" />
-                  <path d="M 12 36 L 12 46 L 22 45" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              <div className="mockup-frame package-frame">
-                <img
-                  src="/auria-brand.jpg"
-                  alt="AURIA Brand Identity Packaging"
-                  className="mockup-img"
-                  loading="eager"
-                />
-              </div>
-            </div>
-
-            {/* CARD 5: Web Experiences / Real Estate (Villa Nero Modern Homes) */}
-            <div 
-              className={`mockup-floating-card card-realestate ${activeHoverCard === 'realestate' ? 'highlighted' : ''}`}
-              onMouseEnter={() => setActiveHoverCard('realestate')}
-              onMouseLeave={() => setActiveHoverCard(null)}
-              onClick={() => setSelectedPreview(mockupsData[4])}
-            >
-              <div className="mockup-frame luxury-frame">
-                <img
-                  src="/mockup-realestate.png"
-                  alt="Villa Nero Modern Architecture Web Experience"
-                  className="mockup-img"
-                  loading="eager"
-                />
-              </div>
-            </div>
-
-            {/* CARD 6: Logistics (Track Your Shipment) */}
-            <div 
-              className={`mockup-floating-card card-logistics ${activeHoverCard === 'logistics' ? 'highlighted' : ''}`}
-              onMouseEnter={() => setActiveHoverCard('logistics')}
-              onMouseLeave={() => setActiveHoverCard(null)}
-              onClick={() => setSelectedPreview(mockupsData[5])}
-            >
-              {/* Handwritten Note + Vector Arrow */}
-              <div className="annotation-badge annotation-logistics" aria-hidden="true">
-                <span className="handwritten-text">Logistics</span>
-                <svg className="handwritten-arrow arrow-logistics" viewBox="0 0 60 40" fill="none">
-                  <path d="M 10 24 C 24 34 42 32 52 14" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" />
-                  <path d="M 42 15 L 52 14 L 51 24" stroke="#262626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              <div className="mockup-frame tracker-frame">
-                <img
-                  src="/mockup-logistics.png"
-                  alt="Logistics Real-Time Shipment Tracker"
-                  className="mockup-img"
-                  loading="eager"
-                />
-              </div>
+              <button
+                type="button"
+                className="carousel-nav-btn next"
+                onClick={nextSlide}
+                aria-label="Next project"
+              >
+                →
+              </button>
             </div>
           </div>
         </div>

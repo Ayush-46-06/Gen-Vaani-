@@ -18,6 +18,7 @@ import { createServiceApi, updateServiceApi } from '../../services/serviceApi';
 const DEFAULT_EMPTY_SERVICE = {
   title: '',
   slug: '',
+  category: 'Development & Digital Products',
   titleLine1: '',
   titleLine2: '',
   subtitle: '',
@@ -96,7 +97,7 @@ const DEFAULT_EMPTY_SERVICE = {
   isActive: true,
 };
 
-export default function ServiceEditorModal({ isOpen, onClose, service, onSaved, token }) {
+export default function ServiceEditorModal({ isOpen, onClose, service, onSaved, token, categories = [] }) {
   const isEditing = Boolean(service && (service._id || service.id));
   const [formData, setFormData] = useState(DEFAULT_EMPTY_SERVICE);
   const [activeTab, setActiveTab] = useState('basic');
@@ -105,10 +106,12 @@ export default function ServiceEditorModal({ isOpen, onClose, service, onSaved, 
   const [techInput, setTechInput] = useState('');
 
   useEffect(() => {
+    const defaultCatName = categories.length > 0 ? categories[0].name : 'Development & Digital Products';
     if (service) {
       setFormData({
         ...DEFAULT_EMPTY_SERVICE,
         ...service,
+        category: service.category || defaultCatName,
         pricing: {
           ...DEFAULT_EMPTY_SERVICE.pricing,
           ...(service.pricing || {}),
@@ -129,7 +132,10 @@ export default function ServiceEditorModal({ isOpen, onClose, service, onSaved, 
       });
       setTechInput('');
     } else {
-      setFormData(DEFAULT_EMPTY_SERVICE);
+      setFormData({
+        ...DEFAULT_EMPTY_SERVICE,
+        category: defaultCatName,
+      });
       setTechInput('');
     }
     setActiveTab('basic');
@@ -426,7 +432,31 @@ export default function ServiceEditorModal({ isOpen, onClose, service, onSaved, 
 
               <div className="form-grid-2">
                 <div className="form-field-group">
-                  <label>Service Category & Vector Icon</label>
+                  <label>Service Category (Navbar Column) *</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => handleBasicChange('category', e.target.value)}
+                    required
+                  >
+                    {categories.length > 0 ? (
+                      categories.map((cat) => (
+                        <option key={cat._id || cat.id || cat.slug || cat.name} value={cat.name}>
+                          {cat.name}
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="Design & Creative">Design & Creative</option>
+                        <option value="Development & Digital Products">Development & Digital Products</option>
+                        <option value="Marketing & Growth">Marketing & Growth</option>
+                      </>
+                    )}
+                  </select>
+                  <small>Controls which category column this service appears under in the navbar.</small>
+                </div>
+
+                <div className="form-field-group">
+                  <label>Vector Icon</label>
                   <select
                     value={formData.icon || 'globe'}
                     onChange={(e) => handleBasicChange('icon', e.target.value)}
@@ -439,30 +469,30 @@ export default function ServiceEditorModal({ isOpen, onClose, service, onSaved, 
                     <option value="marketing">Growth & Omnichannel (Send Icon)</option>
                     <option value="cloud">Enterprise Core & AI (Cpu Icon)</option>
                   </select>
-                  <small>Determines the high-resolution vector icon & category badge on the website.</small>
+                  <small>Determines the high-resolution vector icon on the website.</small>
                 </div>
+              </div>
 
-                <div className="form-field-group">
-                  <label>Publication Status & Order</label>
-                  <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600 }}>
-                      <input
-                        type="checkbox"
-                        checked={formData.isActive}
-                        onChange={(e) => handleBasicChange('isActive', e.target.checked)}
-                      />
-                      <span>Active on Website</span>
-                    </label>
+              <div className="form-field-group">
+                <label>Publication Status & Order</label>
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600 }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.isActive}
+                      onChange={(e) => handleBasicChange('isActive', e.target.checked)}
+                    />
+                    <span>Active on Website</span>
+                  </label>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Order:</span>
-                      <input
-                        type="number"
-                        value={formData.order}
-                        onChange={(e) => handleBasicChange('order', Number(e.target.value))}
-                        style={{ width: '70px', padding: '6px 10px' }}
-                      />
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Order:</span>
+                    <input
+                      type="number"
+                      value={formData.order}
+                      onChange={(e) => handleBasicChange('order', Number(e.target.value))}
+                      style={{ width: '70px', padding: '6px 10px' }}
+                    />
                   </div>
                 </div>
               </div>

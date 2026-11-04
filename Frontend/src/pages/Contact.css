@@ -39,9 +39,86 @@
 .contact-hero h1 { max-width: 700px; margin: 22px 0 18px; color: var(--gv-navy); font-size: clamp(2.7rem, 5.2vw, 4.55rem); line-height: 1.04; font-weight: 800; letter-spacing: -.065em; animation: contactRise .7s both; }
 .contact-hero h1 span { display: block; color: var(--gv-blue); background: linear-gradient(100deg, #0066a9 5%, #00b8df 85%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .contact-hero-copy { max-width: 610px; margin: 0; color: #64718a; font-size: 1.05rem; line-height: 1.8; animation: contactRise .7s .12s both; }
-.contact-primary-button { display: inline-flex; justify-content: center; align-items: center; gap: 22px; min-height: 51px; padding: 0 23px; border: 1px solid transparent; border-radius: 12px; color: #fff; background: var(--gv-navy); box-shadow: 0 9px 22px rgba(2,11,45,.13); font: inherit; font-size: .9rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: transform .22s ease, background .22s ease, box-shadow .22s ease; }
+.contact-primary-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  min-height: 50px;
+  padding: 0 28px;
+  border: 1px solid rgba(0, 203, 240, 0.4);
+  border-radius: 50px;
+  color: #fff;
+  background: linear-gradient(
+    110deg,
+    #0645b5 0%,
+    #087bd0 48%,
+    #05c5e9 100%
+  );
+  background-size: 200% 200%;
+  box-shadow: 0 7px 20px rgba(0, 113, 205, 0.25);
+  font: inherit;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: .92rem;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    background-position 0.6s ease;
+}
+
+.contact-primary-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -70%;
+  left: -50%;
+  width: 35%;
+  height: 240%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: rotate(25deg) translateX(-300%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
 .contact-hero .contact-primary-button { margin-top: 26px; animation: contactRise .7s .22s both; }
-.contact-primary-button:hover { transform: translateY(-2px); background: #063b7e; box-shadow: 0 13px 27px rgba(2,11,45,.18); }
+
+.contact-primary-button:hover {
+  transform: translateY(-3px);
+  background-position: 100% 50%;
+  border-color: rgba(0, 203, 240, 0.6);
+  box-shadow: 0 12px 28px rgba(0, 166, 225, 0.38);
+}
+
+.contact-primary-button:hover::before {
+  transform: rotate(25deg) translateX(650%);
+}
+
+.contact-primary-button:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.contact-primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.contact-primary-button span {
+  display: inline-block;
+  transition: transform 0.35s ease;
+}
+
+.contact-primary-button:hover span {
+  transform: translateX(4px);
+}
 .contact-primary-button:focus-visible, .contact-page button:focus-visible, .contact-page a:focus-visible, .contact-page input:focus-visible, .contact-page select:focus-visible, .contact-page textarea:focus-visible { outline: 3px solid rgba(0,203,240,.6); outline-offset: 3px; }
 .contact-trust-row { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 28px; color: #526078; font-size: .8rem; font-weight: 600; animation: contactRise .7s .3s both; }
 .contact-trust-row span { display: inline-flex; align-items: center; gap: 7px; }
@@ -182,7 +259,7 @@
 .booking-actions { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-top: 28px; padding-top: 22px; border-top: 1px solid #edf1f6; }
 .secure-note { display: inline-flex; align-items: center; gap: 8px; color: #7a879a; font-size: .73rem; }
 .secure-note span { color: var(--gv-blue); font-size: 1.05rem; }
-.continue-button { min-height: 48px; padding: 0 22px; border-radius: 12px; font-size: .84rem; gap: 14px; }
+.continue-button { min-height: 48px; padding: 0 24px; border-radius: 50px; font-size: .88rem; gap: 14px; }
 .booking-error { margin: 14px 0 0; color: #c03535; font-size: .84rem; }
 
 /* Attendee details and request state */

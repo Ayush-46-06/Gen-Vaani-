@@ -15,11 +15,7 @@ const SERVICES = [
 ];
 
 const TIMEZONES = [
-  { label: 'India Standard Time (IST)', value: 'Asia/Kolkata' },
-  { label: 'Australian Eastern Time', value: 'Australia/Sydney' },
-  { label: 'Eastern Time (US)', value: 'America/New_York' },
-  { label: 'Pacific Time (US)', value: 'America/Los_Angeles' },
-  { label: 'United Kingdom', value: 'Europe/London' },
+  { label: 'Australian Eastern Time (AEST)', value: 'Australia/Sydney' },
 ];
 
 const TIME_SLOTS = ['09:30 AM', '11:00 AM', '12:30 PM', '02:00 PM', '03:30 PM', '04:15 PM'];
@@ -49,7 +45,7 @@ export default function Contact() {
     return d;
   });
   const [selectedTime, setSelectedTime] = useState('');
-  const [timezone, setTimezone] = useState('Asia/Kolkata');
+  const [timezone, setTimezone] = useState('Australia/Sydney');
   const [step, setStep] = useState(1);
   const [status, setStatus] = useState('idle'); // idle | loading | confirmed
   const [error, setError] = useState('');
@@ -367,9 +363,9 @@ export default function Contact() {
                     <div className="booking-controls-row">
                       <label className="timezone-control">
                         <span>Time zone</span>
-                        <select value={timezone} onChange={(event) => setTimezone(event.target.value)}>
+                        {/* <select value={timezone} onChange={(event) => setTimezone(event.target.value)}> */}
                           {TIMEZONES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-                        </select>
+                        {/* </select> */}
                       </label>
                     </div>
 
@@ -546,7 +542,7 @@ export default function Contact() {
           <h2>Have an idea? Let's talk.</h2>
           <p>The first step toward a better digital product can be a simple conversation.</p>
         </div>
-        <a href="#booking-widget">Pick a time <span>↗</span></a>
+        <a href="#booking-widget" className="contact-primary-button">Pick a time <span>↗</span></a>
       </section>
     </main>
   );

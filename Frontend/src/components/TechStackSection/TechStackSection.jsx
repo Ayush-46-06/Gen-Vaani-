@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './TechStackSection.css';
 import {
   FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs,
@@ -60,7 +61,7 @@ const TechStackSection = () => {
           <p className="tech-description">
             We leverage industry-leading technologies to build scalable, secure, and lightning-fast solutions for your business.
           </p>
-          <button className="tech-cta">Book an appointment</button>
+          < Link to="/contact"><button className="tech-cta">Book an appointment</button></Link>
         </div>
 
         {/* Orbiting Circular Arch Wrapper (Static, holds the mask) */}

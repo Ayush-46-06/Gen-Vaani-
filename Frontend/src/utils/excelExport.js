@@ -81,7 +81,7 @@ export function formatMeetingsForExcel(meetings = []) {
       'Consultation Date': meet.date || meet.dateKey || 'N/A',
       'Date Key (YYYY-MM-DD)': meet.dateKey || 'N/A',
       'Time Slot': meet.time || 'N/A',
-      'Timezone': meet.timezone || 'Asia/Kolkata',
+      'Timezone': meet.timezone || 'Australia/Sydney (AEST)',
       'Meeting Status': statusLabel,
       'Google Meet URL': meet.meetUrl || 'https://meet.google.com/mjk-yknw-mvz',
       'Agenda / Scoping Notes': meet.notes || 'Initial discovery consultation and tech scoping.',
