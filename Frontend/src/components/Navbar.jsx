@@ -7,7 +7,7 @@ import {
 } from '../services/categoryApi';
 
 import './Navbar.css';
-import logo from '../assets/PNG/6.icon + Name Logo Transparent.png';
+import logo from '../assets/PNG/genvaani-navbar-logo-clean.png';
 
 const DEFAULT_SERVICES = [
   {
@@ -446,8 +446,9 @@ const Navbar = () => {
         {/* LOGO */}
 
         <div className="gvn-logo">
-          <Link to="/" onClick={closeMobileMenu}>
-            <img src={logo} alt="GenVaani" />
+          <Link to="/" onClick={closeMobileMenu} className="gvn-logo-link">
+            <img src={logo} alt="GenVaani" className="gvn-logo-img" />
+            <span className="gvn-tagline">Your Voice Always Heard</span>
           </Link>
         </div>
 

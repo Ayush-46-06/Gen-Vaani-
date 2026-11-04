@@ -76,11 +76,32 @@
   min-width: 0;
 }
 
+.footer-logo-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-decoration: none;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
 .footer-logo {
-  height: 45px;
-  margin-bottom: 24px;
-  /* The logo has dark text, so we invert it to pure white for the dark footer */
-  filter: brightness(0) invert(1);
+  height: 40px;
+  width: auto;
+  max-width: 195px;
+  object-fit: contain;
+  display: block;
+}
+
+.footer-tagline {
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  background: linear-gradient(135deg, #ffffff 0%, #00cbf0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  line-height: 1.25;
 }
 
 .footer-description {

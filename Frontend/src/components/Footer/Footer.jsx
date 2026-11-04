@@ -4,7 +4,7 @@ import { FiMapPin, FiMail, FiPhone, FiArrowRight } from 'react-icons/fi';
 import { FaFacebookF, FaXTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa6';
 import { getServicesApi } from '../../services/serviceApi';
 import './Footer.css';
-import logo from '../../assets/PNG/6.icon + Name Logo Transparent.png';
+import logo from '../../assets/PNG/genvaani-footer-logo-white.png';
 
 const DEFAULT_FOOTER_SERVICES = [
   { slug: 'website-development', title: 'Website Development' },
@@ -68,8 +68,9 @@ const Footer = () => {
         <div className="footer-top">
           {/* Brand Column */}
           <div className="footer-col brand-col">
-            <Link to="/">
+            <Link to="/" className="footer-logo-link">
               <img src={logo} alt="GenVaani Logo" className="footer-logo" />
+              <span className="footer-tagline">Your Voice Always Heard</span>
             </Link>
             <p className="footer-description">
               Transforming businesses with innovative solutions since 2026. We help companies scale efficiently and sustainably with high-performance digital products.

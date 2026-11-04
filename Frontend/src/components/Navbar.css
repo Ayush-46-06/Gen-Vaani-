@@ -78,22 +78,48 @@
   flex-shrink: 0;
 }
 
-.gvn-logo a {
-  display: flex;
-  align-items: center;
+.gvn-logo a,
+.gvn-logo-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-decoration: none;
+  gap: 3px;
 }
 
-.gvn-logo img {
+.gvn-logo img,
+.gvn-logo-img {
   display: block;
   width: auto;
-  height: 49px;
-  max-width: 190px;
+  height: 36px;
+  max-width: 175px;
   object-fit: contain;
   transition: height 0.3s ease;
 }
 
-.gvn-navbar-scrolled .gvn-logo img {
-  height: 43px;
+.gvn-navbar-scrolled .gvn-logo img,
+.gvn-navbar-scrolled .gvn-logo-img {
+  height: 30px;
+}
+
+.gvn-tagline {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding-left: 30px;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  background: linear-gradient(135deg, #092d78 0%, #0077b6 60%, #00cbf0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+  transition: font-size 0.3s ease;
+}
+
+.gvn-navbar-scrolled .gvn-tagline {
+  font-size: 0.65rem;
 }
 
 /* =========================================================
@@ -687,13 +713,23 @@
     min-height: 60px;
   }
 
-  .gvn-logo img {
-    height: 42px;
-    max-width: 160px;
+  .gvn-logo img,
+  .gvn-logo-img {
+    height: 31px;
+    max-width: 150px;
   }
 
-  .gvn-navbar-scrolled .gvn-logo img {
-    height: 38px;
+  .gvn-navbar-scrolled .gvn-logo img,
+  .gvn-navbar-scrolled .gvn-logo-img {
+    height: 27px;
+  }
+
+  .gvn-tagline {
+    font-size: 0.64rem;
+  }
+
+  .gvn-navbar-scrolled .gvn-tagline {
+    font-size: 0.58rem;
   }
 
   .gvn-nav-links,
@@ -1035,13 +1071,23 @@
     min-height: 55px;
   }
 
-  .gvn-logo img {
-    height: 37px;
-    max-width: 145px;
+  .gvn-logo img,
+  .gvn-logo-img {
+    height: 27px;
+    max-width: 130px;
   }
 
-  .gvn-navbar-scrolled .gvn-logo img {
-    height: 34px;
+  .gvn-navbar-scrolled .gvn-logo img,
+  .gvn-navbar-scrolled .gvn-logo-img {
+    height: 24px;
+  }
+
+  .gvn-tagline {
+    font-size: 0.56rem;
+  }
+
+  .gvn-navbar-scrolled .gvn-tagline {
+    font-size: 0.52rem;
   }
 
   .gvn-hamburger {
