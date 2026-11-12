@@ -1,12 +1,101 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { usePreloader } from '../../context/PreloaderContext';
 import './HeroSection.css';
+
+const GENVAANI_LETTERS = ['G', 'E', 'N', 'V', 'A', 'A', 'N', 'I'];
 
 const HeroSection = () => {
   const heroVideo =
     'https://ik.imagekit.io/apjql4rch/genvanni(_).mp4';
 
+  const { isPreloaderDone } = usePreloader();
+  const [phase, setPhase] = useState(isPreloaderDone ? 'typing' : 'waiting');
+  const [letterCount, setLetterCount] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+
   const heroRef = useRef(null);
+  const videoRef = useRef(null);
+
+  // When preloader finishes, begin typing sequence
+  useEffect(() => {
+    if (isPreloaderDone && phase === 'waiting') {
+      setPhase('typing');
+    }
+  }, [isPreloaderDone, phase]);
+
+  // Accessibility: support prefers-reduced-motion
+  useEffect(() => {
+    const motionPreference = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    );
+    if (motionPreference.matches) {
+      setPhase('revealed');
+      setLetterCount(GENVAANI_LETTERS.length);
+    }
+  }, []);
+
+  // Initially ensure background video is paused at start
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  }, []);
+
+  // Step 1: Letter-by-letter typing of GENVAANI with measured, cinematic tempo
+  useEffect(() => {
+    if (phase !== 'typing') return;
+
+    // Subtle initial pause before first letter strikes
+    const startDelay = setTimeout(() => {
+      const interval = setInterval(() => {
+        setLetterCount((prev) => {
+          if (prev < GENVAANI_LETTERS.length) {
+            return prev + 1;
+          }
+          clearInterval(interval);
+          return prev;
+        });
+      }, 180); // Measured tempo for each letter to register clearly
+
+      return () => clearInterval(interval);
+    }, 220);
+
+    return () => clearTimeout(startDelay);
+  }, [phase]);
+
+  // Step 2: Once whole GENVAANI is typed, hold gracefully so it can be appreciated, then transition out
+  useEffect(() => {
+    if (phase === 'typing' && letterCount === GENVAANI_LETTERS.length) {
+      // Hold full brand name with glow for 750ms
+      const holdTimer = setTimeout(() => {
+        setIsExiting(true);
+
+        // Smooth 650ms dissolve transition
+        const revealTimer = setTimeout(() => {
+          setPhase('revealed');
+        }, 650);
+
+        return () => clearTimeout(revealTimer);
+      }, 750);
+
+      return () => clearTimeout(holdTimer);
+    }
+  }, [phase, letterCount]);
+
+  // Step 3: Once hero section appears, start playing the hero video
+  useEffect(() => {
+    if (phase === 'revealed' && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Hero video autoplay delayed or prevented:', err);
+        });
+      }
+    }
+  }, [phase]);
 
   // Scroll-triggered fade and upward movement
   useEffect(() => {
@@ -71,16 +160,26 @@ const HeroSection = () => {
     };
   }, []);
 
+  // Preload video stream right before typing completes to prevent bandwidth bottleneck on page load
+  useEffect(() => {
+    if (phase === 'typing' && letterCount >= 3 && videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [phase, letterCount]);
+
   return (
-    <section className="hero-section" ref={heroRef}>
-      {/* Background Video */}
+    <section
+      className={`hero-section ${phase === 'revealed' ? 'hero-revealed' : ''}`}
+      ref={heroRef}
+    >
+      {/* Background Video (streams after initial paint, plays after GENVAANI typing completes) */}
       <video
+        ref={videoRef}
         className="hero-video-bg"
-        autoPlay
         loop
         muted
         playsInline
-        preload="auto"
+        preload="none"
         aria-hidden="true"
       >
         <source src={heroVideo} type="video/mp4" />
@@ -90,14 +189,64 @@ const HeroSection = () => {
       <div className="hero-overlay" aria-hidden="true" />
       <div className="hero-glow" aria-hidden="true" />
 
-      {/* Main Hero Content */}
-      <div className="hero-content">
-        {/* Eyebrow matching studio typography */}
-        {/* <div className="hero-eyebrow">
-          <span>DIGITAL PRODUCT STUDIO</span>
-          <div className="hero-eyebrow-divider" aria-hidden="true" />
-        </div> */}
+      {/* GENVAANI Letter-by-Letter Animated Intro */}
+      {phase !== 'revealed' && (
+        <div
+          className={`hero-typing-overlay ${
+            isExiting ? 'hero-typing-overlay--exiting' : ''
+          }`}
+          aria-live="polite"
+          aria-label="GENVAANI animated intro"
+        >
+          <div className="hero-typing-glow" aria-hidden="true" />
 
+          <div className="hero-typing-box">
+            {/* <div className="hero-typing-badge">
+              <span className="hero-typing-dot" />
+              <span className="hero-typing-badge-text">
+                DIGITAL PRODUCT STUDIO
+              </span>
+            </div> */}
+
+            <div className="hero-typing-word-row">
+              <span className="hero-typing-letters">
+                {GENVAANI_LETTERS.slice(0, letterCount).map((char, index) => {
+                  const isVaani = index >= 3; // 'G','E','N' (0,1,2) vs 'V','A','A','N','I' (3..7)
+                  return (
+                    <span
+                      key={index}
+                      className={`hero-typing-char ${
+                        isVaani ? 'char-vaani' : 'char-gen'
+                      }`}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
+              </span>
+              <span
+                className={`hero-typing-cursor ${
+                  letterCount === GENVAANI_LETTERS.length ? 'cursor-pulse' : ''
+                }`}
+                aria-hidden="true"
+              >
+                |
+              </span>
+            </div>
+
+            <div className="hero-typing-sub">
+              {letterCount === GENVAANI_LETTERS.length && (
+                <span className="hero-typing-tagline">
+                  Your Voice Always Heard
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Hero Content (Revealed after GENVAANI completes) */}
+      <div className="hero-content">
         {/* Word-by-word animated headline with Dual Typography */}
         <h1
           className="hero-heading"

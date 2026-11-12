@@ -1,9 +1,21 @@
 import { Meeting } from '../models/Meeting.js';
 import { Lead } from '../models/Lead.js';
+import { Availability } from '../models/Availability.js';
 import { sendAppointmentEmails } from '../services/emailService.js';
 import XLSX from 'xlsx';
 
-export const GENVAANI_MEET_URL = 'https://meet.google.com/mjk-yknw-mvz';
+export const GOOGLE_MEET_URLS = [
+  'https://meet.google.com/mjk-yknw-mvz',
+  'https://meet.google.com/geb-oycw-gcq',
+];
+
+export const TEAMS_URLS = [
+  'https://teams.live.com/meet/93318275504734?p=xK5khRzzuLiFVq30LM',
+  'https://teams.live.com/meet/93608937335627?p=yjLmlQpPbBwL3JPtvn',
+];
+
+export const GENVAANI_MEET_URL = GOOGLE_MEET_URLS[0];
+export const GENVAANI_TEAMS_URL = TEAMS_URLS[0];
 
 // Demonstration meetings to seed if database is empty
 const SEED_MEETINGS = [
@@ -70,6 +82,112 @@ const SEED_MEETINGS = [
 ];
 
 /**
+ * @desc    Get agency availability settings (AEST time slots, working days, URLs)
+ * @route   GET /api/meetings/availability
+ * @access  Public
+ */
+export const getAvailability = async (req, res) => {
+  try {
+    let availability = await Availability.findOne();
+    if (!availability) {
+      availability = await Availability.create({
+        timezone: 'Australia/Sydney',
+        timeSlots: [
+          '09:30 AM',
+          '11:00 AM',
+          '12:30 PM',
+          '02:00 PM',
+          '03:30 PM',
+          '04:15 PM',
+        ],
+        workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        googleMeetUrl: GOOGLE_MEET_URLS[0],
+        googleMeetUrls: GOOGLE_MEET_URLS,
+        teamsUrl: TEAMS_URLS[0],
+        teamsUrls: TEAMS_URLS,
+        slotDurationMinutes: 30,
+      });
+    } else {
+      let modified = false;
+      if (!Array.isArray(availability.googleMeetUrls) || availability.googleMeetUrls.length < 2) {
+        availability.googleMeetUrls = GOOGLE_MEET_URLS;
+        modified = true;
+      }
+      if (!Array.isArray(availability.teamsUrls) || availability.teamsUrls.length < 2) {
+        availability.teamsUrls = TEAMS_URLS;
+        modified = true;
+      }
+      if (modified) {
+        await availability.save();
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      availability,
+    });
+  } catch (error) {
+    console.error('Error fetching availability:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve availability settings.',
+    });
+  }
+};
+
+/**
+ * @desc    Update agency availability settings from Admin Portal (AEST slots, days, links)
+ * @route   PUT /api/meetings/availability
+ * @access  Admin
+ */
+export const updateAvailability = async (req, res) => {
+  try {
+    const {
+      timeSlots,
+      workingDays,
+      googleMeetUrl,
+      googleMeetUrls,
+      teamsUrl,
+      teamsUrls,
+      slotDurationMinutes,
+    } = req.body;
+
+    const updatePayload = {};
+    if (Array.isArray(timeSlots)) updatePayload.timeSlots = timeSlots;
+    if (Array.isArray(workingDays)) updatePayload.workingDays = workingDays;
+    if (googleMeetUrl) updatePayload.googleMeetUrl = googleMeetUrl.trim();
+    if (Array.isArray(googleMeetUrls) && googleMeetUrls.length > 0) {
+      updatePayload.googleMeetUrls = googleMeetUrls.map((u) => u.trim()).filter(Boolean);
+      updatePayload.googleMeetUrl = updatePayload.googleMeetUrls[0];
+    }
+    if (teamsUrl) updatePayload.teamsUrl = teamsUrl.trim();
+    if (Array.isArray(teamsUrls) && teamsUrls.length > 0) {
+      updatePayload.teamsUrls = teamsUrls.map((u) => u.trim()).filter(Boolean);
+      updatePayload.teamsUrl = updatePayload.teamsUrls[0];
+    }
+    if (slotDurationMinutes) updatePayload.slotDurationMinutes = Number(slotDurationMinutes);
+
+    const availability = await Availability.findOneAndUpdate(
+      {},
+      { $set: updatePayload },
+      { new: true, upsert: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'AEST Availability and consultation settings updated successfully.',
+      availability,
+    });
+  } catch (error) {
+    console.error('Error updating availability:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update availability settings.',
+    });
+  }
+};
+
+/**
  * @desc    Book a new consultation meeting from public calendar
  * @route   POST /api/meetings
  * @access  Public
@@ -87,15 +205,29 @@ export const createMeeting = async (req, res) => {
       time,
       timezone,
       notes,
+      location,
+      aestTime,
+      aestDateKey,
     } = req.body;
 
     const finalName = clientName || name;
+    const finalLocation = ['Google Meet', 'Microsoft Teams', 'Phone call'].includes(location)
+      ? location
+      : 'Google Meet';
 
     // 1. Validate required fields
     if (!finalName || !email || !service || !date || !dateKey || !time) {
       return res.status(400).json({
         success: false,
         message: 'Name, Email, Service, Date, and Time slot are all required to book a consultation.',
+      });
+    }
+
+    // Phone is required if location is 'Phone call'
+    if (finalLocation === 'Phone call' && (!phone || !phone.trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number is required when selecting Phone call consultation so our team can reach you.',
       });
     }
 
@@ -108,17 +240,26 @@ export const createMeeting = async (req, res) => {
       });
     }
 
-    // 3. Check for slot collision: is this slot already confirmed for this date?
+    // 3. Check for slot collision: check both client local slot and canonical AEST slot
+    const collisionOr = [
+      { dateKey: dateKey.trim(), time: time.trim() },
+    ];
+    if (aestDateKey && aestTime) {
+      collisionOr.push({ aestDateKey: aestDateKey.trim(), aestTime: aestTime.trim() });
+    }
+    if (aestTime) {
+      collisionOr.push({ dateKey: (aestDateKey || dateKey).trim(), time: aestTime.trim() });
+    }
+
     const existingBooking = await Meeting.findOne({
-      dateKey: dateKey.trim(),
-      time: time.trim(),
       status: 'confirmed',
+      $or: collisionOr,
     });
 
     if (existingBooking) {
       return res.status(409).json({
         success: false,
-        message: `The ${time} slot on ${date} is already reserved by another client. Please select another available time.`,
+        message: `The ${time} slot (${aestTime ? `${aestTime} AEST` : ''}) on ${date} is already reserved by another client. Please select another available time.`,
       });
     }
 
@@ -129,7 +270,37 @@ export const createMeeting = async (req, res) => {
       company = domain.split('.')[0].toUpperCase();
     }
 
-    // 5. Create new meeting with the requested Google Meet link
+    // Fetch availability configuration
+    const currentAvail = await Availability.findOne();
+
+    // 5. Alternating Meeting Link Assignment:
+    // Alternate links for odd vs even users based on existing booking count
+    let finalMeetUrl = GENVAANI_MEET_URL;
+    let finalTeamsUrl = GENVAANI_TEAMS_URL;
+
+    if (finalLocation === 'Google Meet') {
+      const meetPool = (Array.isArray(currentAvail?.googleMeetUrls) && currentAvail.googleMeetUrls.filter(Boolean).length > 0)
+        ? currentAvail.googleMeetUrls.filter(Boolean)
+        : GOOGLE_MEET_URLS;
+
+      const existingMeetCount = await Meeting.countDocuments({ location: 'Google Meet' });
+      // 1st user (count 0) -> meetPool[0] (odd user)
+      // 2nd user (count 1) -> meetPool[1] (even user)
+      finalMeetUrl = meetPool[existingMeetCount % meetPool.length] || GENVAANI_MEET_URL;
+      console.log(`🎥 Assigned Google Meet link #${(existingMeetCount % meetPool.length) + 1} (${(existingMeetCount % 2 === 0) ? 'Odd user' : 'Even user'}): ${finalMeetUrl}`);
+    } else if (finalLocation === 'Microsoft Teams') {
+      const teamsPool = (Array.isArray(currentAvail?.teamsUrls) && currentAvail.teamsUrls.filter(Boolean).length > 0)
+        ? currentAvail.teamsUrls.filter(Boolean)
+        : TEAMS_URLS;
+
+      const existingTeamsCount = await Meeting.countDocuments({ location: 'Microsoft Teams' });
+      // 1st user (count 0) -> teamsPool[0] (odd user)
+      // 2nd user (count 1) -> teamsPool[1] (even user)
+      finalTeamsUrl = teamsPool[existingTeamsCount % teamsPool.length] || GENVAANI_TEAMS_URL;
+      console.log(`💼 Assigned Microsoft Teams link #${(existingTeamsCount % teamsPool.length) + 1} (${(existingTeamsCount % 2 === 0) ? 'Odd user' : 'Even user'}): ${finalTeamsUrl}`);
+    }
+
+    // 6. Create new meeting
     const meeting = await Meeting.create({
       clientName: finalName.trim(),
       email: email.toLowerCase().trim(),
@@ -140,8 +311,12 @@ export const createMeeting = async (req, res) => {
       dateKey: dateKey.trim(),
       time: time.trim(),
       timezone: timezone || 'Australia/Sydney',
+      aestTime: aestTime ? aestTime.trim() : time.trim(),
+      aestDateKey: aestDateKey ? aestDateKey.trim() : dateKey.trim(),
+      location: finalLocation,
       notes: notes ? notes.trim() : 'Scheduled 30-minute discovery consultation.',
-      meetUrl: GENVAANI_MEET_URL,
+      meetUrl: finalMeetUrl,
+      teamsUrl: finalTeamsUrl,
       status: 'confirmed',
     });
 
@@ -153,7 +328,7 @@ export const createMeeting = async (req, res) => {
         phone: phone ? phone.trim() : '',
         company,
         service: service.trim(),
-        message: `Scheduled consultation for ${date} at ${time}. ${notes ? `Notes: ${notes}` : ''}`,
+        message: `Scheduled ${finalLocation} consultation for ${date} at ${time} (${meeting.aestTime} AEST). ${notes ? `Notes: ${notes}` : ''}`,
         budget: 'Discovery Consultation',
         status: 'new',
         source: 'Consultation Calendar',
@@ -162,7 +337,7 @@ export const createMeeting = async (req, res) => {
       console.warn('Lead sync skipped during meeting creation', leadSyncErr);
     }
 
-    console.log(`📅 [Meeting Booked]: ${meeting.clientName} on ${meeting.dateKey} at ${meeting.time} -> Google Meet: ${GENVAANI_MEET_URL}`);
+    console.log(`📅 [Meeting Booked]: ${meeting.clientName} (${finalLocation}) on ${meeting.dateKey} at ${meeting.time} [${meeting.aestTime} AEST]`);
 
     // 7. Dispatch Brevo Email Confirmation to Visitor & Notification to Admin
     let emailStatus = null;
@@ -172,11 +347,19 @@ export const createMeeting = async (req, res) => {
       console.error('⚠️ [Email Dispatch Warning]: Failed to dispatch Brevo emails:', emailErr);
     }
 
+    let successMessage = 'Consultation confirmed successfully! Your Google Meet link is ready.';
+    if (finalLocation === 'Microsoft Teams') {
+      successMessage = 'Consultation confirmed successfully! Your Microsoft Teams link is ready.';
+    } else if (finalLocation === 'Phone call') {
+      successMessage = `Consultation confirmed successfully! We will call you at ${meeting.phone} at your scheduled time.`;
+    }
+
     return res.status(201).json({
       success: true,
-      message: 'Consultation confirmed successfully! Your Google Meet link is ready.',
+      message: successMessage,
       meeting,
-      meetUrl: GENVAANI_MEET_URL,
+      meetUrl: finalMeetUrl,
+      teamsUrl: finalTeamsUrl,
       emailStatus,
     });
   } catch (error) {
@@ -195,40 +378,51 @@ export const createMeeting = async (req, res) => {
  */
 export const getBookedSlots = async (req, res) => {
   try {
-    const { dateKey } = req.query;
+    const { dateKey, aestDateKey } = req.query;
 
-    if (dateKey) {
-      // Find all confirmed meetings for this specific date
+    if (dateKey || aestDateKey) {
+      const targetDate = (dateKey || aestDateKey).trim();
+      // Find all confirmed meetings matching dateKey or aestDateKey
       const meetings = await Meeting.find({
-        dateKey: dateKey.trim(),
         status: 'confirmed',
-      }).select('time');
+        $or: [
+          { dateKey: targetDate },
+          { aestDateKey: targetDate },
+        ],
+      }).select('time aestTime dateKey aestDateKey');
 
       const bookedSlots = meetings.map((m) => m.time);
+      const bookedAestSlots = meetings.map((m) => m.aestTime || m.time);
 
       return res.status(200).json({
         success: true,
-        dateKey,
+        dateKey: targetDate,
         bookedSlots,
+        bookedAestSlots,
       });
     }
 
-    // Return all confirmed bookings grouped by dateKey
-    const allConfirmed = await Meeting.find({ status: 'confirmed' }).select('dateKey time');
+    // Return all confirmed bookings grouped by dateKey & aestDateKey
+    const allConfirmed = await Meeting.find({ status: 'confirmed' }).select('dateKey aestDateKey time aestTime');
     const scheduleMap = {};
+    const aestScheduleMap = {};
 
     allConfirmed.forEach((m) => {
-      if (!scheduleMap[m.dateKey]) {
-        scheduleMap[m.dateKey] = [];
-      }
-      if (!scheduleMap[m.dateKey].includes(m.time)) {
-        scheduleMap[m.dateKey].push(m.time);
-      }
+      const dKey = m.dateKey;
+      const aKey = m.aestDateKey || m.dateKey;
+
+      if (!scheduleMap[dKey]) scheduleMap[dKey] = [];
+      if (!scheduleMap[dKey].includes(m.time)) scheduleMap[dKey].push(m.time);
+
+      if (!aestScheduleMap[aKey]) aestScheduleMap[aKey] = [];
+      const aSlot = m.aestTime || m.time;
+      if (!aestScheduleMap[aKey].includes(aSlot)) aestScheduleMap[aKey].push(aSlot);
     });
 
     return res.status(200).json({
       success: true,
       scheduleMap,
+      aestScheduleMap,
     });
   } catch (error) {
     console.error('Error fetching booked slots:', error);
@@ -377,13 +571,19 @@ export const exportMeetingsExcel = async (req, res) => {
         'Company / Organization': meet.company || 'Direct Client',
         'Client Email': meet.email || 'N/A',
         'Phone Number': meet.phone || 'Not Provided',
+        'Location / Platform': meet.location || 'Google Meet',
         'Service Requested': meet.service || 'Consultation',
         'Consultation Date': meet.date || meet.dateKey || 'N/A',
         'Date Key (YYYY-MM-DD)': meet.dateKey || 'N/A',
-        'Time Slot': meet.time || 'N/A',
-        'Timezone': meet.timezone || 'Australia/Sydney (AEST)',
+        'Client Time Slot': meet.time || 'N/A',
+        'Client Timezone': meet.timezone || 'Australia/Sydney',
+        'AEST Time': meet.aestTime || meet.time || 'N/A',
         'Meeting Status': statusLabel,
-        'Google Meet URL': meet.meetUrl || GENVAANI_MEET_URL,
+        'Meeting Link / Details': meet.location === 'Microsoft Teams'
+          ? (meet.teamsUrl || GENVAANI_TEAMS_URL)
+          : meet.location === 'Phone call'
+          ? `Phone Call to ${meet.phone || 'N/A'}`
+          : (meet.meetUrl || GENVAANI_MEET_URL),
         'Agenda / Scoping Notes': meet.notes || 'Initial consultation and tech scoping.',
         'Booked On': bookedOn,
       };

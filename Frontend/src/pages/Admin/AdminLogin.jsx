@@ -11,8 +11,8 @@ import {
   FiCheckCircle, 
   FiArrowLeft 
 } from 'react-icons/fi';
-import navbarLogo from '../../assets/PNG/6.icon + Name Logo Transparent.png';
-import brandIcon from '../../assets/PNG/8.icon Transparent.png';
+import navbarLogo from '../../assets/PNG/6.icon + Name Logo Transparent.webp';
+import brandIcon from '../../assets/PNG/8.icon Transparent.webp';
 import { loginAdminApi } from '../../services/adminApi';
 import './AdminAuth.css';
 

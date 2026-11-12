@@ -6,9 +6,15 @@ import {
   updateMeetingStatus,
   deleteMeeting,
   exportMeetingsExcel,
+  getAvailability,
+  updateAvailability,
 } from '../controllers/meetingController.js';
 
 const router = express.Router();
+
+// Availability configuration (AEST slots, working days, URLs)
+router.get('/availability', getAvailability);
+router.put('/availability', updateAvailability);
 
 // Public routes for booking consultation and checking available/booked slots
 router.post('/', createMeeting);

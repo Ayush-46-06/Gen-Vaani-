@@ -7,7 +7,7 @@ import {
 } from '../services/categoryApi';
 
 import './Navbar.css';
-import logo from '../assets/PNG/genvaani-navbar-logo-clean.png';
+import logo from '../assets/PNG/genvaani-navbar-logo-clean.webp';
 
 const DEFAULT_SERVICES = [
   {
@@ -205,6 +205,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
+  const navbarRef = useRef(null);
   const servicesButtonRef = useRef(null);
   const megaMenuRef = useRef(null);
   const [notchLeft, setNotchLeft] = useState(null);
@@ -303,6 +304,25 @@ const Navbar = () => {
     setMobileOpen(false);
     setMobileServicesOpen(false);
   }, [location.pathname]);
+
+  // Close menus when clicking outside the navbar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+        setServicesOpen(false);
+        setMobileOpen(false);
+        setMobileServicesOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
 
   // Prevent background scrolling on mobile
   useEffect(() => {
@@ -421,9 +441,35 @@ const Navbar = () => {
     return columns;
   }, [categories, services]);
 
-  const closeMobileMenu = () => {
+  const closeAllMenus = () => {
+    setServicesOpen(false);
     setMobileOpen(false);
     setMobileServicesOpen(false);
+  };
+
+  const closeMobileMenu = closeAllMenus;
+
+  const handleNavClick = (path, e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    closeAllMenus();
+
+    try {
+      const targetUrl = new URL(path, window.location.origin);
+      const isCurrentPath = window.location.pathname === targetUrl.pathname;
+
+      if (isCurrentPath && !targetUrl.hash) {
+        window.location.reload();
+      } else if (isCurrentPath && targetUrl.hash) {
+        window.location.href = path;
+        window.location.reload();
+      } else {
+        window.location.href = path;
+      }
+    } catch {
+      window.location.href = path;
+    }
   };
 
   const isActive = (path) => location.pathname === path;
@@ -438,6 +484,7 @@ const Navbar = () => {
       ===================================== */}
 
       <nav
+        ref={navbarRef}
         className={`gvn-navbar ${
           scrolled ? 'gvn-navbar-scrolled' : ''
         }`}
@@ -446,10 +493,14 @@ const Navbar = () => {
         {/* LOGO */}
 
         <div className="gvn-logo">
-          <Link to="/" onClick={closeMobileMenu} className="gvn-logo-link">
+          <a
+            href="/"
+            onClick={(e) => handleNavClick('/', e)}
+            className="gvn-logo-link"
+          >
             <img src={logo} alt="GenVaani" className="gvn-logo-img" />
             <span className="gvn-tagline">Your Voice Always Heard</span>
-          </Link>
+          </a>
         </div>
 
         {/* DESKTOP NAVIGATION */}
@@ -457,14 +508,15 @@ const Navbar = () => {
         <ul className="gvn-nav-links">
 
           <li>
-            <Link
-              to="/"
+            <a
+              href="/"
               className={`gvn-nav-link ${
                 isActive('/') ? 'active' : ''
               }`}
+              onClick={(e) => handleNavClick('/', e)}
             >
               Home
-            </Link>
+            </a>
           </li>
 
           {/* SERVICES */}
@@ -519,13 +571,13 @@ const Navbar = () => {
                 <div className="gvn-banner-content">
                   <div className="gvn-banner-eyebrow">
                     <span>OUR SERVICES</span>
-                    <span className="gvn-eyebrow-dash">—</span>
+                    {/* <span className="gvn-eyebrow-dash">—</span> */}
                   </div>
                   <h3 className="gvn-banner-title">
                     End-to-End Digital Solutions
                   </h3>
                   <p className="gvn-banner-desc">
-                    From design to development and growth — everything your business needs to scale.
+                    From design to development and growth everything your business needs to scale.
                   </p>
                 </div>
 
@@ -590,16 +642,16 @@ const Navbar = () => {
                       <div className="gvn-service-items">
                         {column.services.length > 0 ? (
                           column.services.map((service, serviceIndex) => (
-                            <Link
+                            <a
                               key={
                                 service.slug ||
                                 service._id ||
                                 serviceIndex
                               }
-                              to={`/services/${service.slug}`}
+                              href={`/services/${service.slug}`}
                               className="gvn-service-row"
-                              onClick={() =>
-                                setServicesOpen(false)
+                              onClick={(e) =>
+                                handleNavClick(`/services/${service.slug}`, e)
                               }
                             >
                               <span className="gvn-service-name">
@@ -608,7 +660,7 @@ const Navbar = () => {
                               <span className="gvn-service-arrow" aria-hidden="true">
                                 ›
                               </span>
-                            </Link>
+                            </a>
                           ))
                         ) : (
                           <span className="gvn-empty-service">
@@ -624,36 +676,39 @@ const Navbar = () => {
           </li>
 
           <li>
-            <Link
-              to="/portfolio"
+            <a
+              href="/portfolio"
               className={`gvn-nav-link ${
                 isActive('/portfolio') ? 'active' : ''
               }`}
+              onClick={(e) => handleNavClick('/portfolio', e)}
             >
               Portfolio
-            </Link>
+            </a>
           </li>
 
           <li>
-            <Link
-              to="/pricing"
+            <a
+              href="/pricing"
               className={`gvn-nav-link ${
                 isActive('/pricing') ? 'active' : ''
               }`}
+              onClick={(e) => handleNavClick('/pricing', e)}
             >
               Pricing
-            </Link>
+            </a>
           </li>
 
           <li>
-            <Link
-              to="/about"
+            <a
+              href="/about"
               className={`gvn-nav-link ${
                 isActive('/about') ? 'active' : ''
               }`}
+              onClick={(e) => handleNavClick('/about', e)}
             >
               About Us
-            </Link>
+            </a>
           </li>
 
         </ul>
@@ -662,10 +717,14 @@ const Navbar = () => {
 
         <div className="gvn-desktop-cta">
 
-          <Link to="/contact" className="gvn-book-button">
+          <a
+            href="/contact#booking-widget"
+            className="gvn-book-button"
+            onClick={(e) => handleNavClick('/contact#booking-widget', e)}
+          >
             <span>Book a Call</span>
             <ArrowIcon />
-          </Link>
+          </a>
 
         </div>
 
@@ -719,15 +778,15 @@ const Navbar = () => {
 
         <div className="gvn-mobile-links">
 
-          <Link
-            to="/"
+          <a
+            href="/"
             className={`gvn-mobile-link ${
               isActive('/') ? 'active' : ''
             }`}
-            onClick={closeMobileMenu}
+            onClick={(e) => handleNavClick('/', e)}
           >
             Home
-          </Link>
+          </a>
 
           {/* MOBILE SERVICES */}
 
@@ -777,15 +836,17 @@ const Navbar = () => {
                       </div>
 
                       {column.services.map((service, index) => (
-                        <Link
+                        <a
                           key={service.slug || index}
-                          to={`/services/${service.slug}`}
+                          href={`/services/${service.slug}`}
                           className="gvn-mobile-service-link"
-                          onClick={closeMobileMenu}
+                          onClick={(e) =>
+                            handleNavClick(`/services/${service.slug}`, e)
+                          }
                         >
                           <span>{service.title}</span>
                           <span className="gvn-mobile-arrow" aria-hidden="true">›</span>
-                        </Link>
+                        </a>
                       ))}
 
                     </div>
@@ -798,35 +859,35 @@ const Navbar = () => {
 
           </div>
 
-          <Link
-            to="/portfolio"
+          <a
+            href="/portfolio"
             className={`gvn-mobile-link ${
               isActive('/portfolio') ? 'active' : ''
             }`}
-            onClick={closeMobileMenu}
+            onClick={(e) => handleNavClick('/portfolio', e)}
           >
             Portfolio
-          </Link>
+          </a>
 
-          <Link
-            to="/pricing"
+          <a
+            href="/pricing"
             className={`gvn-mobile-link ${
               isActive('/pricing') ? 'active' : ''
             }`}
-            onClick={closeMobileMenu}
+            onClick={(e) => handleNavClick('/pricing', e)}
           >
             Pricing
-          </Link>
+          </a>
 
-          <Link
-            to="/about"
+          <a
+            href="/about"
             className={`gvn-mobile-link ${
               isActive('/about') ? 'active' : ''
             }`}
-            onClick={closeMobileMenu}
+            onClick={(e) => handleNavClick('/about', e)}
           >
             About Us
-          </Link>
+          </a>
 
         </div>
 
@@ -834,14 +895,14 @@ const Navbar = () => {
 
         <div className="gvn-mobile-cta">
 
-          <Link
-            to="/contact"
+          <a
+            href="/contact#booking-widget"
             className="gvn-book-button"
-            onClick={closeMobileMenu}
+            onClick={(e) => handleNavClick('/contact#booking-widget', e)}
           >
             <span>Book a Call</span>
             <ArrowIcon />
-          </Link>
+          </a>
 
           <p>
             Ready to build something extraordinary?

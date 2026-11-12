@@ -1,10 +1,44 @@
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import aboutHeroImage from '../../assets/image copy.png';
+import aboutHeroImage from '../../assets/image copy.webp';
 import './AboutSection.css';
 
 const AboutSection = () => {
+  const eyebrowRef = useRef(null);
+  const bottomRef = useRef(null);
+  const [isEyebrowInView, setIsEyebrowInView] = useState(false);
+  const [isBottomInView, setIsBottomInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === eyebrowRef.current) {
+            setIsEyebrowInView(entry.isIntersecting);
+          } else if (entry.target === bottomRef.current) {
+            setIsBottomInView(entry.isIntersecting);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    const currentEyebrow = eyebrowRef.current;
+    const currentBottom = bottomRef.current;
+
+    if (currentEyebrow) observer.observe(currentEyebrow);
+    if (currentBottom) observer.observe(currentBottom);
+
+    return () => {
+      if (currentEyebrow) observer.unobserve(currentEyebrow);
+      if (currentBottom) observer.unobserve(currentBottom);
+    };
+  }, []);
+
   return (
     <section className="about-section-grid" id="about">
       <div className="about-container">
@@ -14,7 +48,7 @@ const AboutSection = () => {
           {/* Left Content */}
           <div className="about-content">
 
-            <div className="about-eyebrow">
+            <div className={`about-eyebrow ${isEyebrowInView ? 'is-in-view' : ''}`} ref={eyebrowRef}>
               <span className="about-eyebrow-line" />
               <span>WHO WE ARE</span>
             </div>
@@ -87,19 +121,20 @@ const AboutSection = () => {
                 alt="GenVaani bringing technology, creativity and innovation together"
                 className="about-image-img"
                 loading="lazy"
+                decoding="async"
               />
 
               <div className="about-image-shade" />
 
               <div className="about-image-top-label">
-                <span className="about-live-dot" />
+                {/* <span className="about-live-dot" /> */}
                 INNOVATION IN MOTION
               </div>
 
               <div className="about-image-caption">
-                <span className="about-caption-label">
+                {/* <span className="about-caption-label">
                   OUR APPROACH
-                </span>
+                </span> */}
 
                 <h3>
                   Think beyond.
@@ -114,7 +149,11 @@ const AboutSection = () => {
             </div>
 
             {/* Floating decorative element */}
-            <div className="about-floating-card">
+            <Link
+              to="/about"
+              className="about-floating-card"
+              aria-label="Learn more about our work"
+            >
               <div className="about-floating-icon">✳</div>
 
               <div>
@@ -127,18 +166,18 @@ const AboutSection = () => {
               </div>
 
               <span className="about-floating-arrow">↗</span>
-            </div>
+            </Link>
 
             <div className="about-visual-index">
               {/* <span>GV.</span> */}
-              <span>CREATING WHAT'S NEXT</span>
+              {/* <span>CREATING WHAT'S NEXT</span> */}
             </div>
           </div>
         </div>
 
         {/* Bottom Statement */}
         <div className="about-bottom">
-          <div className="about-bottom-index">
+          <div className={`about-bottom-index ${isBottomInView ? 'is-in-view' : ''}`} ref={bottomRef}>
             <span className="about-bottom-index-line" />
             <span>OUR PHILOSOPHY</span>
           </div>
@@ -157,9 +196,13 @@ const AboutSection = () => {
             </p>
           </div>
 
-          <div className="about-bottom-symbol" aria-hidden="true">
+          <Link
+            to="/about"
+            className="about-bottom-symbol"
+            aria-label="Learn more about our philosophy on the about page"
+          >
             ↗
-          </div>
+          </Link>
         </div>
       </div>
     </section>

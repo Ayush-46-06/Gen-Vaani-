@@ -35,10 +35,16 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  animation:
-    videoReveal 1.5s ease-out both,
-    videoZoom 24s ease-in-out 1.5s infinite alternate;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-section.hero-revealed .hero-video-bg {
+  opacity: 1;
+  animation:
+    videoReveal 1.8s ease-out both,
+    videoZoom 24s ease-in-out 1.8s infinite alternate;
 }
 
 .hero-overlay {
@@ -83,6 +89,177 @@
 }
 
 /* ========================================
+   GENVAANI TYPING INTRO OVERLAY
+======================================== */
+
+.hero-typing-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5%;
+  pointer-events: none;
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 0.65s ease;
+}
+
+.hero-typing-overlay--exiting {
+  opacity: 0;
+  transform: scale(1.05);
+  filter: blur(8px);
+}
+
+.hero-typing-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  max-width: 80vw;
+  max-height: 80vw;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(0, 203, 240, 0.22) 0%,
+      rgba(123, 44, 191, 0.16) 45%,
+      transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: heroTypingGlowPulse 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes heroTypingGlowPulse {
+  0% { transform: scale(0.92); opacity: 0.65; }
+  100% { transform: scale(1.18); opacity: 1; }
+}
+
+.hero-typing-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+}
+
+.hero-typing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 203, 240, 0.32);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.hero-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00cbf0;
+  box-shadow: 0 0 10px #00cbf0;
+  animation: dotPulse 1.5s infinite ease-out;
+}
+
+.hero-typing-word-row {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  position: relative;
+  min-height: 1.15em;
+}
+
+.hero-typing-letters {
+  display: inline-flex;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(3.2rem, 9.5vw, 6.8rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.hero-typing-char {
+  display: inline-block;
+  animation: heroCharPop 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroCharPop {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hero-typing-char.char-gen {
+  color: #ffffff;
+  text-shadow:
+    0 0 25px rgba(255, 255, 255, 0.4),
+    0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hero-typing-char.char-vaani {
+  background: linear-gradient(135deg, #00cbf0 0%, #38bdf8 50%, #00e5ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 22px rgba(0, 203, 240, 0.7));
+}
+
+.hero-typing-cursor {
+  display: inline-block;
+  margin-left: 6px;
+  color: #00cbf0;
+  font-size: clamp(3.2rem, 9.5vw, 6.8rem);
+  font-weight: 300;
+  line-height: 1;
+  text-shadow: 0 0 18px #00cbf0;
+  animation: cursorBlink 0.65s step-start infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.hero-typing-cursor.cursor-pulse {
+  animation: cursorSurge 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes cursorSurge {
+  0% { opacity: 0.4; transform: scaleY(0.9); }
+  100% { opacity: 1; transform: scaleY(1.06); }
+}
+
+.hero-typing-sub {
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-typing-tagline {
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  animation: fadeIn 0.35s ease-out forwards;
+}
+
+/* ========================================
    HERO CONTENT
 ======================================== */
 
@@ -95,8 +272,20 @@
   align-items: flex-start;
   gap: 30px;
 
-  /* Scroll-triggered transition */
+  /* Hidden until GENVAANI typing completes */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0.75s ease;
+}
+
+.hero-section.hero-revealed .hero-content {
   opacity: var(--hero-scroll-opacity, 1);
+  visibility: visible;
+  pointer-events: auto;
   transform: translate3d(0, var(--hero-scroll-y, 0px), 0);
 }
 
@@ -189,38 +378,41 @@
   margin-right: 0.19em;
   opacity: 0;
   transform: translate3d(0, 35px, 0);
-  animation: wordReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
-/* Staggered word timing */
-
-.word-1 {
-  animation-delay: 0.35s;
+.hero-section.hero-revealed .hero-word {
+  animation: wordReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.word-2 {
-  animation-delay: 0.48s;
+/* Staggered word timing once hero is revealed */
+
+.hero-section.hero-revealed .word-1 {
+  animation-delay: 0.20s;
 }
 
-.word-3 {
-  animation-delay: 0.61s;
+.hero-section.hero-revealed .word-2 {
+  animation-delay: 0.36s;
 }
 
-.word-4 {
-  animation-delay: 0.78s;
+.hero-section.hero-revealed .word-3 {
+  animation-delay: 0.52s;
 }
 
-.word-5 {
-  animation-delay: 0.91s;
+.hero-section.hero-revealed .word-4 {
+  animation-delay: 0.72s;
 }
 
-.word-6 {
+.hero-section.hero-revealed .word-5 {
+  animation-delay: 0.88s;
+}
+
+.hero-section.hero-revealed .word-6 {
   animation-delay: 1.08s;
 }
 
-.word-7 {
-  animation-delay: 1.21s;
+.hero-section.hero-revealed .word-7 {
+  animation-delay: 1.24s;
 }
 
 /* ========================================
@@ -245,10 +437,12 @@
   -webkit-text-fill-color: transparent;
 
   text-shadow: none;
+}
 
+.hero-section.hero-revealed .hero-heading-accent {
   /* First reveal, then repeat the shimmer */
   animation:
-    wordReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.21s forwards,
+    wordReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.24s forwards,
     textShimmer 5s ease-in-out 2.5s infinite;
 }
 
@@ -273,7 +467,11 @@
   padding: 4px 0 4px 22px;
   border-left: 3px solid #00cbf0;
   opacity: 0;
-  animation: fadeUp 0.8s ease-out 1.65s forwards;
+  transform: translate3d(0, 20px, 0);
+}
+
+.hero-section.hero-revealed .hero-description-wrapper {
+  animation: fadeUp 0.9s ease-out 1.55s forwards;
 }
 
 .hero-description {
@@ -296,7 +494,11 @@
   align-items: flex-start;
   gap: 15px;
   opacity: 0;
-  animation: fadeUp 0.8s ease-out 1.85s forwards;
+  transform: translate3d(0, 20px, 0);
+}
+
+.hero-section.hero-revealed .hero-actions {
+  animation: fadeUp 0.9s ease-out 1.80s forwards;
 }
 
 .hero-cta {
@@ -414,10 +616,12 @@
   font-weight: 600;
   letter-spacing: 0.17em;
 
-  opacity: var(--hero-scroll-opacity, 1);
+  opacity: 0;
   transform: translate3d(0, var(--hero-scroll-y, 0px), 0);
+}
 
-  animation: fadeIn 0.8s ease-out 2.1s both;
+.hero-section.hero-revealed .hero-scroll-indicator {
+  animation: fadeIn 0.9s ease-out 2.05s forwards;
 }
 
 .hero-scroll-line {
@@ -692,6 +896,15 @@
   .hero-scroll-indicator {
     left: 5%;
   }
+
+  .hero-typing-letters {
+    font-size: clamp(2.2rem, 8vw, 3.2rem);
+    letter-spacing: 0.04em;
+  }
+
+  .hero-typing-cursor {
+    font-size: clamp(2.2rem, 8vw, 3.2rem);
+  }
 }
 
 /* ========================================
@@ -699,6 +912,10 @@
 ======================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
+  .hero-typing-overlay {
+    display: none !important;
+  }
 
   .hero-video-bg,
   .hero-glow,

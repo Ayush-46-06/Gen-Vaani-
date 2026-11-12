@@ -49,6 +49,22 @@ const meetingSchema = new mongoose.Schema(
       type: String,
       default: 'Australia/Sydney',
     },
+    aestTime: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    aestDateKey: {
+      type: String,
+      trim: true,
+      default: '',
+      index: true,
+    },
+    location: {
+      type: String,
+      enum: ['Google Meet', 'Microsoft Teams', 'Phone call'],
+      default: 'Google Meet',
+    },
     notes: {
       type: String,
       trim: true,
@@ -57,6 +73,10 @@ const meetingSchema = new mongoose.Schema(
     meetUrl: {
       type: String,
       default: 'https://meet.google.com/mjk-yknw-mvz',
+    },
+    teamsUrl: {
+      type: String,
+      default: 'https://teams.microsoft.com/l/meetup-join/genvaani',
     },
     status: {
       type: String,

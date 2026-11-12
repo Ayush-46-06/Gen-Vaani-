@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
   --gv-navy: #020b2d;
   --gv-blue: #0284c7;
@@ -381,6 +379,115 @@
   .contact-bottom-cta div:nth-child(2) { flex-basis: calc(100% - 55px); }
   .contact-bottom-cta > a { margin-left: 53px; }
 }
+/* Location Selection Field (Calendly style) */
+.location-selection-field {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.location-field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #34415a;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.location-field-label i {
+  color: #dc4545;
+  font-style: normal;
+}
+
+.location-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.location-option-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1.5px solid #dfe7f0;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.location-option-card:hover {
+  border-color: #7edfeb;
+  background: #f8fdff;
+  transform: translateY(-1px);
+}
+
+.location-option-card.location-selected {
+  border-color: var(--gv-blue);
+  background: linear-gradient(135deg, #f0faff 0%, #e6f7ff 100%);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.16);
+}
+
+.location-radio-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #a1acbc;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease;
+}
+
+.location-selected .location-radio-circle {
+  border-color: var(--gv-blue);
+}
+
+.location-radio-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--gv-blue);
+  border-radius: 50%;
+  display: block;
+}
+
+.location-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.location-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gv-navy);
+  white-space: nowrap;
+}
+
+.location-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+@media (max-width: 650px) {
+  .location-options-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .contact-page *, .contact-page *::before, .contact-page *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

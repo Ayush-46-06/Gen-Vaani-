@@ -6,3 +6,25 @@
   width: 100%;
   overflow-x: hidden;
 }
+
+
+.route-loading-fallback {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.route-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(0, 203, 240, 0.2);
+  border-top-color: #00cbf0;
+  border-radius: 50%;
+  animation: routeSpin 0.7s linear infinite;
+}
+
+@keyframes routeSpin {
+  to { transform: rotate(360deg); }
+}

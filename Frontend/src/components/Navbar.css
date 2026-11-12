@@ -28,7 +28,7 @@
   position: fixed;
   top: 24px;
   left: 50%;
-  z-index: 1000;
+  z-index: 1100;
 
   width: min(90%, 1420px);
   min-height: 76px;

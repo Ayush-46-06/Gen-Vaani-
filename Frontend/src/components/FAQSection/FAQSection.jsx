@@ -40,9 +40,7 @@ const FAQSection = () => {
 
         {/* Left Side: Header & Text */}
         <div className="faq-header">
-          <div className="faq-badge">
-            <span className="badge-icon">#</span> Frequently asked questions
-          </div>
+          
           <h2 className="faq-title">
             Frequently asked <br />
             <span className="faq-title-highlight">questions</span>

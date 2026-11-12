@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { getAdminProfileApi } from '../services/adminApi';
-import navbarLogo from '../assets/PNG/6.icon + Name Logo Transparent.png';
+import navbarLogo from '../assets/PNG/6.icon + Name Logo Transparent.webp';
 
 /**
  * AdminProtectedRoute

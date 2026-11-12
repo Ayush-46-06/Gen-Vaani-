@@ -116,7 +116,7 @@ const ServicesSection = () => {
 
       <div className="services-container">
         <div className="services-header">
-          <span className="services-subtitle">— PRODUCTION CAPABILITIES</span>
+          <span className="services-subtitle"> PRODUCTION CAPABILITIES</span>
           <h2 className="services-title">
             Services That Fit<br />
             <span className="text-accent">Your Needs</span>

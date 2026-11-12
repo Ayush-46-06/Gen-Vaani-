@@ -169,7 +169,7 @@ const PortfolioHero = ({ searchQuery = '', setSearchQuery, selectedTag = 'All', 
           {/* Eyebrow */}
           <div className="portfolio-hero-eyebrow">
             <span>OUR WORK</span>
-            <div className="eyebrow-divider" aria-hidden="true"></div>
+            {/* <div className="eyebrow-divider" aria-hidden="true"></div> */}
           </div>
 
           {/* Main Headline with dual typography: Sans Bold + Serif Italic */}

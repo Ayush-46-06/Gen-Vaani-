@@ -127,7 +127,7 @@ const Footer = () => {
 
           {/* Contact Information */}
           <div className="footer-col contact-col">
-            <h4 className="footer-heading">Contact Us</h4>
+            <h4 className="footer-heading">Get In Touch</h4>
             <div className="contact-item">
               <span className="contact-icon-box">
                 <FiMapPin />

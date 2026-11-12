@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Preloader.css';
-import iconLogo from '../../assets/PNG/8.icon Transparent.png';
+import iconLogo from '../../assets/PNG/8.icon Transparent.webp';
 
 const LETTERS = ['G', 'e', 'n', '-', 'V', 'a', 'a', 'n', 'i'];
 
@@ -9,7 +9,7 @@ const Preloader = ({ onComplete }) => {
   const [visibleCount, setVisibleCount] = useState(0);
   const [isDone, setIsDone] = useState(false);
 
-  // Type one letter after another
+  // Type one letter after another with fast, snappy cadence
   useEffect(() => {
     const interval = setInterval(() => {
       setVisibleCount((prev) => {
@@ -20,20 +20,20 @@ const Preloader = ({ onComplete }) => {
           return prev;
         }
       });
-    }, 110);
+    }, 80);
 
     return () => clearInterval(interval);
   }, []);
 
-  // When all letters typed, pause briefly and slide up curtain
+  // When all letters typed, brief pause and smoothly dismiss curtain
   useEffect(() => {
     if (visibleCount === LETTERS.length) {
       const holdTimer = setTimeout(() => {
         setIsDone(true);
         if (onComplete) {
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 300);
         }
-      }, 350);
+      }, 250);
 
       return () => clearTimeout(holdTimer);
     }

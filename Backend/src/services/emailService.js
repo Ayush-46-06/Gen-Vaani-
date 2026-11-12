@@ -4,6 +4,7 @@
  */
 
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
+export const EMAIL_LOGO_URL = 'https://ik.imagekit.io/vtfcbjo5c/branding/genvaani_email_logo_white.png';
 
 /**
  * Low-level Brevo API dispatcher
@@ -116,15 +117,18 @@ function generateEmailHtml({ title, subtitle, badgeText, contentHtml, ctaText, c
       color: #ffffff;
       position: relative;
     }
-    .logo-text {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin: 0 0 15px 0;
-      color: #ffffff;
+    .logo-wrap {
+      text-align: center;
+      margin: 0 0 20px 0;
     }
-    .logo-cyan {
-      color: #00cbf0;
+    .logo-img {
+      width: 220px;
+      max-width: 100%;
+      height: auto;
+      display: inline-block;
+      border: 0;
+      outline: none;
+      vertical-align: middle;
     }
     .badge-pill {
       display: inline-block;
@@ -256,7 +260,18 @@ function generateEmailHtml({ title, subtitle, badgeText, contentHtml, ctaText, c
     <div class="card">
       <!-- Brand Header -->
       <div class="header">
-        <div class="logo-text">Gen<span class="logo-cyan">-Vaani</span></div>
+        <div class="logo-wrap">
+          <a href="https://genvaani.com" target="_blank" style="text-decoration: none; display: inline-block;">
+            <img
+              src="${EMAIL_LOGO_URL}"
+              alt="Gen-Vaani"
+              width="220"
+              height="39"
+              class="logo-img"
+              style="width: 220px; max-width: 100%; height: auto; display: block; margin: 0 auto; border: 0; outline: none; text-decoration: none;"
+            />
+          </a>
+        </div>
         <div class="badge-pill">${badgeText}</div>
         <h1>${title}</h1>
         <p>${subtitle}</p>
@@ -281,6 +296,17 @@ function generateEmailHtml({ title, subtitle, badgeText, contentHtml, ctaText, c
 
       <!-- Footer -->
       <div class="footer">
+        <div style="margin-bottom: 12px;">
+          <a href="https://genvaani.com" target="_blank" style="text-decoration: none; display: inline-block;">
+            <img
+              src="${EMAIL_LOGO_URL}"
+              alt="Gen-Vaani"
+              width="140"
+              height="25"
+              style="width: 140px; max-width: 100%; height: auto; display: block; margin: 0 auto; opacity: 0.85; border: 0;"
+            />
+          </a>
+        </div>
         <div>Gen-Vaani Innovations • Technology & Digital Product Engineering</div>
         <div style="margin-top: 4px;">
           Need to reschedule? Email us at <a href="mailto:info@genvaani.com">info@genvaani.com</a>
@@ -304,14 +330,41 @@ export async function sendAppointmentConfirmationToClient(meeting) {
   const subtitle = `Hi ${meeting.clientName}, your strategy and technical scoping session has been successfully booked.`;
   const badgeText = 'APPOINTMENT CONFIRMED';
 
+  const location = meeting.location || 'Google Meet';
+  const meetUrl = meeting.meetUrl || 'https://meet.google.com/mjk-yknw-mvz';
+  const teamsUrl = meeting.teamsUrl || 'https://teams.microsoft.com/l/meetup-join/genvaani';
+
+  let platformLabel = 'Google Meet (HD Video & Screen Share)';
+  let ctaText = 'Join Google Meet Session';
+  let ctaUrl = meetUrl;
+  let instructions = 'We recommend joining the video session 2 minutes early from a desktop or laptop to allow seamless screen sharing and architecture reviews.';
+
+  if (location === 'Microsoft Teams') {
+    platformLabel = 'Microsoft Teams Video Conference';
+    ctaText = 'Join Microsoft Teams Session';
+    ctaUrl = teamsUrl;
+    instructions = 'We recommend opening the Microsoft Teams session 2 minutes early to test your audio and video settings.';
+  } else if (location === 'Phone call') {
+    platformLabel = `Direct Phone Consultation (We will call: ${meeting.phone || 'Your Number'})`;
+    ctaText = '';
+    ctaUrl = '';
+    instructions = `Our senior architect will call you directly at <strong>${meeting.phone || 'your phone number'}</strong> at the scheduled time. Please ensure you are in a quiet environment.`;
+  }
+
+  const aestDisplay = meeting.aestTime ? ` · [${meeting.aestTime} AEST]` : '';
+
   const contentHtml = `
     <div class="detail-box">
       <div class="detail-date">${meeting.date}</div>
-      <div class="detail-time">${meeting.time}</div>
-      <div class="detail-tz">Timezone: ${meeting.timezone || 'Australia/Sydney (AEST)'}</div>
+      <div class="detail-time">${meeting.time}${aestDisplay}</div>
+      <div class="detail-tz">Timezone: ${meeting.timezone || 'Australia/Sydney'}</div>
     </div>
 
     <table class="data-table">
+      <tr>
+        <td class="data-label">Location / Type</td>
+        <td class="data-val" style="color: #00278a; font-weight: 700;">${location}</td>
+      </tr>
       <tr>
         <td class="data-label">Service / Scope</td>
         <td class="data-val">${meeting.service}</td>
@@ -334,9 +387,18 @@ export async function sendAppointmentConfirmationToClient(meeting) {
           : ''
       }
       <tr>
-        <td class="data-label">Platform</td>
-        <td class="data-val">Google Meet (HD Video & Screen Share)</td>
+        <td class="data-label">Meeting Channel</td>
+        <td class="data-val">${platformLabel}</td>
       </tr>
+      ${
+        location !== 'Phone call' && ctaUrl
+          ? `
+      <tr>
+        <td class="data-label">Direct Link</td>
+        <td class="data-val"><a href="${ctaUrl}" target="_blank" style="color: #0284c7; word-break: break-all;">${ctaUrl}</a></td>
+      </tr>`
+          : ''
+      }
       ${
         meeting.notes
           ? `
@@ -349,11 +411,9 @@ export async function sendAppointmentConfirmationToClient(meeting) {
     </table>
 
     <div class="instructions-card">
-      <strong>Preparation Tip:</strong> We recommend joining the video session 2 minutes early from a desktop or laptop to allow seamless screen sharing and Figma architecture reviews.
+      <strong>Next Steps:</strong> ${instructions}
     </div>
   `;
-
-  const meetUrl = meeting.meetUrl || 'https://meet.google.com/mjk-yknw-mvz';
 
   const textContent = `
 Hi ${meeting.clientName},
@@ -362,14 +422,14 @@ Your strategy and technical scoping consultation with Gen-Vaani has been confirm
 
 Session Details:
 - Date: ${meeting.date}
-- Time: ${meeting.time} (${meeting.timezone || 'Australia/Sydney (AEST)'})
+- Time: ${meeting.time} (${meeting.timezone || 'Australia/Sydney'}) ${meeting.aestTime ? `[${meeting.aestTime} AEST]` : ''}
+- Location: ${location}
 - Service: ${meeting.service}
-- Video Platform: Google Meet
-- Direct Meeting Link: ${meetUrl}
+${ctaUrl ? `- Direct Session Link: ${ctaUrl}` : `- Phone Number to Call: ${meeting.phone}`}
 ${meeting.notes ? `- Notes: ${meeting.notes}` : ''}
 
-Preparation Tip:
-We recommend joining 2 minutes early from a laptop or desktop to allow seamless screen sharing and Figma architecture reviews.
+Next Steps:
+${instructions.replace(/<[^>]+>/g, '')}
 
 Best regards,
 Gen-Vaani Innovations Team
@@ -379,14 +439,14 @@ Support: info@genvaani.com
 
   return sendBrevoEmail({
     to: { email: meeting.email, name: meeting.clientName },
-    subject: `Confirmed: Consultation with Gen-Vaani - ${meeting.date} at ${meeting.time}`,
+    subject: `Confirmed: Consultation with Gen-Vaani (${location}) - ${meeting.date} at ${meeting.time}`,
     htmlContent: generateEmailHtml({
       title,
       subtitle,
       badgeText,
       contentHtml,
-      ctaText: 'Join Google Meet Session',
-      ctaUrl: meetUrl,
+      ctaText,
+      ctaUrl,
       isClient: true,
     }),
     textContent,
@@ -405,31 +465,41 @@ Support: info@genvaani.com
  */
 export async function sendAppointmentNotificationToAdmin(meeting) {
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || 'ayush.athenura@gmail.com';
-  const title = 'New Appointment Booked';
-  const subtitle = `A new consultation has been booked on your calendar by ${meeting.clientName}.`;
-  const badgeText = 'NEW CLIENT BOOKING';
+  const location = meeting.location || 'Google Meet';
   const meetUrl = meeting.meetUrl || 'https://meet.google.com/mjk-yknw-mvz';
+  const teamsUrl = meeting.teamsUrl || 'https://teams.microsoft.com/l/meetup-join/genvaani';
+  const sessionLink = location === 'Microsoft Teams' ? teamsUrl : meetUrl;
+
+  const title = 'New Appointment Booked';
+  const subtitle = `A new ${location} consultation has been booked on your calendar by ${meeting.clientName}.`;
+  const badgeText = 'NEW CLIENT BOOKING';
 
   const textContent = `
 New Consultation Booked:
+- Location / Platform: ${location}
 - Client Name: ${meeting.clientName}
 - Email: ${meeting.email}
 - Phone: ${meeting.phone || 'N/A'}
 - Company: ${meeting.company || 'Direct Client'}
 - Service: ${meeting.service}
-- Date & Time: ${meeting.date} at ${meeting.time} (${meeting.timezone || 'Australia/Sydney (AEST)'})
-- Meeting Link: ${meetUrl}
+- Client Time: ${meeting.date} at ${meeting.time} (${meeting.timezone || 'Australia/Sydney'})
+- AEST Time: ${meeting.aestTime || meeting.time} AEST
+${location === 'Phone call' ? `- Phone to call: ${meeting.phone}` : `- Meeting Link: ${sessionLink}`}
 - Notes: ${meeting.notes || 'None'}
   `.trim();
 
   const contentHtml = `
     <div class="detail-box">
       <div class="detail-date">${meeting.date}</div>
-      <div class="detail-time">${meeting.time}</div>
-      <div class="detail-tz">Timezone: ${meeting.timezone || 'Australia/Sydney (AEST)'}</div>
+      <div class="detail-time">${meeting.time} (${meeting.timezone || 'Local'})</div>
+      <div class="detail-tz" style="color: #00278a; font-weight: 700;">Sydney / AEST Time: ${meeting.aestTime || meeting.time} AEST</div>
     </div>
 
     <table class="data-table">
+      <tr>
+        <td class="data-label">Location / Mode</td>
+        <td class="data-val" style="color: #00278a; font-weight: 700;">${location}</td>
+      </tr>
       <tr>
         <td class="data-label">Client Name</td>
         <td class="data-val">${meeting.clientName}</td>
@@ -442,8 +512,8 @@ New Consultation Booked:
         meeting.phone
           ? `
       <tr>
-        <td class="data-label">Phone</td>
-        <td class="data-val"><a href="tel:${meeting.phone}" style="color: #0284c7;">${meeting.phone}</a></td>
+        <td class="data-label">Client Phone</td>
+        <td class="data-val"><a href="tel:${meeting.phone}" style="color: #0284c7; font-weight: 700;">${meeting.phone}</a></td>
       </tr>`
           : ''
       }
@@ -455,17 +525,26 @@ New Consultation Booked:
         <td class="data-label">Requested Service</td>
         <td class="data-val">${meeting.service}</td>
       </tr>
+      ${
+        location !== 'Phone call'
+          ? `
       <tr>
         <td class="data-label">Meeting Link</td>
-        <td class="data-val"><a href="${meetUrl}" target="_blank" style="color: #0284c7;">${meetUrl}</a></td>
-      </tr>
+        <td class="data-val"><a href="${sessionLink}" target="_blank" style="color: #0284c7; word-break: break-all;">${sessionLink}</a></td>
+      </tr>`
+          : `
+      <tr>
+        <td class="data-label">Action Required</td>
+        <td class="data-val" style="color: #ea580c; font-weight: 700;">Call client at ${meeting.phone}</td>
+      </tr>`
+      }
       <tr>
         <td class="data-label">Client Notes</td>
         <td class="data-val">${meeting.notes || 'No custom notes provided.'}</td>
       </tr>
       <tr>
         <td class="data-label">Booking Time</td>
-        <td class="data-val">${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })} (IST)</td>
+        <td class="data-val">${new Date().toLocaleString('en-US', { timeZone: 'Australia/Sydney' })} (AEST)</td>
       </tr>
     </table>
   `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import aboutImg from '../../assets/about.png';
+import aboutImg from '../../assets/about.webp';
 import './AboutHero.css';
 
 const AboutHero = () => {
@@ -9,7 +9,7 @@ const AboutHero = () => {
         <div className="about-hero-content">
           <div className="about-hero-eyebrow">
             <span>ABOUT GENVAANI</span>
-            <div className="eyebrow-divider" aria-hidden="true"></div>
+            {/* <div className="eyebrow-divider" aria-hidden="true"></div> */}
           </div>
           
           <h1 className="about-hero-headline">
@@ -67,7 +67,7 @@ const AboutHero = () => {
         </div>
         
         <div className="about-hero-image-wrapper">
-          <img src={aboutImg} alt="About GenVaani" className="about-hero-image" />
+          <img src={aboutImg} alt="About GenVaani" className="about-hero-image" loading="lazy" decoding="async" />
         </div>
       </div>
     </section>

@@ -29,6 +29,8 @@ const techStack = [
 ];
 
 const TechStackSection = () => {
+  const [activeTech, setActiveTech] = useState(null);
+
   return (
     <section className="tech-stack-section">
       {/* Curly Wave transition from About Us (white) to Tech Stack (dark) */}
@@ -56,24 +58,39 @@ const TechStackSection = () => {
 
         {/* Centered Text Content */}
         <div className="tech-text-content">
-          {/* <div className="tech-badge">✨ Technology Stack</div> */}
+          {/* <div className={`tech-badge ${activeTech ? 'has-active' : ''}`}>
+            {activeTech ? (
+              <span className="tech-badge-active">
+                <span className="tech-badge-dot" /> {activeTech}
+              </span>
+            ) : (
+              <span>✨ Modern Technology Stack</span>
+            )}
+          </div> */}
           <h2 className="tech-title">Packed with <span className="text-accent">Innovation</span></h2>
           <p className="tech-description">
             We leverage industry-leading technologies to build scalable, secure, and lightning-fast solutions for your business.
           </p>
-          < Link to="/contact"><button className="tech-cta">Book an appointment</button></Link>
+          <Link to="/contact"><button className="tech-cta">Book an appointment</button></Link>
         </div>
 
         {/* Orbiting Circular Arch Wrapper (Static, holds the mask) */}
         <div className="tech-orbit-wrapper">
           <div className="tech-orbit-circle">
             {techStack.map((tech, index) => {
+              const isActive = activeTech === tech.name;
               return (
                 <div
-                  className="tech-orbit-node"
+                  className={`tech-orbit-node ${isActive ? 'is-active' : ''}`}
                   key={index}
                   style={{ '--index': index }}
-                  title={tech.name}
+                  tabIndex={0}
+                  aria-label={tech.name}
+                  onMouseEnter={() => setActiveTech(tech.name)}
+                  onMouseLeave={() => setActiveTech(null)}
+                  onFocus={() => setActiveTech(tech.name)}
+                  onBlur={() => setActiveTech(null)}
+                  onTouchStart={() => setActiveTech(tech.name)}
                 >
                   {/* This wrapper counter-spins continuously so icons don't flip upside down */}
                   <div className="tech-orbit-counter-spin">
@@ -83,6 +100,9 @@ const TechStackSection = () => {
                       style={{ transform: `rotate(calc(var(--index) * -24deg))` }}
                     >
                       {tech.icon}
+                      <span className="tech-tooltip" aria-hidden="true">
+                        {tech.name}
+                      </span>
                     </div>
                   </div>
                 </div>

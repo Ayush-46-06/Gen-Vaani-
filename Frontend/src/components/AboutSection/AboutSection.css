@@ -69,11 +69,32 @@
 }
 
 .about-eyebrow-line {
-  width: 32px;
-  height: 3px;
-  border-radius: 2px;
+  width: 0px;
+  height: 3.5px;
+  border-radius: 4px;
   flex-shrink: 0;
-  background: var(--about-cyan);
+  background: linear-gradient(90deg, #00cbf0 0%, #0099e6 50%, #0645b5 100%);
+  opacity: 0;
+  transform-origin: left center;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease,
+              box-shadow 1s ease;
+}
+
+.about-eyebrow.is-in-view .about-eyebrow-line {
+  width: 60px;
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(0, 203, 240, 0.5);
+  animation: linePulseGlow 3s infinite ease-in-out 1s;
+}
+
+@keyframes linePulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 203, 240, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(0, 203, 240, 0.75);
+  }
 }
 
 .about-eyebrow-number {
@@ -426,11 +447,19 @@
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 16px 50px rgba(16, 24, 40, 0.13);
-  transition: transform 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .about-floating-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 20px 55px rgba(16, 24, 40, 0.18);
+}
+
+.about-floating-card:hover .about-floating-arrow {
+  transform: translate(2px, -2px);
+  color: var(--about-cyan);
 }
 
 .about-floating-icon {
@@ -468,6 +497,8 @@
   align-self: flex-start;
   color: var(--about-navy);
   font-size: 17px;
+  text-decoration: none;
+  transition: transform 0.25s ease, color 0.25s ease;
 }
 
 /* Visual index */
@@ -522,11 +553,22 @@
 }
 
 .about-bottom-index-line {
-  width: 32px;
+  width: 0px;
   height: 3px;
-  border-radius: 2px;
+  border-radius: 3px;
   flex-shrink: 0;
-  background: var(--about-cyan);
+  background: linear-gradient(90deg, #00cbf0 0%, #0099e6 50%, #0645b5 100%);
+  opacity: 0;
+  transform-origin: left center;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease,
+              box-shadow 1s ease;
+}
+
+.about-bottom-index.is-in-view .about-bottom-index-line {
+  width: 50px;
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(0, 203, 240, 0.5);
 }
 
 .about-bottom-content h3 {
@@ -561,10 +603,17 @@
   border-radius: 50%;
   color: var(--about-navy);
   font-size: 23px;
+  text-decoration: none;
+  cursor: pointer;
   transition:
     color 0.3s ease,
     background 0.3s ease,
-    border-color 0.3s ease;
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.about-bottom-symbol:hover {
+  transform: scale(1.08) translate(1px, -1px);
 }
 
 .about-bottom:hover .about-bottom-symbol {
@@ -691,8 +740,12 @@
   }
 
   .about-eyebrow-line {
-    width: 24px;
-    height: 2.5px;
+    width: 0px;
+    height: 3px;
+  }
+
+  .about-eyebrow.is-in-view .about-eyebrow-line {
+    width: 42px;
   }
 
   .about-eyebrow-number {
@@ -826,8 +879,12 @@
   }
 
   .about-bottom-index-line {
-    width: 24px;
+    width: 0px;
     height: 2.5px;
+  }
+
+  .about-bottom-index.is-in-view .about-bottom-index-line {
+    width: 36px;
   }
 
   .about-bottom-content h3 {

@@ -39,10 +39,10 @@ import {
   FiEyeOff,
   FiKey
 } from 'react-icons/fi';
-import navbarLogo from '../../assets/PNG/6.icon + Name Logo Transparent.png';
+import navbarLogo from '../../assets/PNG/6.icon + Name Logo Transparent.webp';
 import { getAdminStatsApi, changeAdminPasswordApi } from '../../services/adminApi';
 import { getLeadsApi, updateLeadStatusApi } from '../../services/leadApi';
-import { getMeetingsApi, updateMeetingStatusApi, GENVAANI_MEET_URL } from '../../services/meetingApi';
+import { getMeetingsApi, updateMeetingStatusApi, GENVAANI_MEET_URL, GENVAANI_TEAMS_URL } from '../../services/meetingApi';
 import { getServicesApi, deleteServiceApi, seedServicesApi } from '../../services/serviceApi';
 import { getCategoriesApi } from '../../services/categoryApi';
 import { getPortfolioWebsitesApi, deletePortfolioWebsiteApi } from '../../services/portfolioApi';
@@ -51,6 +51,8 @@ import ServiceEditorModal from './ServiceEditorModal';
 import CategoryManagerModal from './CategoryManagerModal';
 import WebsiteEditorModal from './WebsiteEditorModal';
 import GmailReplyModal from './GmailReplyModal';
+import AvailabilityModal from './AvailabilityModal';
+import MeetCalendarView from './MeetCalendarView';
 import './AdminAuth.css';
 
 const INITIAL_LEADS = [
@@ -257,6 +259,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [admin, setAdmin] = useState(null);
   const [meetings, setMeetings] = useState([]);
+  const [meetsViewMode, setMeetsViewMode] = useState('calendar'); // 'calendar' | 'cards'
   const [leads, setLeads] = useState(INITIAL_LEADS);
   const [leadsFilter, setLeadsFilter] = useState('all');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -280,6 +283,7 @@ export default function AdminDashboard() {
   const [toastMessage, setToastMessage] = useState(null);
   const [leadsExportOpen, setLeadsExportOpen] = useState(false);
   const [meetsExportOpen, setMeetsExportOpen] = useState(false);
+  const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
 
   // Portfolio Websites State (ImageKit CMS)
   const [websites, setWebsites] = useState([]);
@@ -1286,6 +1290,25 @@ export default function AdminDashboard() {
                 <p>Upcoming Google Meet video consultations booked by prospective clients</p>
               </div>
               <div className="viewport-actions-group">
+                <div className="view-mode-toggle-group">
+                  <button
+                    type="button"
+                    className={`view-toggle-btn ${meetsViewMode === 'calendar' ? 'active' : ''}`}
+                    onClick={() => setMeetsViewMode('calendar')}
+                    title="Switch to Interactive Calendar View"
+                  >
+                    <FiCalendar /> <span>Calendar View</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`view-toggle-btn ${meetsViewMode === 'cards' ? 'active' : ''}`}
+                    onClick={() => setMeetsViewMode('cards')}
+                    title="Switch to Cards Grid View"
+                  >
+                    <FiGrid /> <span>Cards View</span>
+                  </button>
+                </div>
+
                 <div className="export-dropdown-wrapper">
                   <button
                     type="button"
@@ -1332,24 +1355,70 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
+                <button
+                  type="button"
+                  className="admin-submit-button"
+                  onClick={() => setIsAvailabilityModalOpen(true)}
+                  style={{
+                    width: 'auto',
+                    padding: '0 18px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'linear-gradient(135deg, #00278a 0%, #0084c7 100%)',
+                    cursor: 'pointer',
+                    fontSize: '0.84rem',
+                  }}
+                  title="Configure available consultation times in AEST (Sydney) and working days"
+                >
+                  <FiClock /> <span>Manage Availability (AEST)</span>
+                </button>
+
                 <Link to="/contact" className="admin-submit-button" style={{ width: 'auto', padding: '0 20px', textDecoration: 'none' }}>
                   <FiCalendar /> Open Public Calendar <FiArrowUpRight />
                 </Link>
               </div>
             </div>
 
-            {/* Scheduled Meetings Cards Grid */}
-            <div className="meeting-cards-grid">
+            {/* View Mode: Calendar View vs Cards Grid View */}
+            {meetsViewMode === 'calendar' ? (
+              <MeetCalendarView
+                meetings={displayedMeets}
+                toggleMeetingStatus={toggleMeetingStatus}
+                showToast={showToast}
+              />
+            ) : (
+              <div className="meeting-cards-grid">
               {displayedMeets.map((meet) => {
                 const meetKey = meet._id || meet.id;
-                const meetLink = meet.meetUrl || GENVAANI_MEET_URL;
+                const meetLocation = meet.location || 'Google Meet';
+                const meetLink = meetLocation === 'Microsoft Teams'
+                  ? (meet.teamsUrl || GENVAANI_TEAMS_URL)
+                  : (meet.meetUrl || GENVAANI_MEET_URL);
 
                 return (
                   <div key={meetKey} className="meeting-card">
                     <div className="meeting-card-top">
-                      <span className="meeting-time-badge">
-                        <FiClock /> {meet.date}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <span className="meeting-time-badge">
+                          <FiClock /> {meet.date}
+                        </span>
+                        {meetLocation === 'Google Meet' && (
+                          <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#dcfce7', color: '#15803d', fontSize: '0.72rem', fontWeight: 700 }}>
+                            🎥 Google Meet
+                          </span>
+                        )}
+                        {meetLocation === 'Microsoft Teams' && (
+                          <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#ede9fe', color: '#6d28d9', fontSize: '0.72rem', fontWeight: 700 }}>
+                            💼 Teams
+                          </span>
+                        )}
+                        {meetLocation === 'Phone call' && (
+                          <span style={{ padding: '3px 10px', borderRadius: '50px', background: '#fef3c7', color: '#b45309', fontSize: '0.72rem', fontWeight: 700 }}>
+                            📞 Phone Call
+                          </span>
+                        )}
+                      </div>
                       <button
                         type="button"
                         onClick={() => toggleMeetingStatus(meet)}
@@ -1377,8 +1446,8 @@ export default function AdminDashboard() {
                           </a>
                         )}
                         {meet.phone && (
-                          <a href={`tel:${meet.phone}`} style={{ color: '#64748b', textDecoration: 'none' }}>
-                            {meet.phone}
+                          <a href={`tel:${meet.phone}`} style={{ color: meetLocation === 'Phone call' ? '#b45309' : '#64748b', fontWeight: meetLocation === 'Phone call' ? 700 : 500, textDecoration: 'none' }}>
+                            📞 {meet.phone}
                           </a>
                         )}
                       </div>
@@ -1387,34 +1456,85 @@ export default function AdminDashboard() {
                     <div className="meeting-room-box">
                       <div>
                         <span style={{ fontSize: '0.74rem', color: '#64748b', display: 'block' }}>Session Window</span>
-                        <strong style={{ fontSize: '0.88rem', color: '#00278a' }}>{meet.time} ({meet.timezone === 'Australia/Sydney' ? 'AEST' : (meet.timezone || 'AEST')})</strong>
+                        <strong style={{ fontSize: '0.88rem', color: '#00278a' }}>
+                          {meet.time} ({meet.timezone === 'Australia/Sydney' ? 'AEST' : (meet.timezone || 'Local')})
+                        </strong>
+                        {meet.aestTime && meet.timezone !== 'Australia/Sydney' && (
+                          <span style={{ display: 'block', fontSize: '0.74rem', color: '#0284c7', fontWeight: 600, marginTop: '2px' }}>
+                            Sydney Time: {meet.aestTime} AEST
+                          </span>
+                        )}
                       </div>
-                      <a 
-                        href={meetLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="table-btn table-btn-primary"
-                        style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                        title={`Join room: ${meetLink}`}
-                      >
-                        <FiVideo /> Join Meet
-                      </a>
+
+                      {meetLocation === 'Phone call' ? (
+                        <a 
+                          href={`tel:${meet.phone}`}
+                          className="table-btn"
+                          style={{
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: '#f59e0b',
+                            color: '#ffffff',
+                            borderColor: '#f59e0b',
+                            fontWeight: 750,
+                          }}
+                          title={`Call phone: ${meet.phone}`}
+                        >
+                          <FiPhone /> Call Client
+                        </a>
+                      ) : (
+                        <a 
+                          href={meetLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="table-btn table-btn-primary"
+                          style={{
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: meetLocation === 'Microsoft Teams' ? '#464EB8' : undefined,
+                            borderColor: meetLocation === 'Microsoft Teams' ? '#464EB8' : undefined,
+                          }}
+                          title={`Join room: ${meetLink}`}
+                        >
+                          <FiVideo /> {meetLocation === 'Microsoft Teams' ? 'Join Teams' : 'Join Meet'}
+                        </a>
+                      )}
                     </div>
 
-                    <div style={{ 
-                      padding: '8px 12px', 
-                      background: '#f0fdf4', 
-                      borderRadius: '10px', 
-                      border: '1px solid #dcfce7',
-                      fontSize: '0.74rem', 
-                      color: '#15803d',
-                      wordBreak: 'break-all'
-                    }}>
-                      <b>Google Meet Link: </b>
-                      <a href={meetLink} target="_blank" rel="noreferrer" style={{ color: '#0084c7', fontWeight: 700 }}>
-                        {meetLink}
-                      </a>
-                    </div>
+                    {meetLocation !== 'Phone call' && (
+                      <div style={{ 
+                        padding: '8px 12px', 
+                        background: meetLocation === 'Microsoft Teams' ? '#f5f3ff' : '#f0fdf4', 
+                        borderRadius: '10px', 
+                        border: meetLocation === 'Microsoft Teams' ? '1px solid #ddd6fe' : '1px solid #dcfce7',
+                        fontSize: '0.74rem', 
+                        color: meetLocation === 'Microsoft Teams' ? '#6d28d9' : '#15803d',
+                        wordBreak: 'break-all'
+                      }}>
+                        <b>{meetLocation === 'Microsoft Teams' ? 'Microsoft Teams Link: ' : 'Google Meet Link: '}</b>
+                        <a href={meetLink} target="_blank" rel="noreferrer" style={{ color: meetLocation === 'Microsoft Teams' ? '#464EB8' : '#0084c7', fontWeight: 700 }}>
+                          {meetLink}
+                        </a>
+                      </div>
+                    )}
+
+                    {meetLocation === 'Phone call' && (
+                      <div style={{ 
+                        padding: '8px 12px', 
+                        background: '#fffbeb', 
+                        borderRadius: '10px', 
+                        border: '1px solid #fde68a',
+                        fontSize: '0.74rem', 
+                        color: '#92400e',
+                      }}>
+                        <b>Phone Consultation: </b>
+                        <span>Call client directly at <strong>{meet.phone || 'Number not provided'}</strong> at scheduled time.</span>
+                      </div>
+                    )}
 
                     <div style={{ background: '#f8fafc', padding: '10px 14px', borderRadius: '12px', fontSize: '0.8rem', color: '#475569' }}>
                       <span style={{ fontWeight: 700, color: '#00278a' }}>Agenda / Notes: </span>
@@ -1424,6 +1544,7 @@ export default function AdminDashboard() {
                 );
               })}
             </div>
+            )}
           </div>
         )}
 
@@ -2210,6 +2331,16 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
+
+      {/* AEST Availability & Timeslots Management Modal */}
+      <AvailabilityModal
+        isOpen={isAvailabilityModalOpen}
+        onClose={() => setIsAvailabilityModalOpen(false)}
+        showToast={showToast}
+        onSaved={(savedAvail) => {
+          showToast('✓ Sydney AEST Availability updated! Public calendar converted times refreshed.');
+        }}
+      />
     </div>
   );
 }

@@ -194,7 +194,7 @@ const ContactSection = () => {
 
         <div className="newsletter-overlay-wrapper">
           <div className="newsletter-overlay">
-            <h2 className="newsletter-title">Keep Updated<br />About Our Product</h2>
+            <h2 className="newsletter-title">Let us Keep You<br /> Updated on Our Product</h2>
             <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Subscribed to newsletter updates!'); }}>
               <input type="email" placeholder="Your email address" required />
               <button type="submit">SUBMIT</button>

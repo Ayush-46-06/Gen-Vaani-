@@ -77,13 +77,19 @@ export function formatMeetingsForExcel(meetings = []) {
       'Company / Organization': meet.company || 'Direct Client',
       'Client Email': meet.email || 'N/A',
       'Client Phone': meet.phone || 'Not Provided',
+      'Location / Platform': meet.location || 'Google Meet',
       'Service Requested': meet.service || 'Consultation',
       'Consultation Date': meet.date || meet.dateKey || 'N/A',
       'Date Key (YYYY-MM-DD)': meet.dateKey || 'N/A',
-      'Time Slot': meet.time || 'N/A',
-      'Timezone': meet.timezone || 'Australia/Sydney (AEST)',
+      'Client Time Slot': meet.time || 'N/A',
+      'Client Timezone': meet.timezone || 'Australia/Sydney',
+      'AEST Time': meet.aestTime || meet.time || 'N/A',
       'Meeting Status': statusLabel,
-      'Google Meet URL': meet.meetUrl || 'https://meet.google.com/mjk-yknw-mvz',
+      'Meeting Link / Details': meet.location === 'Microsoft Teams'
+        ? (meet.teamsUrl || 'https://teams.microsoft.com/l/meetup-join/genvaani')
+        : meet.location === 'Phone call'
+        ? `Phone Call to ${meet.phone || 'N/A'}`
+        : (meet.meetUrl || 'https://meet.google.com/mjk-yknw-mvz'),
       'Agenda / Scoping Notes': meet.notes || 'Initial discovery consultation and tech scoping.',
       'Booked On': formattedCreated,
     };

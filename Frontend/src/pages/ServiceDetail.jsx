@@ -207,12 +207,7 @@ const renderFeatureMicroWidget = (feature) => {
     );
   }
   return (
-    <div className="feature-micro-widget">
-      <div className="micro-status-live">
-        <span className="live-dot-cyan"></span>
-        <span>Enterprise Architecture • Verified</span>
-      </div>
-    </div>
+    <></>
   );
 };
 

@@ -163,7 +163,7 @@ const MeetFounders = () => {
           {/* CTA Button */}
           <div className="founders-cta-wrapper">
             <Link to="/contact" className="founders-contact-btn">
-              <span>CONTACT US</span>
+              <span>Get In Touch</span>
               <FiArrowUpRight className="btn-icon" />
             </Link>
           </div>
