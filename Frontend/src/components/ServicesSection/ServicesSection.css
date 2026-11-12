@@ -1,6 +1,7 @@
 .services-section {
   background-color: #f8fafc;
   padding: 100px 5% 120px;
+  scroll-margin-top: 90px;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   position: relative;
   z-index: 5;

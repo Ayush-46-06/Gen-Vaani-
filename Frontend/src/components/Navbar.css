@@ -701,7 +701,7 @@
   .gvn-navbar {
     top: 14px;
 
-    width: min(calc(100% - 32px), 650px);
+    width: min(calc(100% - 32px), 1150px);
 
     min-height: 65px;
 
