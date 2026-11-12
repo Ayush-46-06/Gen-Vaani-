@@ -1,7 +1,7 @@
 .tech-stack-section {
   background-color: #020B2D;
   position: relative;
-  padding: 80px 0 100px;
+  padding: 105px 0 100px;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
 }
@@ -62,8 +62,8 @@
   pointer-events: none; /* Let clicks pass through the invisible wrapper */
   
   /* Create a clean semi-circle by fading out the bottom half completely. */
-  -webkit-mask-image: linear-gradient(to bottom, black 35%, transparent 50%);
-  mask-image: linear-gradient(to bottom, black 35%, transparent 50%);
+  -webkit-mask-image: linear-gradient(to bottom, black 42%, transparent 56%);
+  mask-image: linear-gradient(to bottom, black 42%, transparent 56%);
 }
 
 /* Orbiting Circle */
@@ -107,6 +107,13 @@
   transform: translate(-50%, -50%) rotate(calc(var(--index) * 24deg)) translateY(-480px);
   pointer-events: auto; /* Re-enable clicks for the icons */
   outline: none;
+  z-index: 10;
+}
+
+.tech-orbit-node:hover,
+.tech-orbit-node:focus-within,
+.tech-orbit-node.is-active {
+  z-index: 60;
 }
 
 /* Counter the continuous spin so icons stay upright */
@@ -146,15 +153,16 @@
   z-index: 30;
 }
 
-/* FLOATING TOOLTIP THAT TELLS THE NAME OF EACH TECHNOLOGY */
+/* FLOATING TOOLTIP THAT TELLS THE NAME OF EACH TECHNOLOGY (Sits below the icon so it is never covered by the top wave) */
 .tech-tooltip {
   position: absolute;
-  bottom: calc(100% + 12px);
+  top: calc(100% + 10px);
+  bottom: auto;
   left: 50%;
-  transform: translateX(-50%) translateY(6px);
+  transform: translateX(-50%) translateY(-6px);
   padding: 5px 13px;
-  background: rgba(3, 11, 45, 0.94);
-  border: 1px solid rgba(0, 203, 240, 0.65);
+  background: rgba(3, 11, 45, 0.96);
+  border: 1px solid rgba(0, 203, 240, 0.75);
   border-radius: 20px;
   color: #ffffff;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -176,12 +184,13 @@
 .tech-tooltip::after {
   content: '';
   position: absolute;
-  top: 100%;
+  bottom: 100%;
+  top: auto;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 5px 5px 0 5px;
+  border-width: 0 5px 5px 5px;
   border-style: solid;
-  border-color: rgba(0, 203, 240, 0.65) transparent transparent transparent;
+  border-color: transparent transparent rgba(0, 203, 240, 0.75) transparent;
 }
 
 .tech-orbit-node:hover .tech-tooltip,
@@ -398,7 +407,8 @@
   .tech-tooltip {
     font-size: 10px;
     padding: 3px 9px;
-    bottom: calc(100% + 8px);
+    top: calc(100% + 8px);
+    bottom: auto;
   }
 }
 
@@ -451,6 +461,7 @@
   .tech-tooltip {
     font-size: 9px;
     padding: 2px 7px;
-    bottom: calc(100% + 6px);
+    top: calc(100% + 6px);
+    bottom: auto;
   }
 }
