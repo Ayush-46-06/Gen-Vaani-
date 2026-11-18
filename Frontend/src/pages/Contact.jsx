@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import brandIcon from '../assets/PNG/8.icon Transparent.webp';
 import { submitLeadApi } from '../services/leadApi';
 import {
@@ -299,6 +299,32 @@ export default function Contact() {
   const updateForm = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const slotTransitionTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (slotTransitionTimerRef.current) {
+        clearTimeout(slotTransitionTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleSlotSelect = (slot) => {
+    setSelectedTime(slot.clientSlot);
+    setSelectedAestTime(slot.aestSlot);
+    setError('');
+
+    if (slotTransitionTimerRef.current) {
+      clearTimeout(slotTransitionTimerRef.current);
+    }
+
+    // Direct progression to Step 2 upon selecting a time slot
+    slotTransitionTimerRef.current = setTimeout(() => {
+      setStep(2);
+      document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
   };
 
   const continueToDetails = () => {
@@ -870,11 +896,7 @@ export default function Contact() {
                                 <button
                                   type="button"
                                   key={slot.aestSlot}
-                                  onClick={() => {
-                                    setSelectedTime(slot.clientSlot);
-                                    setSelectedAestTime(slot.aestSlot);
-                                    setError('');
-                                  }}
+                                  onClick={() => handleSlotSelect(slot)}
                                   className={`time-slot ${isSelected ? 'time-selected' : ''}`}
                                   aria-pressed={isSelected}
                                 >
