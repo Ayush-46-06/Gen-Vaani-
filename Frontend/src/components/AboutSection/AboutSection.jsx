@@ -126,10 +126,10 @@ const AboutSection = () => {
 
               <div className="about-image-shade" />
 
-              <div className="about-image-top-label">
+              {/* <div className="about-image-top-label"> */}
                 {/* <span className="about-live-dot" /> */}
-                INNOVATION IN MOTION
-              </div>
+                {/* INNOVATION IN MOTION */}
+              {/* </div> */}
 
               <div className="about-image-caption">
                 {/* <span className="about-caption-label">

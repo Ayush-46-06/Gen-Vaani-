@@ -206,6 +206,24 @@ export default function Contact() {
           if (Array.isArray(res.availability.timeSlots) && res.availability.timeSlots.length > 0) {
             setAestSlots(res.availability.timeSlots);
           }
+          if (Array.isArray(res.availability.workingDays) && res.availability.workingDays.length > 0) {
+            setSelectedDate((curr) => {
+              if (!curr) return curr;
+              const dayIndex = (curr.getDay() + 6) % 7;
+              const dayName = WEEKDAYS[dayIndex];
+              if (!res.availability.workingDays.includes(dayName)) {
+                let nextDay = new Date(curr);
+                for (let i = 1; i <= 7; i++) {
+                  nextDay.setDate(nextDay.getDate() + 1);
+                  const nextIdx = (nextDay.getDay() + 6) % 7;
+                  if (res.availability.workingDays.includes(WEEKDAYS[nextIdx])) {
+                    return nextDay;
+                  }
+                }
+              }
+              return curr;
+            });
+          }
         }
       })
       .catch((err) => {
@@ -275,18 +293,26 @@ export default function Contact() {
     }
   }, [availableSlotItems, selectedAestTime]);
 
-  const isPast = (day) => {
-    if (!day) return false;
+  const isDayDisabled = (day) => {
+    if (!day) return true;
     const date = new Date(year, month, day);
-    return date < today;
+    if (date < today) return true;
+    if (Array.isArray(availabilityConfig?.workingDays) && availabilityConfig.workingDays.length > 0) {
+      const dayIndex = (date.getDay() + 6) % 7; // Monday = 0, Sunday = 6
+      const dayName = WEEKDAYS[dayIndex];
+      return !availabilityConfig.workingDays.includes(dayName);
+    }
+    return false;
   };
+
+  const isPast = (day) => isDayDisabled(day);
 
   const changeMonth = (amount) => {
     setViewDate((current) => new Date(current.getFullYear(), current.getMonth() + amount, 1));
   };
 
   const selectDate = (day) => {
-    if (!day || isPast(day)) return;
+    if (!day || isDayDisabled(day)) return;
     const next = new Date(year, month, day);
     setSelectedDate(next);
     setSelectedTime('');

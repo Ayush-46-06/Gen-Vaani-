@@ -750,6 +750,18 @@ export default function AdminDashboard() {
             <span className="sidebar-badge-count">{displayedMeets.length}</span>
           </button>
 
+          {/* Option: Consultation Availability (AEST) */}
+          <button
+            type="button"
+            className="sidebar-nav-item"
+            onClick={() => setIsAvailabilityModalOpen(true)}
+            id="sidebar-nav-availability"
+            title="Configure consultation availability, Sydney AEST timeslots, working days, and meeting links"
+          >
+            <span className="sidebar-nav-icon"><FiClock /></span>
+            <span>Availability (AEST)</span>
+          </button>
+
           {/* Option 4: Services */}
           <button
             type="button"
@@ -894,6 +906,16 @@ export default function AdminDashboard() {
                   <FiDownload className="export-btn-icon" />
                   <span>Export All Data (.xlsx)</span>
                   <span className="export-excel-badge">MASTER</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAvailabilityModalOpen(true)}
+                  className="table-btn"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#00278a', fontWeight: 700 }}
+                  id="dashboard-set-availability-btn"
+                  title="Configure consultation availability timeslots, working days, and meeting rooms"
+                >
+                  <FiClock color="#0084c7" /> Set Availability (AEST)
                 </button>
                 <button 
                   type="button" 
