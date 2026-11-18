@@ -288,7 +288,7 @@ const ServiceDetail = () => {
 
           {/* Tech Stack Pills */}
           <div className="service-tech-wrapper">
-            <h4 className="tech-heading"> POWERED BY ENTERPRISE-GRADE STACK & TOOLING </h4>
+            {/* <h4 className="tech-heading"> POWERED BY ENTERPRISE-GRADE STACK & TOOLING </h4> */}
             <div className="tech-tags">
               {service.techStack.map((tech, i) => (
                 <span className="tech-tag-pill" key={i}>

@@ -56,6 +56,34 @@
   gap: 20px;
 }
 
+.contact-detail-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 18px;
+  padding: 10px 14px;
+  margin: -10px -14px;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-detail-link:hover {
+  background: rgba(0, 203, 240, 0.08);
+  transform: translateX(6px);
+}
+
+.contact-detail-link:hover .contact-icon {
+  transform: scale(1.1);
+  box-shadow: 0 12px 28px rgba(0, 203, 240, 0.45);
+}
+
+.contact-detail-link:hover .contact-text h3 {
+  color: #0099e6;
+}
+
+.contact-detail-link:hover .contact-text p {
+  color: #00278a;
+}
+
 .contact-icon {
   background: linear-gradient(135deg, #00278a, #00cbf0);
   width: 60px;

@@ -192,9 +192,8 @@ const HeroSection = () => {
       {/* GENVAANI Letter-by-Letter Animated Intro */}
       {phase !== 'revealed' && (
         <div
-          className={`hero-typing-overlay ${
-            isExiting ? 'hero-typing-overlay--exiting' : ''
-          }`}
+          className={`hero-typing-overlay ${isExiting ? 'hero-typing-overlay--exiting' : ''
+            }`}
           aria-live="polite"
           aria-label="GENVAANI animated intro"
         >
@@ -215,9 +214,8 @@ const HeroSection = () => {
                   return (
                     <span
                       key={index}
-                      className={`hero-typing-char ${
-                        isVaani ? 'char-vaani' : 'char-gen'
-                      }`}
+                      className={`hero-typing-char ${isVaani ? 'char-vaani' : 'char-gen'
+                        }`}
                     >
                       {char}
                     </span>
@@ -225,9 +223,8 @@ const HeroSection = () => {
                 })}
               </span>
               <span
-                className={`hero-typing-cursor ${
-                  letterCount === GENVAANI_LETTERS.length ? 'cursor-pulse' : ''
-                }`}
+                className={`hero-typing-cursor ${letterCount === GENVAANI_LETTERS.length ? 'cursor-pulse' : ''
+                  }`}
                 aria-hidden="true"
               >
                 |
@@ -237,7 +234,7 @@ const HeroSection = () => {
             <div className="hero-typing-sub">
               {letterCount === GENVAANI_LETTERS.length && (
                 <span className="hero-typing-tagline">
-                  Your Voice Always Heard
+                  YOUR VOICE, Always Heard
                 </span>
               )}
             </div>

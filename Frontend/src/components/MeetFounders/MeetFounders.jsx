@@ -1,6 +1,6 @@
 import React from 'react';
 import './MeetFounders.css';
-import { FiMail, FiGlobe, FiPhone, FiArrowUpRight } from 'react-icons/fi';
+import { FiMail, FiGlobe, FiPhone, FiMapPin, FiArrowUpRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 const MeetFounders = () => {
@@ -184,11 +184,24 @@ const MeetFounders = () => {
               <span className="contact-text">www.genvaani.com</span>
             </a>
 
-            <a href="tel:+919876543210" className="contact-line">
+            <a href="tel:+919876543210" className="contact-line" title="Call +91 98765 43210">
               <span className="contact-icon-bubble">
                 <FiPhone />
               </span>
               <span className="contact-text">+91 98765 43210</span>
+            </a>
+
+            <a
+              href="https://maps.google.com/?q=123+Business+Avenue,+New+York,+NY+10001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-line"
+              title="Open location on Google Maps"
+            >
+              <span className="contact-icon-bubble">
+                <FiMapPin />
+              </span>
+              <span className="contact-text">New York, NY 10001 ↗</span>
             </a>
           </div>
         </div>

@@ -206,6 +206,49 @@
 .sidebar-detail small { color: #aebbd4; font-size: .72rem; line-height: 1.5; }
 .sidebar-note { margin-top: auto; padding: 16px 14px; border: 1px solid rgba(0,203,240,.19); border-radius: 12px; color: #c6d4e8; background: rgba(255,255,255,.045); font-size: .74rem; line-height: 1.65; }
 .sidebar-note span { margin-right: 5px; color: var(--gv-cyan); }
+
+/* Direct reach out options (Mail, Phone, Map) in booking sidebar */
+.sidebar-direct-section { margin-top: 20px; }
+.sidebar-direct-list { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; }
+.sidebar-direct-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(0, 203, 240, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sidebar-direct-card:hover {
+  background: rgba(0, 203, 240, 0.14);
+  border-color: rgba(0, 203, 240, 0.55);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0, 203, 240, 0.2);
+}
+.sidebar-direct-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(6, 69, 181, 0.6), rgba(0, 203, 240, 0.35));
+  border: 1px solid rgba(0, 203, 240, 0.4);
+  color: #00cbf0;
+  transition: transform 0.25s ease;
+}
+.sidebar-direct-card:hover .sidebar-direct-icon {
+  transform: scale(1.1);
+  color: #ffffff;
+  background: linear-gradient(135deg, #0645b5 0%, #00cbf0 100%);
+}
+.sidebar-direct-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sidebar-direct-text small { color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.sidebar-direct-text b { color: #ffffff; font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-direct-card:hover .sidebar-direct-text b { color: #00cbf0; }
 .booking-main { min-width: 0; padding: 34px 40px 30px; }
 .booking-main-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .booking-main-heading h2 { margin: 7px 0 0; color: var(--gv-navy); font-size: 1.55rem; font-weight: 800; letter-spacing: -.04em; }

@@ -376,7 +376,7 @@ const Navbar = () => {
           (service) =>
             service.isActive !== false &&
             (service.category || '').trim().toLowerCase() ===
-              categoryName
+            categoryName
         ),
       };
     });
@@ -395,9 +395,8 @@ const Navbar = () => {
     );
 
     unmatched.forEach((service) => {
-      const value = `${service.slug || ''} ${
-        service.title || ''
-      }`.toLowerCase();
+      const value = `${service.slug || ''} ${service.title || ''
+        }`.toLowerCase();
 
       const target =
         columns.find((column) => {
@@ -485,9 +484,8 @@ const Navbar = () => {
 
       <nav
         ref={navbarRef}
-        className={`gvn-navbar ${
-          scrolled ? 'gvn-navbar-scrolled' : ''
-        }`}
+        className={`gvn-navbar ${scrolled ? 'gvn-navbar-scrolled' : ''
+          }`}
         aria-label="Main navigation"
       >
         {/* LOGO */}
@@ -499,7 +497,7 @@ const Navbar = () => {
             className="gvn-logo-link"
           >
             <img src={logo} alt="GenVaani" className="gvn-logo-img" />
-            <span className="gvn-tagline">Your Voice Always Heard</span>
+            <span className="gvn-tagline">YOUR VOICE, Always Heard</span>
           </a>
         </div>
 
@@ -510,9 +508,8 @@ const Navbar = () => {
           <li>
             <a
               href="/"
-              className={`gvn-nav-link ${
-                isActive('/') ? 'active' : ''
-              }`}
+              className={`gvn-nav-link ${isActive('/') ? 'active' : ''
+                }`}
               onClick={(e) => handleNavClick('/', e)}
             >
               Home
@@ -522,18 +519,16 @@ const Navbar = () => {
           {/* SERVICES */}
 
           <li
-            className={`gvn-services-wrapper ${
-              servicesOpen ? 'open' : ''
-            }`}
+            className={`gvn-services-wrapper ${servicesOpen ? 'open' : ''
+              }`}
             onMouseEnter={() => setServicesOpen(true)}
             onMouseLeave={() => setServicesOpen(false)}
           >
             <button
               ref={servicesButtonRef}
               type="button"
-              className={`gvn-nav-link gvn-services-button ${
-                isServicesActive ? 'active' : ''
-              } ${servicesOpen ? 'menu-open' : ''}`}
+              className={`gvn-nav-link gvn-services-button ${isServicesActive ? 'active' : ''
+                } ${servicesOpen ? 'menu-open' : ''}`}
               aria-expanded={servicesOpen}
               onClick={() =>
                 setServicesOpen((previous) => !previous)
@@ -542,9 +537,8 @@ const Navbar = () => {
               Services
 
               <ChevronIcon
-                className={`gvn-chevron ${
-                  servicesOpen ? 'rotated' : ''
-                }`}
+                className={`gvn-chevron ${servicesOpen ? 'rotated' : ''
+                  }`}
               />
             </button>
 
@@ -678,9 +672,8 @@ const Navbar = () => {
           <li>
             <a
               href="/portfolio"
-              className={`gvn-nav-link ${
-                isActive('/portfolio') ? 'active' : ''
-              }`}
+              className={`gvn-nav-link ${isActive('/portfolio') ? 'active' : ''
+                }`}
               onClick={(e) => handleNavClick('/portfolio', e)}
             >
               Portfolio
@@ -690,9 +683,8 @@ const Navbar = () => {
           <li>
             <a
               href="/pricing"
-              className={`gvn-nav-link ${
-                isActive('/pricing') ? 'active' : ''
-              }`}
+              className={`gvn-nav-link ${isActive('/pricing') ? 'active' : ''
+                }`}
               onClick={(e) => handleNavClick('/pricing', e)}
             >
               Pricing
@@ -702,9 +694,8 @@ const Navbar = () => {
           <li>
             <a
               href="/about"
-              className={`gvn-nav-link ${
-                isActive('/about') ? 'active' : ''
-              }`}
+              className={`gvn-nav-link ${isActive('/about') ? 'active' : ''
+                }`}
               onClick={(e) => handleNavClick('/about', e)}
             >
               About Us
@@ -732,9 +723,8 @@ const Navbar = () => {
 
         <button
           type="button"
-          className={`gvn-hamburger ${
-            mobileOpen ? 'active' : ''
-          }`}
+          className={`gvn-hamburger ${mobileOpen ? 'active' : ''
+            }`}
           onClick={() => setMobileOpen((previous) => !previous)}
           aria-label="Toggle navigation"
           aria-expanded={mobileOpen}
@@ -752,9 +742,8 @@ const Navbar = () => {
 
       <button
         type="button"
-        className={`gvn-mobile-backdrop ${
-          mobileOpen ? 'visible' : ''
-        }`}
+        className={`gvn-mobile-backdrop ${mobileOpen ? 'visible' : ''
+          }`}
         onClick={closeMobileMenu}
         aria-label="Close menu"
         tabIndex={mobileOpen ? 0 : -1}
@@ -765,9 +754,8 @@ const Navbar = () => {
       ===================================== */}
 
       <div
-        className={`gvn-mobile-menu ${
-          mobileOpen ? 'visible' : ''
-        }`}
+        className={`gvn-mobile-menu ${mobileOpen ? 'visible' : ''
+          }`}
         aria-hidden={!mobileOpen}
       >
 
@@ -780,9 +768,8 @@ const Navbar = () => {
 
           <a
             href="/"
-            className={`gvn-mobile-link ${
-              isActive('/') ? 'active' : ''
-            }`}
+            className={`gvn-mobile-link ${isActive('/') ? 'active' : ''
+              }`}
             onClick={(e) => handleNavClick('/', e)}
           >
             Home
@@ -794,9 +781,8 @@ const Navbar = () => {
 
             <button
               type="button"
-              className={`gvn-mobile-link ${
-                isServicesActive ? 'active' : ''
-              }`}
+              className={`gvn-mobile-link ${isServicesActive ? 'active' : ''
+                }`}
               onClick={() =>
                 setMobileServicesOpen((previous) => !previous)
               }
@@ -805,16 +791,14 @@ const Navbar = () => {
               <span>Services</span>
 
               <ChevronIcon
-                className={`gvn-chevron ${
-                  mobileServicesOpen ? 'rotated' : ''
-                }`}
+                className={`gvn-chevron ${mobileServicesOpen ? 'rotated' : ''
+                  }`}
               />
             </button>
 
             <div
-              className={`gvn-mobile-service-content ${
-                mobileServicesOpen ? 'expanded' : ''
-              }`}
+              className={`gvn-mobile-service-content ${mobileServicesOpen ? 'expanded' : ''
+                }`}
             >
 
               <div className="gvn-mobile-service-inner">
@@ -861,9 +845,8 @@ const Navbar = () => {
 
           <a
             href="/portfolio"
-            className={`gvn-mobile-link ${
-              isActive('/portfolio') ? 'active' : ''
-            }`}
+            className={`gvn-mobile-link ${isActive('/portfolio') ? 'active' : ''
+              }`}
             onClick={(e) => handleNavClick('/portfolio', e)}
           >
             Portfolio
@@ -871,9 +854,8 @@ const Navbar = () => {
 
           <a
             href="/pricing"
-            className={`gvn-mobile-link ${
-              isActive('/pricing') ? 'active' : ''
-            }`}
+            className={`gvn-mobile-link ${isActive('/pricing') ? 'active' : ''
+              }`}
             onClick={(e) => handleNavClick('/pricing', e)}
           >
             Pricing
@@ -881,9 +863,8 @@ const Navbar = () => {
 
           <a
             href="/about"
-            className={`gvn-mobile-link ${
-              isActive('/about') ? 'active' : ''
-            }`}
+            className={`gvn-mobile-link ${isActive('/about') ? 'active' : ''
+              }`}
             onClick={(e) => handleNavClick('/about', e)}
           >
             About Us

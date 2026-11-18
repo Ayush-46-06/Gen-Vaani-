@@ -70,7 +70,7 @@ const Footer = () => {
           <div className="footer-col brand-col">
             <Link to="/" className="footer-logo-link">
               <img src={logo} alt="GenVaani Logo" className="footer-logo" />
-              <span className="footer-tagline">Your Voice Always Heard</span>
+              <span className="footer-tagline">YOUR VOICE, Always Heard</span>
             </Link>
             <p className="footer-description">
               Transforming businesses with innovative solutions since 2026. We help companies scale efficiently and sustainably with high-performance digital products.
@@ -128,24 +128,41 @@ const Footer = () => {
           {/* Contact Information */}
           <div className="footer-col contact-col">
             <h4 className="footer-heading">Get In Touch</h4>
-            <div className="contact-item">
-              <span className="contact-icon-box">
+            <a
+              href="https://maps.google.com/?q=123+Business+Avenue,+New+York,+NY+10001"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-item contact-item-link"
+              title="Open office in Google Maps"
+              aria-label="Open our location at 123 Business Avenue, New York on Google Maps"
+            >
+              <span className="contact-icon-box" aria-hidden="true">
                 <FiMapPin />
               </span>
               <p>123 Business Avenue<br />New York, NY 10001</p>
-            </div>
-            <div className="contact-item">
-              <span className="contact-icon-box">
+            </a>
+            <a
+              href="mailto:info@genvaani.com"
+              className="contact-item contact-item-link"
+              title="Send email to info@genvaani.com"
+              aria-label="Send email to info@genvaani.com"
+            >
+              <span className="contact-icon-box" aria-hidden="true">
                 <FiMail />
               </span>
-              <p><a href="mailto:info@genvaani.com" className="contact-link">info@genvaani.com</a></p>
-            </div>
-            <div className="contact-item">
-              <span className="contact-icon-box">
+              <p>info@genvaani.com</p>
+            </a>
+            <a
+              href="tel:+12125551234"
+              className="contact-item contact-item-link"
+              title="Call +1 (212) 555-1234"
+              aria-label="Call +1 (212) 555-1234"
+            >
+              <span className="contact-icon-box" aria-hidden="true">
                 <FiPhone />
               </span>
-              <p><a href="tel:+12125551234" className="contact-link">+1 (212) 555-1234</a></p>
-            </div>
+              <p>+1 (212) 555-1234</p>
+            </a>
           </div>
         </div>
 
