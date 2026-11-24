@@ -70,7 +70,7 @@ const Footer = () => {
           <div className="footer-col brand-col">
             <Link to="/" className="footer-logo-link">
               <img src={logo} alt="GenVaani Logo" className="footer-logo" />
-              <span className="footer-tagline">YOUR VOICE, Always Heard</span>
+              <span className="footer-tagline">Your Voice, Always Heard</span>
             </Link>
             <p className="footer-description">
               Transforming businesses with innovative solutions since 2026. We help companies scale efficiently and sustainably with high-performance digital products.

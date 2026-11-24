@@ -497,7 +497,7 @@ const Navbar = () => {
             className="gvn-logo-link"
           >
             <img src={logo} alt="GenVaani" className="gvn-logo-img" />
-            <span className="gvn-tagline">YOUR VOICE, Always Heard</span>
+            <span className="gvn-tagline">Your Voice, Always Heard</span>
           </a>
         </div>
 
