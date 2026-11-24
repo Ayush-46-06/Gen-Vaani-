@@ -133,7 +133,7 @@ const ServicePricing = ({ service, showWave = false, hideHeader = false }) => {
       {showWave && (
         <div className="wave-divider wave-top">
           <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#f8fafc" d="M0,60 C320,120 420,0 720,60 C1020,120 1120,0 1440,60 L1440,120 L0,120 Z"></path>
+            <path fill="#ffffff" d="M0,60 C320,120 420,0 720,60 C1020,120 1120,0 1440,60 L1440,120 L0,120 Z"></path>
           </svg>
         </div>
       )}

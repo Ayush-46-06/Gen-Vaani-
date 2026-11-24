@@ -20,7 +20,7 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(ellipse 70% 55% at 50% 10%, rgba(0, 203, 240, 0.15) 0%, rgba(0, 39, 138, 0.25) 45%, transparent 75%),
+    radial-gradient(ellipse 70% 55% at 50% 30%, rgba(0, 203, 240, 0.16) 0%, rgba(0, 39, 138, 0.28) 45%, transparent 75%),
     radial-gradient(circle at 10% 85%, rgba(0, 203, 240, 0.08) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(0, 39, 138, 0.15) 0%, transparent 40%);
   pointer-events: none;
@@ -47,31 +47,31 @@
   position: absolute;
   left: 0;
   width: 100%;
-  height: 120px;
+  height: 95px;
   line-height: 0;
   z-index: 10;
   pointer-events: none;
 }
 
 .service-workflow-section .wave-divider svg {
-  width: calc(100% + 1.3px);
+  display: block;
+  width: 100%;
   height: 100%;
 }
 
 .service-workflow-section .wave-top {
-  top: -119px;
+  top: -1px;
 }
 
 .service-workflow-section .wave-bottom {
-  bottom: -119px;
-  transform: rotate(180deg);
+  bottom: -1px;
 }
 
 .workflow-container {
   max-width: 1340px;
   margin: 0 auto;
   position: relative;
-  z-index: 5;
+  z-index: 12;
 }
 
 /* =========================================================

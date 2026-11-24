@@ -246,7 +246,7 @@ export default function AvailabilityModal({ isOpen, onClose, onSaved, showToast 
         </div>
 
         {/* Informative Banner */}
-        <div
+        {/* <div
           style={{
             margin: '0 24px 14px',
             padding: '12px 16px',
@@ -265,7 +265,7 @@ export default function AvailabilityModal({ isOpen, onClose, onSaved, showToast 
             <strong>Global Timezone Conversion:</strong> All slots here are stored in <strong>Sydney (AEST)</strong>.
             When a client views the calendar, an AEST slot of <code>09:30 AM</code> automatically renders as <code>04:00 AM IST</code> in India, <code>05:30 PM EST</code> in New York, and <code>10:30 PM GMT</code> in London.
           </span>
-        </div>
+        </div> */}
 
         {/* Error Notification */}
         {errorMsg && (
