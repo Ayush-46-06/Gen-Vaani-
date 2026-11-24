@@ -182,19 +182,10 @@ const ServiceWorkflow = ({ service }) => {
         </div>
       </div>
 
-      {/* Bottom Wave Divider: Transitions smoothly into FAQ white section */}
-      <div className="wave-divider wave-bottom" aria-hidden="true">
+      {/* Bottom Wave Divider: Organic curve transitioning from #020B2D into next section */}
+      <div className="wave-divider wave-bottom">
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Subtle cyan accent glow wave */}
-          <path
-            d="M0,0 L1440,0 L1440,65 C1120,5 1020,125 720,65 C420,5 320,125 0,65 Z"
-            fill="rgba(0, 203, 240, 0.22)"
-          />
-          {/* Main seamless dark wave flowing into FAQ section */}
-          <path
-            d="M0,0 L1440,0 L1440,60 C1120,0 1020,120 720,60 C420,0 320,120 0,60 Z"
-            fill="#020B2D"
-          />
+          <path fill="#020B2D" d="M0,60 C320,120 420,0 720,60 C1020,120 1120,0 1440,60 L1440,120 L0,120 Z"></path>
         </svg>
       </div>
     </section>

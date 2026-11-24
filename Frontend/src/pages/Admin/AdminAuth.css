@@ -605,6 +605,25 @@
   border-bottom: 1px solid rgba(0, 39, 138, 0.06);
 }
 
+.sidebar-brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sidebar-close-btn {
+  display: none;
+}
+
+.admin-mobile-topbar {
+  display: none;
+}
+
+.admin-sidebar-backdrop {
+  display: none;
+}
+
 .sidebar-logo {
   height: 46px;
   width: auto;
@@ -1240,38 +1259,395 @@
   border-top: 1px solid #f1f5f9;
 }
 
-/* Responsive Breakpoints */
+/* ==========================================================================
+   RESPONSIVE ADMIN BREAKPOINTS: MOBILE HAMBURGER SIDEBAR & FULL RESPONSIVENESS
+   ========================================================================== */
+
 @media (max-width: 1024px) {
   .dashboard-main-grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 850px) {
+/* Tablet & Mobile Breakpoint (<= 960px) */
+@media (max-width: 960px) {
   .admin-layout-container {
     flex-direction: column;
-  }
-
-  .admin-sidebar {
+    position: relative;
     width: 100%;
-    height: auto;
-    position: static;
-    border-right: none;
+    min-height: 100vh;
+  }
+
+  /* 1. Mobile Sticky Top Navigation Bar with Hamburger Button */
+  .admin-mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(0, 39, 138, 0.08);
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 39, 138, 0.04);
+    box-sizing: border-box;
   }
 
-  .sidebar-menu-list {
-    flex-direction: row;
-    flex-wrap: wrap;
+  .mobile-hamburger-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(0, 39, 138, 0.05);
+    border: 1px solid rgba(0, 39, 138, 0.12);
+    color: #00278a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .sidebar-nav-item {
+  .mobile-hamburger-btn:active {
+    transform: scale(0.94);
+    background: rgba(0, 203, 240, 0.15);
+  }
+
+  .mobile-brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .mobile-navbar-logo {
+    height: 38px;
     width: auto;
+    object-fit: contain;
   }
 
+  .mobile-user-avatar-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00278a 0%, #00cbf0 100%);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 39, 138, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-user-avatar-btn:active {
+    transform: scale(0.94);
+  }
+
+  /* 2. Backdrop Overlay */
+  .admin-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9998;
+    animation: adminBackdropFade 0.25s ease-out;
+  }
+
+  @keyframes adminBackdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* 3. Off-Canvas Slide-In Drawer Sidebar */
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 295px;
+    max-width: 85vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 10000;
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 10px 0 45px rgba(0, 27, 85, 0.25);
+    background: rgba(255, 255, 255, 0.98);
+    border-right: 1px solid rgba(0, 39, 138, 0.1);
+    padding: 20px 16px 20px;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 39, 138, 0.12);
+    background: #f8fafc;
+    color: #475569;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+
+  /* 4. Full Width Main Viewport */
   .admin-main-viewport {
-    margin-left: 0;
-    padding: 24px 18px 40px;
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 24px 18px 45px !important;
+    box-sizing: border-box;
+  }
+
+  /* 5. Viewport Headers & Action Buttons */
+  .viewport-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+  }
+
+  .viewport-title-group h2 {
+    font-size: 1.55rem;
+  }
+
+  .viewport-title-group p {
+    font-size: 0.86rem;
+  }
+
+  .viewport-actions-group {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .export-dropdown-wrapper {
+    width: 100%;
+  }
+
+  .export-excel-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 6. Filter Tabs Bar Horizontal Scrolling */
+  .filter-tabs-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-tabs-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-tab-pill {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+
+  /* 7. Responsive Tables */
+  .dashboard-panel-card {
+    padding: 22px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dashboard-table {
+    min-width: 650px;
+  }
+
+  /* 8. Service Cards & Website Cards */
+  .services-admin-grid,
+  .website-admin-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  /* 9. Profile Section */
+  .profile-container-card {
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+
+  .profile-hero-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .profile-spec-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .profile-spec-row .profile-spec-meta {
+    width: 100%;
+    word-break: break-all;
+  }
+}
+
+/* Small Smartphone Breakpoint (<= 640px) */
+@media (max-width: 640px) {
+  .admin-main-viewport {
+    padding: 16px 12px 35px !important;
+  }
+
+  .dashboard-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .metric-card {
+    padding: 18px 18px;
+    border-radius: 18px;
+  }
+
+  .metric-value {
+    font-size: 1.85rem;
+  }
+
+  .viewport-title-group h2 {
+    font-size: 1.35rem;
+  }
+
+  .services-admin-grid,
+  .website-admin-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .dashboard-panel-card {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
+
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* Modals on Small Phones */
+  .admin-modal-overlay,
+  .modal-backdrop-custom,
+  .website-modal-overlay {
+    padding: 10px !important;
+  }
+
+  .service-editor-modal,
+  .modal-container-custom,
+  .website-modal-card {
+    max-height: 94vh !important;
+    max-height: 94dvh !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+  }
+
+  .admin-modal-header,
+  .modal-header-custom,
+  .website-modal-header {
+    padding: 12px 14px !important;
+  }
+
+  .modal-title-wrap h3,
+  .modal-heading {
+    font-size: 1.05rem !important;
+  }
+
+  .modal-badge-icon,
+  .header-icon-box {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 1.05rem !important;
+  }
+
+  .modal-tabs-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 10px;
+  }
+
+  .modal-tabs-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modal-tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .modal-form-scroll-body,
+  .website-modal-form {
+    padding: 14px 12px !important;
+  }
+
+  .form-grid-2,
+  .form-grid-3,
+  .features-edit-grid,
+  .pricing-packages-editor-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-modal-footer,
+  .modal-footer-custom {
+    padding: 12px 12px !important;
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+
+  .modal-footer-actions {
+    width: 100% !important;
+    justify-content: flex-end !important;
   }
 }
 
@@ -1315,7 +1691,8 @@
    Admin Service Management & ServiceEditorModal Styles
    ========================================================================== */
 
-.admin-modal-overlay {
+.admin-modal-overlay,
+.modal-backdrop-custom {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.65);
@@ -1326,6 +1703,26 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
+  box-sizing: border-box;
+}
+
+.modal-container-custom {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px -15px rgba(0, 39, 138, 0.25);
+  border: 1px solid rgba(0, 203, 240, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.modal-header-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0f7fd 100%);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .service-editor-modal {

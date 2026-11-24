@@ -37,7 +37,9 @@ import {
   FiFileText,
   FiLock,
   FiEyeOff,
-  FiKey
+  FiKey,
+  FiMenu,
+  FiX
 } from 'react-icons/fi';
 import navbarLogo from '../../assets/PNG/6.icon + Name Logo Transparent.webp';
 import { getAdminStatsApi, changeAdminPasswordApi } from '../../services/adminApi';
@@ -257,6 +259,12 @@ const getAdminServiceVectorIcon = (srv) => {
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const handleTabSwitch = (tab) => {
+    setActiveTab(tab);
+    setMobileSidebarOpen(false);
+  };
   const [admin, setAdmin] = useState(null);
   const [meetings, setMeetings] = useState([]);
   const [meetsViewMode, setMeetsViewMode] = useState('calendar'); // 'calendar' | 'cards'
@@ -310,6 +318,38 @@ export default function AdminDashboard() {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4500);
   };
+
+  // Mobile sidebar accessibility & behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 960 && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileSidebarOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileSidebarOpen]);
+
+  useEffect(() => {
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileSidebarOpen]);
 
   const getAdminToken = () => {
     return localStorage.getItem('genvaani_admin_token') || sessionStorage.getItem('genvaani_admin_token') || '';
@@ -692,23 +732,69 @@ export default function AdminDashboard() {
   return (
     <div className="admin-layout-container">
       {/* =========================================================================
-          Dedicated Frosted Glass Sidebar with the 5 Requested Options
+          Mobile Top Navigation Bar with Hamburger Toggle Button
+          ========================================================================= */}
+      <header className="admin-mobile-topbar">
+        <button
+          type="button"
+          className="mobile-hamburger-btn"
+          onClick={() => setMobileSidebarOpen(prev => !prev)}
+          aria-label={mobileSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+          id="admin-mobile-hamburger-btn"
+        >
+          {mobileSidebarOpen ? <FiX /> : <FiMenu />}
+        </button>
+
+        <Link to="/" className="mobile-brand-link" title="Gen-Vaani Homepage" onClick={() => setMobileSidebarOpen(false)}>
+          <img src={navbarLogo} alt="Gen-Vaani" className="mobile-navbar-logo" />
+        </Link>
+
+        <button
+          type="button"
+          className="mobile-user-avatar-btn"
+          onClick={() => handleTabSwitch('profile')}
+          title="Go to Profile"
+        >
+          {getAdminInitial()}
+        </button>
+      </header>
+
+      {/* Backdrop overlay for mobile drawer */}
+      {mobileSidebarOpen && (
+        <div 
+          className="admin-sidebar-backdrop"
+          onClick={() => setMobileSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* =========================================================================
+          Dedicated Frosted Glass Sidebar (Desktop Fixed, Mobile Slide-in Drawer)
           1. Dashboard
           2. Leads
           3. Meet Scheduled
           4. Services
-          5. Logout button
+          5. Websites
+          6. Profile
+          7. Availability (AEST) & Export
+          8. Logout button
           ========================================================================= */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
         {/* Brand section */}
         <div className="sidebar-brand-section">
-          <Link to="/" title="Go to Gen-Vaani Homepage">
-            <img src={navbarLogo} alt="Gen-Vaani" className="sidebar-logo" />
-          </Link>
-          {/* <div className="sidebar-brand-badge">
-            <span className="admin-status-dot" />
-            <span>Admin Hub</span>
-          </div> */}
+          <div className="sidebar-brand-header">
+            <Link to="/" title="Go to Gen-Vaani Homepage" onClick={() => setMobileSidebarOpen(false)}>
+              <img src={navbarLogo} alt="Gen-Vaani" className="sidebar-logo" />
+            </Link>
+            <button
+              type="button"
+              className="sidebar-close-btn"
+              onClick={() => setMobileSidebarOpen(false)}
+              aria-label="Close navigation sidebar"
+            >
+              <FiX />
+            </button>
+          </div>
         </div>
 
         {/* Sidebar Navigation Menu */}
@@ -719,7 +805,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => handleTabSwitch('dashboard')}
             id="sidebar-nav-dashboard"
           >
             <span className="sidebar-nav-icon"><FiGrid /></span>
@@ -730,7 +816,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-nav-item ${activeTab === 'leads' ? 'active' : ''}`}
-            onClick={() => setActiveTab('leads')}
+            onClick={() => handleTabSwitch('leads')}
             id="sidebar-nav-leads"
           >
             <span className="sidebar-nav-icon"><FiMail /></span>
@@ -742,7 +828,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-nav-item ${activeTab === 'meet_scheduled' ? 'active' : ''}`}
-            onClick={() => setActiveTab('meet_scheduled')}
+            onClick={() => handleTabSwitch('meet_scheduled')}
             id="sidebar-nav-meet-scheduled"
           >
             <span className="sidebar-nav-icon"><FiCalendar /></span>
@@ -754,7 +840,10 @@ export default function AdminDashboard() {
           <button
             type="button"
             className="sidebar-nav-item"
-            onClick={() => setIsAvailabilityModalOpen(true)}
+            onClick={() => {
+              setIsAvailabilityModalOpen(true);
+              setMobileSidebarOpen(false);
+            }}
             id="sidebar-nav-availability"
             title="Configure consultation availability, Sydney AEST timeslots, working days, and meeting links"
           >
@@ -766,7 +855,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-nav-item ${activeTab === 'services' ? 'active' : ''}`}
-            onClick={() => setActiveTab('services')}
+            onClick={() => handleTabSwitch('services')}
             id="sidebar-nav-services"
           >
             <span className="sidebar-nav-icon"><FiLayers /></span>
@@ -778,7 +867,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-nav-item ${activeTab === 'websites' ? 'active' : ''}`}
-            onClick={() => setActiveTab('websites')}
+            onClick={() => handleTabSwitch('websites')}
             id="sidebar-nav-websites"
             title="Manage showcase websites and upload screenshots to ImageKit"
           >
@@ -791,7 +880,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabSwitch('profile')}
             id="sidebar-nav-profile"
             title="View personal profile and change password"
           >
@@ -804,7 +893,10 @@ export default function AdminDashboard() {
             type="button"
             className="sidebar-nav-item"
             style={{ marginTop: '4px', color: '#047857', background: 'rgba(16, 185, 129, 0.08)' }}
-            onClick={handleExportMaster}
+            onClick={() => {
+              handleExportMaster();
+              setMobileSidebarOpen(false);
+            }}
             id="sidebar-export-excel-btn"
             title="Download complete operations report (Leads + Consultations) in Excel (.xlsx) format"
           >
@@ -820,7 +912,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             className={`sidebar-user-info-card ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabSwitch('profile')}
             title={`Logged in as ${admin?.email} · Click to view profile & change password`}
             id="sidebar-user-profile-btn"
           >
@@ -834,14 +926,17 @@ export default function AdminDashboard() {
           </button>
 
           {/* Public Website Link */}
-          <Link to="/" className="sidebar-external-link" title="Visit Public Gen-Vaani Website">
+          <Link to="/" className="sidebar-external-link" title="Visit Public Gen-Vaani Website" onClick={() => setMobileSidebarOpen(false)}>
             <FiExternalLink /> Visit Website
           </Link>
 
           {/* Option 5: Logout Button */}
           <button 
             type="button" 
-            onClick={handleLogout} 
+            onClick={() => {
+              handleLogout();
+              setMobileSidebarOpen(false);
+            }} 
             className="sidebar-logout-button"
             id="sidebar-logout-btn"
             title="Terminate session and sign out"
@@ -988,7 +1083,7 @@ export default function AdminDashboard() {
                   <button 
                     type="button" 
                     className="table-btn" 
-                    onClick={() => setActiveTab('meet_scheduled')}
+                    onClick={() => handleTabSwitch('meet_scheduled')}
                   >
                     View All Meets ({displayedMeets.length})
                   </button>
