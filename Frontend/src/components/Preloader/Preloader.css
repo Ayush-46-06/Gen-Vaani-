@@ -76,17 +76,37 @@
 /* Letter by letter text row */
 .preloader-text-row {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: center;
-  font-size: clamp(3.2rem, 7.5vw, 5.4rem);
+  max-width: 92vw;
+  padding: 0 16px;
+  font-size: clamp(1.55rem, 4.4vw, 3.4rem);
   font-weight: 800;
+  line-height: 1.2;
   letter-spacing: -0.025em;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 1.25em;
 }
 
+.preloader-word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.preloader-space {
+  display: inline-block;
+  width: 0.28em;
+  opacity: 0;
+}
+
+.preloader-space.is-visible {
+  opacity: 1;
+}
+
 .preloader-char {
   display: inline-block;
+  white-space: pre;
   will-change: transform, opacity;
 }
 

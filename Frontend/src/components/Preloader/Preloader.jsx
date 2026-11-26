@@ -3,7 +3,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './Preloader.css';
 import iconLogo from '../../assets/PNG/8.icon Transparent.webp';
 
-const LETTERS = ['G', 'e', 'n', '-', 'V', 'a', 'a', 'n', 'i'];
+const PHRASE = 'Your Voice, Always Heard';
+const TOTAL_LETTERS = PHRASE.length;
+const ACCENT_START_INDEX = PHRASE.indexOf('Always Heard');
+
+// Group characters into words so mobile wrapping never splits a word mid-letter
+const WORD_GROUPS = (() => {
+  const groups = [];
+  let cursor = 0;
+  const parts = PHRASE.split(' ');
+  parts.forEach((word, wordIdx) => {
+    const chars = [];
+    for (let i = 0; i < word.length; i += 1) {
+      chars.push({ char: word[i], globalIndex: cursor });
+      cursor += 1;
+    }
+    groups.push({ word, chars });
+    if (wordIdx < parts.length - 1) {
+      groups.push({ word: ' ', isSpace: true, chars: [{ char: ' ', globalIndex: cursor }] });
+      cursor += 1;
+    }
+  });
+  return groups;
+})();
 
 const Preloader = ({ onComplete }) => {
   const [visibleCount, setVisibleCount] = useState(0);
@@ -13,27 +35,27 @@ const Preloader = ({ onComplete }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setVisibleCount((prev) => {
-        if (prev < LETTERS.length) {
+        if (prev < TOTAL_LETTERS) {
           return prev + 1;
         } else {
           clearInterval(interval);
           return prev;
         }
       });
-    }, 80);
+    }, 45);
 
     return () => clearInterval(interval);
   }, []);
 
   // When all letters typed, brief pause and smoothly dismiss curtain
   useEffect(() => {
-    if (visibleCount === LETTERS.length) {
+    if (visibleCount === TOTAL_LETTERS) {
       const holdTimer = setTimeout(() => {
         setIsDone(true);
         if (onComplete) {
           setTimeout(onComplete, 300);
         }
-      }, 250);
+      }, 280);
 
       return () => clearTimeout(holdTimer);
     }
@@ -77,32 +99,51 @@ const Preloader = ({ onComplete }) => {
               <img src={iconLogo} alt="GenVaani" className="preloader-icon" />
             </motion.div>
 
-            {/* Letter-by-letter brand name */}
-            <div className="preloader-text-row">
-              {LETTERS.map((char, index) => {
-                const isVisible = index < visibleCount;
-                const isVaani = index >= 3; // '-Vaani'
+            {/* Letter-by-letter tagline */}
+            <div className="preloader-text-row" aria-label={PHRASE}>
+              {WORD_GROUPS.map((group, groupIdx) => {
+                if (group.isSpace) {
+                  const spaceVisible = group.chars[0].globalIndex < visibleCount;
+                  return (
+                    <span
+                      key={`space-${groupIdx}`}
+                      className={`preloader-space ${spaceVisible ? 'is-visible' : ''}`}
+                      aria-hidden="true"
+                    >
+                      {' '}
+                    </span>
+                  );
+                }
+
                 return (
-                  <motion.span
-                    key={index}
-                    className={`preloader-char ${isVaani ? 'char-vaani' : 'char-gen'}`}
-                    initial={{ opacity: 0, y: 14, scale: 0.7 }}
-                    animate={
-                      isVisible
-                        ? { opacity: 1, y: 0, scale: 1 }
-                        : { opacity: 0, y: 14, scale: 0.7 }
-                    }
-                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {char}
-                  </motion.span>
+                  <span key={`word-${groupIdx}`} className="preloader-word">
+                    {group.chars.map(({ char, globalIndex }) => {
+                      const isVisible = globalIndex < visibleCount;
+                      const isAccent = globalIndex >= ACCENT_START_INDEX;
+                      return (
+                        <motion.span
+                          key={globalIndex}
+                          className={`preloader-char ${isAccent ? 'char-vaani' : 'char-gen'}`}
+                          initial={{ opacity: 0, y: 14, scale: 0.7 }}
+                          animate={
+                            isVisible
+                              ? { opacity: 1, y: 0, scale: 1 }
+                              : { opacity: 0, y: 14, scale: 0.7 }
+                          }
+                          transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                          {char}
+                        </motion.span>
+                      );
+                    })}
+                  </span>
                 );
               })}
 
               {/* Glowing blinking cursor */}
               <span
                 className={`preloader-cursor ${
-                  visibleCount === LETTERS.length ? 'cursor-hide' : ''
+                  visibleCount === TOTAL_LETTERS ? 'cursor-hide' : ''
                 }`}
               >
                 |
@@ -115,7 +156,7 @@ const Preloader = ({ onComplete }) => {
                 className="preloader-progress-bar"
                 initial={{ width: '0%' }}
                 animate={{
-                  width: `${(visibleCount / LETTERS.length) * 100}%`,
+                  width: `${(visibleCount / TOTAL_LETTERS) * 100}%`,
                 }}
                 transition={{ duration: 0.12, ease: 'linear' }}
               />
