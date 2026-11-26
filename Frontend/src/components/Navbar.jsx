@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getServicesApi } from '../services/serviceApi';
 import {
   getCategoriesApi,
@@ -199,6 +199,7 @@ const getCategoryMeta = (column) => {
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [scrolled, setScrolled] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -206,6 +207,7 @@ const Navbar = () => {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const navbarRef = useRef(null);
+  const mobileMenuRef = useRef(null);
   const servicesButtonRef = useRef(null);
   const megaMenuRef = useRef(null);
   const [notchLeft, setNotchLeft] = useState(null);
@@ -305,10 +307,12 @@ const Navbar = () => {
     setMobileServicesOpen(false);
   }, [location.pathname]);
 
-  // Close menus when clicking outside the navbar
+  // Close menus when clicking outside the navbar and mobile drawer
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+      const insideNavbar = navbarRef.current && navbarRef.current.contains(event.target);
+      const insideMobileMenu = mobileMenuRef.current && mobileMenuRef.current.contains(event.target);
+      if (!insideNavbar && !insideMobileMenu) {
         setServicesOpen(false);
         setMobileOpen(false);
         setMobileServicesOpen(false);
@@ -324,9 +328,12 @@ const Navbar = () => {
     };
   }, []);
 
-  // Prevent background scrolling on mobile
+  // Prevent background scrolling on mobile & reset nested services dropdown when menu closes
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    if (!mobileOpen) {
+      setMobileServicesOpen(false);
+    }
 
     return () => {
       document.body.style.overflow = '';
@@ -440,6 +447,16 @@ const Navbar = () => {
     return columns;
   }, [categories, services]);
 
+  const toggleMobileMenu = () => {
+    setMobileOpen((previous) => {
+      const next = !previous;
+      if (!next) {
+        setMobileServicesOpen(false);
+      }
+      return next;
+    });
+  };
+
   const closeAllMenus = () => {
     setServicesOpen(false);
     setMobileOpen(false);
@@ -456,18 +473,23 @@ const Navbar = () => {
 
     try {
       const targetUrl = new URL(path, window.location.origin);
-      const isCurrentPath = window.location.pathname === targetUrl.pathname;
+      const isCurrentPath = location.pathname === targetUrl.pathname;
 
-      if (isCurrentPath && !targetUrl.hash) {
-        window.location.reload();
+      if (isCurrentPath && !targetUrl.hash && !targetUrl.search) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       } else if (isCurrentPath && targetUrl.hash) {
-        window.location.href = path;
-        window.location.reload();
+        const targetId = targetUrl.hash.replace('#', '');
+        if (location.hash !== targetUrl.hash) {
+          navigate(`${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`);
+        }
+        setTimeout(() => {
+          document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 20);
       } else {
-        window.location.href = path;
+        navigate(`${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`);
       }
     } catch {
-      window.location.href = path;
+      navigate(path);
     }
   };
 
@@ -709,9 +731,9 @@ const Navbar = () => {
         <div className="gvn-desktop-cta">
 
           <a
-            href="/contact#booking-widget"
+            href="/contact#booking-step-panel"
             className="gvn-book-button"
-            onClick={(e) => handleNavClick('/contact#booking-widget', e)}
+            onClick={(e) => handleNavClick('/contact#booking-step-panel', e)}
           >
             <span>Book a Call</span>
             <ArrowIcon />
@@ -725,7 +747,7 @@ const Navbar = () => {
           type="button"
           className={`gvn-hamburger ${mobileOpen ? 'active' : ''
             }`}
-          onClick={() => setMobileOpen((previous) => !previous)}
+          onClick={toggleMobileMenu}
           aria-label="Toggle navigation"
           aria-expanded={mobileOpen}
         >
@@ -754,14 +776,15 @@ const Navbar = () => {
       ===================================== */}
 
       <div
+        ref={mobileMenuRef}
         className={`gvn-mobile-menu ${mobileOpen ? 'visible' : ''
           }`}
         aria-hidden={!mobileOpen}
       >
 
         <div className="gvn-mobile-header">
-          <span>EXPLORE GENV AANI</span>
-          <span className="gvn-mobile-status" />
+          <span>EXPLORE GEN-VAANI</span>
+          {/* <span className="gvn-mobile-status" /> */}
         </div>
 
         <div className="gvn-mobile-links">
@@ -877,9 +900,9 @@ const Navbar = () => {
         <div className="gvn-mobile-cta">
 
           <a
-            href="/contact#booking-widget"
+            href="/contact#booking-step-panel"
             className="gvn-book-button"
-            onClick={(e) => handleNavClick('/contact#booking-widget', e)}
+            onClick={(e) => handleNavClick('/contact#booking-step-panel', e)}
           >
             <span>Book a Call</span>
             <ArrowIcon />

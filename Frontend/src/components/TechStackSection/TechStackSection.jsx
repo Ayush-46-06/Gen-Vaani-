@@ -71,7 +71,7 @@ const TechStackSection = () => {
           <p className="tech-description">
             We leverage industry-leading technologies to build scalable, secure, and lightning-fast solutions for your business.
           </p>
-          <Link to="/contact"><button className="tech-cta">Book an appointment</button></Link>
+          <Link to="/contact#booking-step-panel"><button className="tech-cta">Book an appointment</button></Link>
         </div>
 
         {/* Orbiting Circular Arch Wrapper (Static, holds the mask) */}

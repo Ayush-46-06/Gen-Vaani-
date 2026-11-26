@@ -320,7 +320,7 @@ const ServiceDetail = () => {
             <div className="faq-cta-box">
               <h3>Ready to start your project?</h3>
               <p>Schedule a discovery consultation with our strategy and engineering team.</p>
-              <Link to="/contact?tab=calendar" className="faq-cta-btn">Book an Appointment &rarr;</Link>
+              <Link to="/contact#booking-step-panel" className="faq-cta-btn">Book an Appointment &rarr;</Link>
             </div>
           </div>
 

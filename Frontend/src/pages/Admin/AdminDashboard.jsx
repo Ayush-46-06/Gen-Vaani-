@@ -988,7 +988,7 @@ export default function AdminDashboard() {
             <div className="viewport-header-bar">
               <div className="viewport-title-group">
                 <h2>Dashboard Overview</h2>
-                <p>Welcome back, <b>{admin?.name || 'Ayush'}</b> · Real-time agency performance & booking operations</p>
+                <p>Welcome back, <b>{admin?.name || 'Ayush'}</b> </p>
               </div>
               <div className="viewport-actions-group">
                 <button
@@ -1020,7 +1020,7 @@ export default function AdminDashboard() {
                 >
                   {copiedLink ? <><FiCheck color="#16a34a" /> Copied Link</> : <><FiCopy /> Copy Booking Link</>}
                 </button>
-                <Link to="/contact" className="admin-submit-button" style={{ width: 'auto', padding: '0 22px', textDecoration: 'none' }}>
+                <Link to="/contact#booking-step-panel" className="admin-submit-button" style={{ width: 'auto', padding: '0 22px', textDecoration: 'none' }}>
                   <FiCalendar /> View Calendar <FiArrowUpRight />
                 </Link>
               </div>
@@ -1089,7 +1089,7 @@ export default function AdminDashboard() {
                   </button>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
+                <div className="dashboard-table-scroll">
                   <table className="dashboard-table">
                     <thead>
                       <tr>
@@ -1107,7 +1107,7 @@ export default function AdminDashboard() {
 
                         return (
                           <tr key={meetKey}>
-                            <td>
+                            <td data-label="Client">
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span style={{ fontWeight: 800 }}>{meet.clientName}</span>
                                 <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>
@@ -1115,14 +1115,14 @@ export default function AdminDashboard() {
                                 </span>
                               </div>
                             </td>
-                            <td>{meet.service}</td>
-                            <td>{meet.date} · {meet.time}</td>
-                            <td>
+                            <td data-label="Service">{meet.service}</td>
+                            <td data-label="Date & Time">{meet.date} · {meet.time}</td>
+                            <td data-label="Status">
                               <span className={`status-pill ${meet.status}`}>
                                 ✓ {meet.status === 'confirmed' ? 'Confirmed' : meet.status === 'completed' ? 'Completed' : 'Cancelled'}
                               </span>
                             </td>
-                            <td>
+                            <td data-label="Action">
                               <a 
                                 href={meetLink} 
                                 target="_blank" 
@@ -1292,7 +1292,7 @@ export default function AdminDashboard() {
 
             {/* Leads Table */}
             <div className="dashboard-panel-card">
-              <div style={{ overflowX: 'auto' }}>
+              <div className="dashboard-table-scroll">
                 <table className="dashboard-table">
                   <thead>
                     <tr>
@@ -1315,7 +1315,7 @@ export default function AdminDashboard() {
 
                       return (
                         <tr key={leadKey}>
-                          <td>
+                          <td data-label="Prospect">
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                               <span style={{ fontWeight: 800 }}>{lead.name}</span>
                               <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
@@ -1328,7 +1328,7 @@ export default function AdminDashboard() {
                               )}
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Contact">
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               <a href={`mailto:${lead.email}`} style={{ color: '#0084c7', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600 }}>
                                 {lead.email}
@@ -1342,7 +1342,7 @@ export default function AdminDashboard() {
                               )}
                             </div>
                           </td>
-                          <td style={{ maxWidth: '280px' }}>
+                          <td data-label="Service" className="lead-service-cell" style={{ maxWidth: '280px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               <span style={{ fontWeight: 700, color: '#00278a' }}>{lead.service}</span>
                               {clientMessage && (
@@ -1352,17 +1352,17 @@ export default function AdminDashboard() {
                               )}
                             </div>
                           </td>
-                          <td>
+                          <td data-label="Budget">
                             <span style={{ fontWeight: 700, color: '#0f172a', background: '#f8fafc', padding: '6px 12px', borderRadius: '8px', fontSize: '0.82rem', whiteSpace: 'nowrap', display: 'inline-block' }}>
                               {lead.budget || 'Standard Scope'}
                             </span>
                           </td>
-                          <td>
+                          <td data-label="Date">
                             <span style={{ fontSize: '0.84rem', color: '#475569', fontWeight: 600 }}>
                               {formattedDate}
                             </span>
                           </td>
-                          <td>
+                          <td data-label="Status">
                             <button
                               type="button"
                               onClick={() => toggleLeadStatus(lead)}
@@ -1375,7 +1375,7 @@ export default function AdminDashboard() {
                               {lead.status === 'converted' && '✓ Converted'}
                             </button>
                           </td>
-                          <td>
+                          <td data-label="Action">
                             <button 
                               type="button"
                               onClick={() => setReplyingLead(lead)}
@@ -1491,7 +1491,7 @@ export default function AdminDashboard() {
                   <FiClock /> <span>Manage Availability (AEST)</span>
                 </button>
 
-                <Link to="/contact" className="admin-submit-button" style={{ width: 'auto', padding: '0 20px', textDecoration: 'none' }}>
+                <Link to="/contact#booking-step-panel" className="admin-submit-button" style={{ width: 'auto', padding: '0 20px', textDecoration: 'none' }}>
                   <FiCalendar /> Open Public Calendar <FiArrowUpRight />
                 </Link>
               </div>

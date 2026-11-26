@@ -2,6 +2,11 @@ import { Meeting } from '../models/Meeting.js';
 import { Lead } from '../models/Lead.js';
 import { Availability } from '../models/Availability.js';
 import { sendAppointmentEmails } from '../services/emailService.js';
+import {
+  dispatchReminderForMeeting,
+  processDueMeetingReminders,
+} from '../services/meetingReminderService.js';
+import { computeMeetingScheduledAt } from '../utils/meetingTime.js';
 import XLSX from 'xlsx';
 
 export const GOOGLE_MEET_URLS = [
@@ -445,7 +450,11 @@ export const getMeetings = async (req, res) => {
     // Auto-seed demo meetings if database is fresh
     if (count === 0) {
       console.log('🌱 Seeding initial discovery meetings into MongoDB with Meet URL: ' + GENVAANI_MEET_URL);
-      await Meeting.insertMany(SEED_MEETINGS);
+      const seeded = SEED_MEETINGS.map((m) => ({
+        ...m,
+        scheduledAt: computeMeetingScheduledAt(m),
+      }));
+      await Meeting.insertMany(seeded);
     }
 
     const meetings = await Meeting.find().sort({ dateKey: 1, time: 1 });
@@ -618,6 +627,88 @@ export const exportMeetingsExcel = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to export meetings to Excel spreadsheet.',
+    });
+  }
+};
+
+/**
+ * @desc    Process all due 30-minute meeting reminders (both Client and Admin)
+ * @route   GET/POST /api/meetings/reminders/run
+ * @access  Cron / Internal (optional CRON_SECRET)
+ */
+export const runMeetingReminders = async (req, res) => {
+  try {
+    const cronSecret = process.env.CRON_SECRET;
+    if (cronSecret) {
+      const authHeader = req.headers.authorization || '';
+      const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+      const headerSecret = req.headers['x-cron-secret'] || '';
+      const querySecret = req.query.secret || '';
+
+      if (
+        bearerToken !== cronSecret &&
+        headerSecret !== cronSecret &&
+        querySecret !== cronSecret
+      ) {
+        return res.status(401).json({
+          success: false,
+          message: 'Unauthorized reminder runner invocation.',
+        });
+      }
+    }
+
+    const summary = await processDueMeetingReminders();
+    return res.status(200).json({
+      success: true,
+      ...summary,
+    });
+  } catch (error) {
+    console.error('Error processing meeting reminders:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to process meeting reminders.',
+    });
+  }
+};
+
+/**
+ * @desc    Manually send a 30-minute reminder email for a specific meeting (Client & Admin)
+ * @route   POST /api/meetings/:id/send-reminder
+ * @access  Admin
+ */
+export const sendSingleMeetingReminder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const force = Boolean(req.body?.force);
+
+    const meeting = await Meeting.findById(id);
+    if (!meeting) {
+      return res.status(404).json({
+        success: false,
+        message: 'Meeting not found.',
+      });
+    }
+
+    if (meeting.status !== 'confirmed') {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot send reminder for a meeting with status "${meeting.status}".`,
+      });
+    }
+
+    const result = await dispatchReminderForMeeting(meeting, { force });
+    return res.status(200).json({
+      success: result.allSent,
+      message: result.allSent
+        ? `Reminder emails dispatched to client (${meeting.email}) and admin.`
+        : 'Reminder dispatch partially failed. Check emailStatus details.',
+      ...result,
+    });
+  } catch (error) {
+    console.error('Error sending single meeting reminder:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to send meeting reminder.',
     });
   }
 };

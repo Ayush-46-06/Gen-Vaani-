@@ -378,10 +378,11 @@
     height: 55px;
   }
   .tech-title {
-    font-size: 2.6rem;
+    font-size: 2.25rem;
   }
   .tech-text-content {
-    margin-top: 105px;
+    margin-top: 115px;
+    max-width: 310px;
   }
   .tech-orbit-wrapper {
     width: 100%;
@@ -421,21 +422,23 @@
     padding: 0 4%;
   }
   .tech-title {
-    font-size: 2.15rem;
-    margin-bottom: 14px;
+    font-size: 1.6rem;
+    letter-spacing: -0.4px;
+    margin-bottom: 10px;
   }
   .tech-description {
-    font-size: 0.92rem;
+    font-size: 0.82rem;
     line-height: 1.5;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .tech-cta {
-    padding: 13px 28px;
-    font-size: 0.9rem;
+    padding: 11px 24px;
+    font-size: 0.84rem;
   }
   .tech-text-content {
-    margin-top: 110px;
-    padding: 0 8px;
+    max-width: 245px;
+    margin-top: 132px;
+    padding: 0 6px;
   }
   .tech-orbit-wrapper {
     width: 100%;

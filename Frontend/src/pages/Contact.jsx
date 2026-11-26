@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import brandIcon from '../assets/PNG/8.icon Transparent.webp';
 import { submitLeadApi } from '../services/leadApi';
 import {
@@ -8,7 +9,20 @@ import {
   GENVAANI_MEET_URL,
   GENVAANI_TEAMS_URL,
 } from '../services/meetingApi';
+import {
+  COUNTRY_CODES,
+  getDefaultCountryForTimezone,
+} from '../data/countryCodes';
+import * as CountryFlags from 'country-flag-icons/react/3x2';
 import './Contact.css';
+
+function CountryFlagIcon({ iso, name }) {
+  const FlagSvg = CountryFlags[iso];
+  if (!FlagSvg) {
+    return <span className="country-flag-fallback">{iso}</span>;
+  }
+  return <FlagSvg className="country-flag-svg" title={name} aria-hidden="true" />;
+}
 
 const SERVICES = [
   'Website Development',
@@ -143,6 +157,34 @@ function convertAestToTz(dateKey, timeStr, targetTz) {
 }
 
 export default function Contact() {
+  const location = useLocation();
+
+  // Scroll directly to the booking calendar panel when navigated via #booking-step-panel, #booking-widget, or ?tab=calendar
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const shouldScrollToCalendar =
+      location.hash === '#booking-step-panel' ||
+      location.hash === '#booking-widget' ||
+      params.get('tab') === 'calendar';
+
+    if (!shouldScrollToCalendar) return;
+
+    const scrollToCalendar = () => {
+      const el = bookingMainRef.current || document.getElementById('booking-step-panel');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    const rafId = window.requestAnimationFrame(scrollToCalendar);
+    const timerId = setTimeout(scrollToCalendar, 120);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      clearTimeout(timerId);
+    };
+  }, [location.pathname, location.hash, location.search]);
+
   const today = useMemo(() => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -175,9 +217,18 @@ export default function Contact() {
   });
 
   const [step, setStep] = useState(1);
+  const bookingMainRef = useRef(null);
   const [status, setStatus] = useState('idle'); // idle | loading | confirmed
   const [error, setError] = useState('');
   const [form, setForm] = useState({ name: '', email: '', phone: '', service: SERVICES[0], notes: '' });
+
+  // Country code dropdown state for Phone Number field
+  const [selectedCountry, setSelectedCountry] = useState(() => getDefaultCountryForTimezone(timezone));
+  const [countryManuallySelected, setCountryManuallySelected] = useState(false);
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
+  const countryDropdownRef = useRef(null);
+  const countrySearchInputRef = useRef(null);
 
   // Availability settings fetched from admin portal
   const [aestSlots, setAestSlots] = useState(DEFAULT_AEST_SLOTS);
@@ -329,6 +380,59 @@ export default function Contact() {
 
   const slotTransitionTimerRef = useRef(null);
 
+  // Sync default country code with timezone unless user explicitly picked one
+  useEffect(() => {
+    if (!countryManuallySelected) {
+      setSelectedCountry(getDefaultCountryForTimezone(timezone));
+    }
+  }, [timezone, countryManuallySelected]);
+
+  // Close country code dropdown on outside click or Escape, and focus search when opened
+  useEffect(() => {
+    if (!countryDropdownOpen) return;
+
+    const focusTimer = setTimeout(() => {
+      countrySearchInputRef.current?.focus();
+    }, 20);
+
+    const handleOutside = (event) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(event.target)) {
+        setCountryDropdownOpen(false);
+      }
+    };
+
+    const handleKey = (event) => {
+      if (event.key === 'Escape') {
+        setCountryDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside);
+    window.addEventListener('keydown', handleKey);
+
+    return () => {
+      clearTimeout(focusTimer);
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [countryDropdownOpen]);
+
+  const filteredCountries = useMemo(() => {
+    const q = countrySearch.trim().toLowerCase();
+    if (!q) return COUNTRY_CODES;
+    const normalizedQ = q.replace(/^\+/, '');
+    return COUNTRY_CODES.filter((country) => {
+      return (
+        country.name.toLowerCase().includes(q) ||
+        country.iso.toLowerCase().includes(q) ||
+        country.dialCode.toLowerCase().includes(q) ||
+        country.dialCode.replace(/^\+/, '').includes(normalizedQ)
+      );
+    });
+  }, [countrySearch]);
+
   useEffect(() => {
     return () => {
       if (slotTransitionTimerRef.current) {
@@ -336,6 +440,12 @@ export default function Contact() {
       }
     };
   }, []);
+
+  const scrollToBookingPanel = () => {
+    window.requestAnimationFrame(() => {
+      bookingMainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   const handleSlotSelect = (slot) => {
     setSelectedTime(slot.clientSlot);
@@ -349,7 +459,7 @@ export default function Contact() {
     // Direct progression to Step 2 upon selecting a time slot
     slotTransitionTimerRef.current = setTimeout(() => {
       setStep(2);
-      document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToBookingPanel();
     }, 150);
   };
 
@@ -360,7 +470,7 @@ export default function Contact() {
     }
     setError('');
     setStep(2);
-    document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToBookingPanel();
   };
 
   const submitBookingRequest = async (event) => {
@@ -377,8 +487,20 @@ export default function Contact() {
       return;
     }
 
-    if (selectedLocation === 'Phone call' && !form.phone.trim()) {
-      setError('Please enter your phone number with country code so our senior consultant can call you at your scheduled time.');
+    const rawPhone = form.phone.trim();
+    const formattedPhone = rawPhone
+      ? rawPhone.startsWith('+')
+        ? rawPhone
+        : `${selectedCountry.dialCode} ${rawPhone}`
+      : '';
+
+    if (selectedLocation === 'Phone call' && !rawPhone) {
+      setError('Please enter your phone number so our senior consultant can call you at your scheduled time.');
+      return;
+    }
+
+    if (rawPhone && rawPhone.replace(/\D/g, '').length < 6) {
+      setError('Please enter a valid phone number (at least 6 digits).');
       return;
     }
 
@@ -392,7 +514,7 @@ export default function Contact() {
         clientName: form.name.trim(),
         name: form.name.trim(),
         email: form.email.trim(),
-        phone: form.phone.trim(),
+        phone: formattedPhone,
         service: form.service,
         date: formattedDate,
         dateKey: dateKey,
@@ -409,7 +531,7 @@ export default function Contact() {
           res.meeting || {
             clientName: form.name,
             email: form.email,
-            phone: form.phone,
+            phone: formattedPhone,
             service: form.service,
             date: formattedDate,
             time: selectedTime,
@@ -475,7 +597,14 @@ export default function Contact() {
             Have a project in mind or looking to improve your digital presence? Schedule a consultation
             with our team to discuss your goals, explore solutions, and identify the right next steps.
           </p>
-          <a className="contact-primary-button" href="#booking-widget">
+          <a
+            className="contact-primary-button"
+            href="#booking-step-panel"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToBookingPanel();
+            }}
+          >
             Schedule a Call <span aria-hidden="true">↗</span>
           </a>
           <div className="contact-trust-row" aria-label="Consultation details">
@@ -607,7 +736,7 @@ export default function Contact() {
             </div>
           </aside>
 
-          <div className="booking-main">
+          <div className="booking-main" ref={bookingMainRef} id="booking-step-panel">
             {status === 'confirmed' ? (
               <div className="booking-result" role="status">
                 <div className="result-icon">✓</div>
@@ -991,7 +1120,7 @@ export default function Contact() {
                           {selectedAestTime && selectedAestTime !== selectedTime ? ` · ${selectedAestTime} Sydney Time` : ''}
                         </span>
                       </div>
-                      <button type="button" onClick={() => setStep(1)}>Edit</button>
+                      <button type="button" onClick={() => { setStep(1); scrollToBookingPanel(); }}>Edit</button>
                     </div>
 
                     <div className="form-fields-grid">
@@ -1047,20 +1176,90 @@ export default function Contact() {
                         />
                       </label>
 
-                      <label className="form-field">
-                        <span>
+                      <div className="form-field">
+                        <label htmlFor="booking-phone-input">
                           Phone Number {selectedLocation === 'Phone call' ? <i>*</i> : <small>Optional</small>}
-                        </span>
-                        <input
-                          name="phone"
-                          type="tel"
-                          value={form.phone}
-                          onChange={updateForm}
-                          placeholder={selectedLocation === 'Phone call' ? '+1 / +91 phone number for call' : 'Your phone number'}
-                          autoComplete="tel"
-                          required={selectedLocation === 'Phone call'}
-                        />
-                      </label>
+                        </label>
+                        <div className="phone-input-wrapper" ref={countryDropdownRef}>
+                          <div className={`phone-input-group ${countryDropdownOpen ? 'is-open' : ''}`}>
+                            <button
+                              type="button"
+                              className="country-code-trigger"
+                              aria-haspopup="listbox"
+                              aria-expanded={countryDropdownOpen}
+                              aria-label={`Selected country ${selectedCountry.name} (${selectedCountry.dialCode})`}
+                              onClick={() => {
+                                setCountryDropdownOpen((prev) => !prev);
+                                setCountrySearch('');
+                              }}
+                            >
+                              <span className="country-flag" aria-hidden="true">
+                                <CountryFlagIcon iso={selectedCountry.iso} name={selectedCountry.name} />
+                              </span>
+                              <span className="country-dial-tag">{selectedCountry.dialCode}</span>
+                              <span className="country-caret" aria-hidden="true">▾</span>
+                            </button>
+
+                            <input
+                              id="booking-phone-input"
+                              name="phone"
+                              type="tel"
+                              value={form.phone}
+                              onChange={updateForm}
+                              placeholder="Phone number"
+                              autoComplete="tel-national"
+                              required={selectedLocation === 'Phone call'}
+                            />
+                          </div>
+
+                          {countryDropdownOpen && (
+                            <div className="country-code-dropdown" role="listbox" aria-label="Select country calling code">
+                              <div className="country-search-box">
+                                <input
+                                  ref={countrySearchInputRef}
+                                  type="text"
+                                  value={countrySearch}
+                                  onChange={(e) => setCountrySearch(e.target.value)}
+                                  placeholder="Search country or code (e.g. India, +91)"
+                                  aria-label="Search country or code"
+                                />
+                              </div>
+                              <div className="country-options-list">
+                                {filteredCountries.length > 0 ? (
+                                  filteredCountries.map((country) => {
+                                    const isSelected = country.iso === selectedCountry.iso;
+                                    return (
+                                      <button
+                                        key={`${country.iso}-${country.dialCode}`}
+                                        type="button"
+                                        role="option"
+                                        aria-selected={isSelected}
+                                        className={`country-option-item ${isSelected ? 'selected' : ''}`}
+                                        onClick={() => {
+                                          setSelectedCountry(country);
+                                          setCountryManuallySelected(true);
+                                          setCountryDropdownOpen(false);
+                                          setCountrySearch('');
+                                        }}
+                                      >
+                                        <span className="country-option-left">
+                                          <span className="country-flag" aria-hidden="true">
+                                            <CountryFlagIcon iso={country.iso} name={country.name} />
+                                          </span>
+                                          <span className="country-option-name">{country.name}</span>
+                                        </span>
+                                        <span className="country-option-dial">{country.dialCode}</span>
+                                      </button>
+                                    );
+                                  })
+                                ) : (
+                                  <div className="country-empty-state">No matching country found</div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
 
                       <label className="form-field">
                         <span>What can we help with?</span>

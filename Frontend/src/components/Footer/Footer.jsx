@@ -24,7 +24,7 @@ const QUICK_LINKS = [
   { name: 'Portfolio', path: '/portfolio' },
   { name: 'Pricing Packages', path: '/pricing' },
   // { name: 'Contact Us', path: '/contact' },
-  { name: 'Book a Call', path: '/contact?tab=calendar' },
+  { name: 'Book a Call', path: '/contact#booking-step-panel' },
   // { name: 'Admin Console', path: '/admin/login' },
 ];
 

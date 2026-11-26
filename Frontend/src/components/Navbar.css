@@ -765,6 +765,7 @@
 
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
 
     transition:
       opacity 0.3s ease,
@@ -774,6 +775,7 @@
   .gvn-mobile-backdrop.visible {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
   }
 
   /* MOBILE PANEL */
@@ -793,6 +795,7 @@
     max-height: calc(100dvh - 108px);
 
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
 
     padding: 20px;
@@ -806,6 +809,7 @@
 
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
 
     transform: translate(-50%, -12px) scale(0.98);
 
@@ -818,6 +822,7 @@
   .gvn-mobile-menu.visible {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 
     transform: translate(-50%, 0) scale(1);
   }
@@ -900,15 +905,20 @@
     grid-template-rows: 0fr;
 
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 
     transition:
       grid-template-rows 0.35s ease,
-      opacity 0.3s ease;
+      opacity 0.3s ease,
+      visibility 0.3s ease;
   }
 
   .gvn-mobile-service-content.expanded {
     grid-template-rows: 1fr;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .gvn-mobile-service-inner {

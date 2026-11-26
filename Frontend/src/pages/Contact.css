@@ -146,9 +146,9 @@
 /* Booking layout */
 .booking-section {
   width: 100%;
-  padding: 72px 28px 90px;
+  padding: 68px 28px 90px;
   background: linear-gradient(180deg, #f8fbfe 0%, #fff 100%);
-  scroll-margin-top: 24px;
+  scroll-margin-top: 32px;
 }
 .booking-section-heading { margin: 0 auto 32px; text-align: center; }
 .booking-section-heading h2 { margin: 11px 0 8px; color: var(--gv-navy); font-size: clamp(1.9rem, 3.2vw, 2.7rem); letter-spacing: -.045em; font-weight: 800; }
@@ -249,7 +249,7 @@
 .sidebar-direct-text small { color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 .sidebar-direct-text b { color: #ffffff; font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-direct-card:hover .sidebar-direct-text b { color: #00cbf0; }
-.booking-main { min-width: 0; padding: 34px 40px 30px; }
+.booking-main { min-width: 0; padding: 34px 40px 30px; scroll-margin-top: 108px; }
 .booking-main-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .booking-main-heading h2 { margin: 7px 0 0; color: var(--gv-navy); font-size: 1.55rem; font-weight: 800; letter-spacing: -.04em; }
 .booking-main-heading .section-kicker { font-size: .66rem; }
@@ -314,14 +314,207 @@
 .selected-appointment-banner button { margin-left: auto; border: 0; color: var(--gv-blue); background: transparent; font: inherit; font-size: .73rem; font-weight: 800; cursor: pointer; }
 .form-fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px 14px; margin-top: 21px; }
 .form-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-.form-field > span { color: #34415a; font-size: .73rem; font-weight: 700; }
-.form-field > span i { color: #dc4545; font-style: normal; }
-.form-field > span small { margin-left: 5px; color: #8a96a8; font-size: .65rem; font-weight: 500; }
+.form-field > span,
+.form-field > label { color: #34415a; font-size: .73rem; font-weight: 700; }
+.form-field > span i,
+.form-field > label i { color: #dc4545; font-style: normal; }
+.form-field > span small,
+.form-field > label small { margin-left: 5px; color: #8a96a8; font-size: .65rem; font-weight: 500; }
 .form-field input, .form-field select, .form-field textarea { width: 100%; min-width: 0; border: 1px solid #dfe7f0; border-radius: 9px; padding: 11px 12px; outline: none; color: var(--gv-ink); background: #fff; font: inherit; font-size: .78rem; transition: border-color .2s ease, box-shadow .2s ease; }
 .form-field input, .form-field select { min-height: 42px; }
 .form-field textarea { resize: vertical; line-height: 1.55; }
 .form-field input::placeholder, .form-field textarea::placeholder { color: #a1acbc; }
 .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--gv-cyan); box-shadow: 0 0 0 3px rgba(0,203,240,.1); }
+
+/* Phone input with searchable all-countries dial code selector */
+.phone-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.phone-input-group {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #dfe7f0;
+  border-radius: 9px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.phone-input-group:focus-within,
+.phone-input-group.is-open {
+  border-color: var(--gv-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 203, 240, 0.1);
+}
+
+.country-code-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 0 10px;
+  border: 0;
+  border-right: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: var(--gv-navy);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.country-code-trigger:hover {
+  background: #eef6fc;
+}
+
+.country-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.country-flag-svg {
+  width: 22px;
+  height: 15px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.14);
+  display: block;
+  flex-shrink: 0;
+}
+
+.country-flag-fallback {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.country-iso-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+
+.country-dial-tag {
+  color: var(--gv-navy);
+  font-weight: 800;
+}
+
+.country-caret {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-left: 1px;
+}
+
+.phone-input-group input[type="tel"] {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 10px 12px;
+  min-height: 40px;
+  flex: 1;
+  min-width: 0;
+}
+
+.country-code-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: min(340px, 100%);
+  min-width: 260px;
+  background: #ffffff;
+  border: 1px solid #dbe4ef;
+  border-radius: 12px;
+  box-shadow: 0 16px 38px rgba(7, 23, 68, 0.16);
+  z-index: 90;
+  overflow: hidden;
+  animation: contactRise 0.16s ease both;
+}
+
+.country-search-box {
+  padding: 8px;
+  border-bottom: 1px solid #eef2f7;
+  background: #f8fbfe;
+}
+
+.country-search-box input {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid #dbe4ef;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  background: #ffffff;
+}
+
+.country-options-list {
+  max-height: 230px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+}
+
+.country-option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #1e293b;
+  font: inherit;
+  font-size: 0.77rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.country-option-item:hover {
+  background: #f0f9ff;
+  color: var(--gv-navy);
+}
+
+.country-option-item.selected {
+  background: #e0f5fe;
+  color: var(--gv-navy);
+  font-weight: 700;
+}
+
+.country-option-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.country-option-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.country-option-dial {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: #0284c7;
+  font-size: 0.74rem;
+}
+
+.country-empty-state {
+  padding: 16px 12px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.76rem;
+}
 .field-full { grid-column: 1 / -1; }
 .form-actions { margin-top: 22px; }
 .back-button, .text-button { border: 0; color: #627089; background: transparent; font: inherit; font-size: .77rem; font-weight: 700; cursor: pointer; }
@@ -395,7 +588,8 @@
   .booking-sidebar { padding: 22px 20px; }
   .sidebar-detail { margin-top: 18px; margin-right: 0; }
   .sidebar-note { margin-top: 18px; }
-  .booking-main { padding: 23px 17px; }
+  .booking-main { padding: 23px 17px; scroll-margin-top: 86px; }
+  .country-code-dropdown { width: 100%; min-width: 0; }
   .booking-main-heading h2 { font-size: 1.25rem; }
   .duration-pill { padding: 7px 8px; font-size: .67rem; }
   .booking-controls-row { justify-content: stretch; }

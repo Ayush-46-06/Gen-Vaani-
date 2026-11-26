@@ -8,6 +8,7 @@ import meetingRoutes from './src/routes/meetingRoutes.js';
 import serviceRoutes from './src/routes/serviceRoutes.js';
 import portfolioRoutes from './src/routes/portfolioRoutes.js';
 import categoryRoutes from './src/routes/categoryRoutes.js';
+import { startMeetingReminderScheduler } from './src/services/meetingReminderService.js';
 
 // Load environment variables
 dotenv.config();
@@ -103,6 +104,7 @@ if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 Gen-Vaani Backend server running on http://localhost:${PORT}`);
     console.log(`📡 Admin API ready at http://localhost:${PORT}/api/admin`);
+    startMeetingReminderScheduler();
   });
 }
 

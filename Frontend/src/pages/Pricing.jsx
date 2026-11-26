@@ -134,7 +134,7 @@ const Pricing = () => {
             <div className="consult-box">
               <h3>Need a tailored estimate?</h3>
               <p>Book a discovery call with our technical leadership to get an exact quote for your project.</p>
-              <Link to="/contact?tab=calendar" className="consult-btn">Book an Appointment &rarr;</Link>
+              <Link to="/contact#booking-step-panel" className="consult-btn">Book an Appointment &rarr;</Link>
             </div>
           </div>
 

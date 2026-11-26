@@ -3,18 +3,48 @@ import { useLocation } from 'react-router-dom';
 import './ScrollToTop.css';
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash, search } = useLocation();
   const [isVisible, setIsVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // 1. Auto-scroll to top on route change
+  // 1. Auto-scroll to top on route change unless navigating to a hash or calendar tab
   useEffect(() => {
+    const params = new URLSearchParams(search);
+    const hasCalendarTab = params.get('tab') === 'calendar';
+
+    if (hash || hasCalendarTab) {
+      const rawHashId = hash ? hash.replace('#', '') : '';
+      const targetId =
+        !rawHashId || rawHashId === 'booking-widget' || hasCalendarTab
+          ? 'booking-step-panel'
+          : rawHashId;
+      let attempts = 0;
+      let timerId = null;
+
+      const tryScroll = () => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        attempts += 1;
+        if (attempts < 20) {
+          timerId = setTimeout(tryScroll, 50);
+        }
+      };
+
+      timerId = setTimeout(tryScroll, 30);
+      return () => {
+        if (timerId) clearTimeout(timerId);
+      };
+    }
+
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'instant',
     });
-  }, [pathname]);
+  }, [pathname, hash, search]);
 
   // 2. Track scroll distance and progress percentage for floating button
   useEffect(() => {

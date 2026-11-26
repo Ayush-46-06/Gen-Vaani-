@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { computeMeetingScheduledAt } from '../utils/meetingTime.js';
 
 const meetingSchema = new mongoose.Schema(
   {
@@ -83,13 +84,65 @@ const meetingSchema = new mongoose.Schema(
       enum: ['confirmed', 'completed', 'cancelled'],
       default: 'confirmed',
     },
+    scheduledAt: {
+      type: Date,
+      default: null,
+      index: true,
+    },
+    reminderStatus: {
+      type: String,
+      enum: ['pending', 'processing', 'sent', 'failed'],
+      default: 'pending',
+      index: true,
+    },
+    reminderSent: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    reminderSentAt: {
+      type: Date,
+      default: null,
+    },
+    clientReminderSent: {
+      type: Boolean,
+      default: false,
+    },
+    adminReminderSent: {
+      type: Boolean,
+      default: false,
+    },
+    reminderError: {
+      type: String,
+      default: '',
+    },
   },
   {
     timestamps: true,
   }
 );
 
+// Automatically derive canonical UTC scheduledAt whenever schedule fields are set or modified
+meetingSchema.pre('save', function (next) {
+  if (
+    !this.scheduledAt ||
+    this.isModified('dateKey') ||
+    this.isModified('time') ||
+    this.isModified('timezone') ||
+    this.isModified('aestDateKey') ||
+    this.isModified('aestTime')
+  ) {
+    const computed = computeMeetingScheduledAt(this);
+    if (computed) {
+      this.scheduledAt = computed;
+    }
+  }
+  next();
+});
+
 // Compound index to ensure uniqueness for confirmed slots on a specific dateKey and time
 meetingSchema.index({ dateKey: 1, time: 1, status: 1 });
+// Index for fast 30-minute reminder polling
+meetingSchema.index({ status: 1, reminderStatus: 1, scheduledAt: 1 });
 
 export const Meeting = mongoose.model('Meeting', meetingSchema);

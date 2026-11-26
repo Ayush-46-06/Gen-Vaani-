@@ -68,29 +68,14 @@ const MeetCalendarView = ({
   toggleMeetingStatus, 
   showToast = () => {} 
 }) => {
-  // Determine initial month based on meetings (e.g. November 2026) or today
+  // Always default calendar view to the current month
   const [currentDate, setCurrentDate] = useState(() => {
-    if (meetings && meetings.length > 0) {
-      // Find the first valid meeting dateKey
-      for (const m of meetings) {
-        const k = getMeetingDateKey(m);
-        if (k) {
-          const [y, mon] = k.split('-').map(Number);
-          return new Date(y, mon - 1, 1);
-        }
-      }
-    }
-    return new Date();
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  // Selected dateKey (e.g. '2026-11-14') or null to show all
+  // Always default selected day to today's date (YYYY-MM-DD)
   const [selectedDateKey, setSelectedDateKey] = useState(() => {
-    if (meetings && meetings.length > 0) {
-      for (const m of meetings) {
-        const k = getMeetingDateKey(m);
-        if (k) return k;
-      }
-    }
     const today = new Date();
     const y = today.getFullYear();
     const m = String(today.getMonth() + 1).padStart(2, '0');
@@ -370,7 +355,7 @@ const MeetCalendarView = ({
 
                   {dayMeets.length > 2 && (
                     <span className="cal-cell-more">
-                      +{dayMeets.length - 2} more
+                      +{dayMeets.length - 2}<span className="cal-more-word"> more</span>
                     </span>
                   )}
                 </div>

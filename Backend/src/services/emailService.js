@@ -619,8 +619,314 @@ export async function sendLeadReplyEmail({ to, clientName, subject, message, adm
       email: process.env.BREVO_SENDER_EMAIL || 'ayush.athenura@gmail.com',
       name: adminName || 'Gen-Vaani Innovations',
     },
-    headers: {
+      headers: {
       'X-Mailin-Tag': 'admin-lead-reply',
     },
   });
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getMeetingChannelInfo(meeting) {
+  const location = meeting.location || 'Google Meet';
+  const meetUrl = meeting.meetUrl || 'https://meet.google.com/mjk-yknw-mvz';
+  const teamsUrl = meeting.teamsUrl || 'https://teams.microsoft.com/l/meetup-join/genvaani';
+
+  if (location === 'Microsoft Teams') {
+    return {
+      location,
+      platformLabel: 'Microsoft Teams Video Conference',
+      joinUrl: teamsUrl,
+      clientCtaText: 'Join Microsoft Teams Meeting',
+      adminCtaText: 'Join Microsoft Teams Room',
+    };
+  }
+
+  if (location === 'Phone call') {
+    return {
+      location,
+      platformLabel: `Direct Phone Call (${meeting.phone || 'Client Phone'})`,
+      joinUrl: '',
+      clientCtaText: '',
+      adminCtaText: meeting.phone ? `Call ${meeting.phone}` : '',
+      adminCtaUrl: meeting.phone ? `tel:${meeting.phone}` : '',
+    };
+  }
+
+  return {
+    location: 'Google Meet',
+    platformLabel: 'Google Meet (HD Video & Screen Share)',
+    joinUrl: meetUrl,
+    clientCtaText: 'Join Google Meet Now',
+    adminCtaText: 'Open Google Meet Room',
+  };
+}
+
+function formatTimeRemainingLabel(minutesUntilStart) {
+  const mins = Math.max(1, Math.round(Number(minutesUntilStart) || 30));
+  if (mins >= 28 && mins <= 32) return '30 minutes';
+  return `${mins} minute${mins === 1 ? '' : 's'}`;
+}
+
+export function getAdminNotificationRecipients() {
+  const raw = process.env.ADMIN_NOTIFICATION_EMAIL || 'ayush.athenura@gmail.com';
+  const emails = raw
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
+
+  if (emails.length === 0) {
+    return [{ email: 'ayush.athenura@gmail.com', name: 'Gen-Vaani Admin' }];
+  }
+
+  return emails.map((email) => ({ email, name: 'Gen-Vaani Admin' }));
+}
+
+/**
+ * Send 30-Minute Meeting Reminder Email to the Client
+ */
+export async function sendMeetingReminderToClient(meeting, minutesUntilStart = 30) {
+  const timeLeftLabel = formatTimeRemainingLabel(minutesUntilStart);
+  const channel = getMeetingChannelInfo(meeting);
+  const clientName = escapeHtml(meeting.clientName || 'Valued Client');
+  const service = escapeHtml(meeting.service || 'Discovery Consultation');
+  const dateDisplay = escapeHtml(meeting.date || meeting.dateKey || '');
+  const timeDisplay = escapeHtml(meeting.time || '');
+  const timezoneDisplay = escapeHtml(meeting.timezone || 'Australia/Sydney');
+  const aestDisplay = meeting.aestTime ? ` · [${escapeHtml(meeting.aestTime)} AEST]` : '';
+
+  const title = `Your Meeting Starts in ${timeLeftLabel}`;
+  const subtitle = `Hi ${clientName}, this is a quick reminder for your upcoming consultation with Gen-Vaani.`;
+  const badgeText = '30-MINUTE MEETING REMINDER';
+
+  const instructions =
+    channel.location === 'Phone call'
+      ? `Please keep your phone handy. Our senior architect will call you at <strong>${escapeHtml(meeting.phone || 'your registered number')}</strong> in ${timeLeftLabel}.`
+      : `Please join the ${escapeHtml(channel.location)} room a couple of minutes early from a desktop or laptop so we can start right on time.`;
+
+  const contentHtml = `
+    <div class="detail-box">
+      <div class="detail-date">${dateDisplay}</div>
+      <div class="detail-time">${timeDisplay}${aestDisplay}</div>
+      <div class="detail-tz">Starts in ${escapeHtml(timeLeftLabel)} · Timezone: ${timezoneDisplay}</div>
+    </div>
+
+    <table class="data-table">
+      <tr>
+        <td class="data-label">Meeting Channel</td>
+        <td class="data-val" style="color: #00278a; font-weight: 700;">${escapeHtml(channel.platformLabel)}</td>
+      </tr>
+      <tr>
+        <td class="data-label">Service / Agenda</td>
+        <td class="data-val">${service}</td>
+      </tr>
+      <tr>
+        <td class="data-label">Attendee</td>
+        <td class="data-val">${clientName}</td>
+      </tr>
+      ${
+        channel.joinUrl
+          ? `
+      <tr>
+        <td class="data-label">Direct Meeting Link</td>
+        <td class="data-val"><a href="${escapeHtml(channel.joinUrl)}" target="_blank" style="color: #0284c7; word-break: break-all;">${escapeHtml(channel.joinUrl)}</a></td>
+      </tr>`
+          : ''
+      }
+      ${
+        meeting.notes
+          ? `
+      <tr>
+        <td class="data-label">Session Notes</td>
+        <td class="data-val">${escapeHtml(meeting.notes)}</td>
+      </tr>`
+          : ''
+      }
+    </table>
+
+    <div class="instructions-card">
+      <strong>Quick Reminder:</strong> ${instructions}
+    </div>
+  `;
+
+  const textContent = `
+Hi ${meeting.clientName || 'Valued Client'},
+
+Reminder: Your Gen-Vaani consultation starts in ${timeLeftLabel}.
+
+Session Details:
+- Date: ${meeting.date || meeting.dateKey}
+- Time: ${meeting.time} (${meeting.timezone || 'Australia/Sydney'})${meeting.aestTime ? ` [${meeting.aestTime} AEST]` : ''}
+- Channel: ${channel.location}
+- Service: ${meeting.service}
+${channel.joinUrl ? `- Join Link: ${channel.joinUrl}` : `- We will call you at: ${meeting.phone || 'your registered number'}`}
+${meeting.notes ? `- Notes: ${meeting.notes}` : ''}
+
+Best regards,
+Gen-Vaani Innovations Team
+https://genvaani.com
+  `.trim();
+
+  return sendBrevoEmail({
+    to: { email: meeting.email, name: meeting.clientName || '' },
+    subject: `Reminder: Your Gen-Vaani Meeting Starts in ${timeLeftLabel} (${meeting.time})`,
+    htmlContent: generateEmailHtml({
+      title,
+      subtitle,
+      badgeText,
+      contentHtml,
+      ctaText: channel.clientCtaText,
+      ctaUrl: channel.joinUrl,
+      isClient: true,
+    }),
+    textContent,
+    replyTo: {
+      email: process.env.BREVO_SENDER_EMAIL || 'ayush.athenura@gmail.com',
+      name: 'Gen-Vaani Innovations',
+    },
+    headers: {
+      'X-Mailin-Tag': 'client-meeting-reminder-30m',
+    },
+  });
+}
+
+/**
+ * Send 30-Minute Meeting Reminder Email to the Admin
+ */
+export async function sendMeetingReminderToAdmin(meeting, minutesUntilStart = 30) {
+  const timeLeftLabel = formatTimeRemainingLabel(minutesUntilStart);
+  const channel = getMeetingChannelInfo(meeting);
+  const adminRecipients = getAdminNotificationRecipients();
+
+  const clientName = escapeHtml(meeting.clientName || 'Client');
+  const service = escapeHtml(meeting.service || 'Consultation');
+  const company = escapeHtml(meeting.company || 'Direct Client');
+  const dateDisplay = escapeHtml(meeting.date || meeting.dateKey || '');
+  const timeDisplay = escapeHtml(meeting.time || '');
+  const timezoneDisplay = escapeHtml(meeting.timezone || 'Australia/Sydney');
+  const aestTimeDisplay = escapeHtml(meeting.aestTime || meeting.time || '');
+
+  const title = `Client Meeting in ${timeLeftLabel}`;
+  const subtitle = `Upcoming ${escapeHtml(channel.location)} session with ${clientName} (${company}).`;
+  const badgeText = `ADMIN REMINDER · STARTS IN ${timeLeftLabel.toUpperCase()}`;
+
+  const adminCtaUrl = channel.location === 'Phone call' ? (channel.adminCtaUrl || '') : channel.joinUrl;
+
+  const contentHtml = `
+    <div class="detail-box">
+      <div class="detail-date">${dateDisplay}</div>
+      <div class="detail-time">${timeDisplay} (${timezoneDisplay})</div>
+      <div class="detail-tz" style="color: #00278a; font-weight: 700;">Sydney / AEST Time: ${aestTimeDisplay} AEST · Starts in ${escapeHtml(timeLeftLabel)}</div>
+    </div>
+
+    <table class="data-table">
+      <tr>
+        <td class="data-label">Channel / Mode</td>
+        <td class="data-val" style="color: #00278a; font-weight: 700;">${escapeHtml(channel.location)}</td>
+      </tr>
+      <tr>
+        <td class="data-label">Client Name</td>
+        <td class="data-val">${clientName}</td>
+      </tr>
+      <tr>
+        <td class="data-label">Client Email</td>
+        <td class="data-val"><a href="mailto:${escapeHtml(meeting.email)}" style="color: #0284c7;">${escapeHtml(meeting.email)}</a></td>
+      </tr>
+      ${
+        meeting.phone
+          ? `
+      <tr>
+        <td class="data-label">Client Phone</td>
+        <td class="data-val"><a href="tel:${escapeHtml(meeting.phone)}" style="color: #0284c7; font-weight: 700;">${escapeHtml(meeting.phone)}</a></td>
+      </tr>`
+          : ''
+      }
+      <tr>
+        <td class="data-label">Company / Brand</td>
+        <td class="data-val">${company}</td>
+      </tr>
+      <tr>
+        <td class="data-label">Service / Topic</td>
+        <td class="data-val">${service}</td>
+      </tr>
+      ${
+        channel.location !== 'Phone call' && channel.joinUrl
+          ? `
+      <tr>
+        <td class="data-label">Meeting Link</td>
+        <td class="data-val"><a href="${escapeHtml(channel.joinUrl)}" target="_blank" style="color: #0284c7; word-break: break-all;">${escapeHtml(channel.joinUrl)}</a></td>
+      </tr>`
+          : `
+      <tr>
+        <td class="data-label">Action Required</td>
+        <td class="data-val" style="color: #ea580c; font-weight: 700;">Call client at ${escapeHtml(meeting.phone || 'N/A')} in ${escapeHtml(timeLeftLabel)}</td>
+      </tr>`
+      }
+      <tr>
+        <td class="data-label">Client Notes</td>
+        <td class="data-val">${escapeHtml(meeting.notes || 'No custom notes provided.')}</td>
+      </tr>
+    </table>
+  `;
+
+  const textContent = `
+Reminder: Client meeting starts in ${timeLeftLabel}.
+
+- Client: ${meeting.clientName} (${meeting.company || 'Direct Client'})
+- Email: ${meeting.email}
+- Phone: ${meeting.phone || 'N/A'}
+- Service: ${meeting.service}
+- Channel: ${channel.location}
+- Client Time: ${meeting.date || meeting.dateKey} at ${meeting.time} (${meeting.timezone || 'Australia/Sydney'})
+- AEST Time: ${meeting.aestTime || meeting.time} AEST
+${channel.location === 'Phone call' ? `- Call Client At: ${meeting.phone || 'N/A'}` : `- Meeting Link: ${channel.joinUrl}`}
+- Notes: ${meeting.notes || 'None'}
+  `.trim();
+
+  return sendBrevoEmail({
+    to: adminRecipients,
+    replyTo: { email: meeting.email, name: meeting.clientName || '' },
+    subject: `Reminder (${timeLeftLabel}): ${meeting.clientName} - ${meeting.service} (${meeting.aestTime || meeting.time} AEST)`,
+    htmlContent: generateEmailHtml({
+      title,
+      subtitle,
+      badgeText,
+      contentHtml,
+      ctaText: channel.adminCtaText,
+      ctaUrl: adminCtaUrl,
+      isClient: false,
+    }),
+    textContent,
+    headers: {
+      'X-Mailin-Tag': 'admin-meeting-reminder-30m',
+    },
+  });
+}
+
+/**
+ * Dispatch 30-minute reminder emails to Client and Admin
+ */
+export async function sendMeetingReminderEmails(meeting, minutesUntilStart = 30, options = {}) {
+  const { sendClient = true, sendAdmin = true } = options;
+
+  const clientPromise = sendClient
+    ? sendMeetingReminderToClient(meeting, minutesUntilStart)
+    : Promise.resolve({ success: true, skipped: true });
+  const adminPromise = sendAdmin
+    ? sendMeetingReminderToAdmin(meeting, minutesUntilStart)
+    : Promise.resolve({ success: true, skipped: true });
+
+  const [clientRes, adminRes] = await Promise.allSettled([clientPromise, adminPromise]);
+
+  return {
+    clientEmail: clientRes.status === 'fulfilled' ? clientRes.value : { success: false, error: clientRes.reason?.message || String(clientRes.reason) },
+    adminEmail: adminRes.status === 'fulfilled' ? adminRes.value : { success: false, error: adminRes.reason?.message || String(adminRes.reason) },
+  };
 }
